@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Room {
 
-	ConcurrentHashMap<Integer, Player> players = new ConcurrentHashMap<Integer, Player>();
+	ConcurrentHashMap<Integer, Player> playerMap;
 
 	public enum State {
 		Waiting, Playing
@@ -20,11 +20,12 @@ public class Room {
 		this.peopleInside = new AtomicInteger(0);
 		this.capacity = capacity;
 		this.state = State.Waiting;
+		this.playerMap = = new ConcurrentHashMap<Integer, Player>();
 	}
 
 	public boolean addPlayer(Player player) {
 			if (peopleInside.get() < capacity) {
-				players.putIfAbsent(player.getPlayerId(), player);
+				playerMap.putIfAbsent(player.getPlayerId(), player);
 				peopleInside.incrementAndGet();
 				return true;
 			} else
@@ -34,7 +35,7 @@ public class Room {
 	public void RemovePlayer(Player player)
 	{
 		peopleInside.decrementAndGet();
-		players.remove(player.getPlayerId());
+		playerMap.remove(player.getPlayerId());
 			
 	}
 	
