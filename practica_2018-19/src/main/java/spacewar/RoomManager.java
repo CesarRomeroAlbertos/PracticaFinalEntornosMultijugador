@@ -11,12 +11,15 @@ public class RoomManager {
 	private BlockingQueue<Room> waitingRooms;
 	private BlockingQueue<Room> fullRooms;
 
+	//El contructor inicializa las colas y el threadpool que controla las salas
 	public RoomManager() {
 		this.roomExecutor = Executors.newCachedThreadPool();
 		waitingRooms = new LinkedBlockingQueue<Room>();
 		fullRooms = new LinkedBlockingQueue<Room>();
 	}
 
+	//Recibe un jugador, mira si hay salas disponibles y le asocia a la primera de la cola,
+	//que se presume que es la más antigua. Si no hay salas crea una.
 	public void ConnectNewPlayer(Player player) {
 		synchronized (waitingRooms) {
 			if (!waitingRooms.peek().addPlayer(player)) {
@@ -35,6 +38,8 @@ public class RoomManager {
 		}
 	}
 
+	//intenta borrar la sala de la lista de salas en espera, donde debería estar si se ha borrado de forma normal,
+	//pero si no está entonces la borra de las que no están en espera, el otro sitio donde puede estar
 	public void deleteRoom(Room room) {
 		if (!waitingRooms.remove(room))
 			fullRooms.remove(room);
