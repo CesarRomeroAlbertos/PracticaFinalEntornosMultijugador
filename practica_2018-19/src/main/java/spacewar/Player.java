@@ -20,11 +20,11 @@ public class Player extends Spaceship {
 		this.shipType = this.getRandomShipType();
 	}
 
-	public String getPlayerNick() {
-		return this.playerNick;
+	public String getPlayerName() {
+		return this.name;
 	}
-	public void setPlayerNick(String n) {
-		this.playerNick = n;
+	public void setPlayerName(String n) {
+		this.name = n;
 	}
 	public int getPlayerId() {
 		return this.playerId;

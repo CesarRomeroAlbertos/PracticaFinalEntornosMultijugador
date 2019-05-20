@@ -20,6 +20,7 @@ public class RoomManagerTest {
 	final static int numPlayers = 100;
 	Player testPlayer;
 
+	//Creamos jugadores con una sesión falsa que serán los parametros para el test
 	@Parameters
 	public static Iterable<Object[]> data() {
 		List<Object[]> list = new ArrayList<Object[]>();
@@ -32,15 +33,19 @@ public class RoomManagerTest {
 		return list;
 	}
 
+	//inicializamos la clase del test con los parámetros establecidos
 	public RoomManagerTest(Player testPlayer) {
 		this.testPlayer = testPlayer;
 	}
 
+	//Inicializamos antes de los tests el room manager
 	@Before
 	public void SetUp() {
 		roomManager = new RoomManager();
 	}
 
+	//Probamos a asociar a todos los jugadores a salas y ver si tienen asociada una sala,
+	//en cuyo caso el test ha ido bien
 	@Test
 	public void testConnectNewPlayer() {
 		roomManager.ConnectNewPlayer(testPlayer);

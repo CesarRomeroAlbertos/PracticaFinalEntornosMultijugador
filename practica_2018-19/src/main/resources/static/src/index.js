@@ -31,8 +31,8 @@ window.onload = function() {
 		var msg = JSON.parse(message.data)
 		
 		switch (msg.event) {
-		case "SET NICK" :
-			game.global.myPlayer.playerNick = msg.nick
+		case "SET NAME" :
+			game.global.myPlayer.name = msg.name
 			break
 		case 'JOIN':
 			if (game.global.DEBUG_MODE) {
