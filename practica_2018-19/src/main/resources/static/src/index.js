@@ -31,6 +31,9 @@ window.onload = function() {
 		var msg = JSON.parse(message.data)
 		
 		switch (msg.event) {
+		case "SET NICK" :
+			game.global.myPlayer.playerNick = msg.nick
+			break
 		case 'JOIN':
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] JOIN message recieved')
