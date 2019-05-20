@@ -42,10 +42,10 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			Player player = (Player) session.getAttributes().get(PLAYER_ATTRIBUTE);
 
 			switch (node.get("event").asText()) {
-			case "NICK":
+			case "NAME":
 				player.setName(node.get("name").asText());
-				msg.put("event" , "SET NICK");
-				msg.put("nick", player.getPlayerName());
+				msg.put("event" , "SET NAME");
+				msg.put("name", player.getPlayerName());
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
 				break;
 			case "JOIN":

@@ -6,26 +6,41 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Room {
 
 	ConcurrentHashMap<Integer, Player> playerMap;
+	ConcurrentHashMap<Integer, Meteorite> meteoriteMap;
+	
 
 	public enum State {
 		Waiting, Full, Playing
 	}
+	
+	public enum gameStyle{
+		MeteorParty
+	}
 
 	public State state;
+	public gameStyle style;
 
 	private AtomicInteger peopleInside;
 	private final int capacity;
 
 	private RoomManager roomManager;
+	
+	public void initMeteorites() {
+		//Poner meteoritos en el mapa de meteoritos , habra que asignarles ids de forma concurente 
+	}
 
 	//inicializa las variables y estructuras de la clase
 	//y asocia el room manager para poder controlar cuando se borra la sala
-	public Room(int capacity, RoomManager roomManager) {
+	public Room(int capacity, RoomManager roomManager , gameStyle style) {
 		this.peopleInside = new AtomicInteger(0);
 		this.capacity = capacity;
 		this.state = State.Waiting;
 		this.playerMap = new ConcurrentHashMap<Integer, Player>();
 		this.roomManager = roomManager;
+		this.style = style;
+		if (style == gameStyle.MeteorParty) {
+			initMeteorites();
+		}
 	}
 
 	//aumenta el contador de personas en la sala y añade a la persona al mapa,
