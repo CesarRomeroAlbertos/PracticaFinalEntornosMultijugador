@@ -6,22 +6,20 @@ import org.springframework.web.socket.WebSocketSession;
 
 public class Meteorite {
 
-	private final WebSocketSession session;
 	private final int meteoriteId;
 	private Room room;
 	AtomicInteger hitPoints = new AtomicInteger(10);
 	
-	public Meteorite(int meteoriteId, WebSocketSession session) {
-		this.meteoriteId = meteoriteId;
-		this.session = session;
 	
+	public Meteorite(int meteoriteId) {
+		this.meteoriteId = meteoriteId;
+		
 	}
 	synchronized public void counthit() {
 		hitPoints.decrementAndGet();
-		if (hitPoints.get() == 0) {
-			//Destruir el meteorito 
-			
-		}
 		
+	}
+	synchronized public boolean gethits() {
+		return (hitPoints.get() <= 0 );
 	}
 }

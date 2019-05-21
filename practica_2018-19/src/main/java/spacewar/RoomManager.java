@@ -10,6 +10,10 @@ public class RoomManager {
 	private final int roomCapacity = 6;
 	public BlockingQueue<Room> waitingRooms;
 	private BlockingQueue<Room> fullRooms;
+	
+	public enum gameStyle{
+		MeteorParty
+	}
 
 	// El contructor inicializa las colas y el threadpool que controla las salas
 	public RoomManager() {
@@ -21,10 +25,10 @@ public class RoomManager {
 	// Recibe un jugador, mira si hay salas disponibles y le asocia a la primera de
 	// la cola,
 	// que se presume que es la más antigua. Si no hay salas crea una.
-	public void ConnectNewPlayer(Player player) {
+	public void ConnectNewPlayer(Player player ,String style ) {
 		synchronized (waitingRooms) {
 			if (waitingRooms.isEmpty()) {
-				Room room = new Room(roomCapacity, this);
+				Room room = new Room(roomCapacity, this, style);
 				room.addPlayer(player);
 				roomExecutor.execute(() -> room.PreMatchLobbyThread());
 				waitingRooms.add(room);
@@ -32,13 +36,13 @@ public class RoomManager {
 				if (waitingRooms.peek().getPeopleInside() == roomCapacity) {
 					try {
 						fullRooms.add(waitingRooms.take());
-						Room room = new Room(roomCapacity, this);
+						Room room = new Room(roomCapacity, this, null);
 						room.addPlayer(player);
 						roomExecutor.execute(() -> room.PreMatchLobbyThread());
 						waitingRooms.add(room);
 					} catch (InterruptedException e) {
 						System.out.println("Error al añadir al jugador a una sala, intentando de nuevo.");
-						ConnectNewPlayer(player);
+						ConnectNewPlayer(player,style);
 						e.printStackTrace();
 					}
 				}
