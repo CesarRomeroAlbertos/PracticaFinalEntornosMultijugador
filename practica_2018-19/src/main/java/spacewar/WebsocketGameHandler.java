@@ -56,9 +56,9 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
 				break;
 			case "JOIN ROOM":
-				roomManager.ConnectNewPlayer(player,node.get("gameStyle").asText());
+				int roomid = roomManager.ConnectNewPlayer(player,node.get("gameStyle").asText());
 				msg.put("event", "NEW ROOM");
-				msg.put("room", "GLOBAL");
+				msg.put("room", roomid);
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
 				break;
 			case "UPDATE MOVEMENT":

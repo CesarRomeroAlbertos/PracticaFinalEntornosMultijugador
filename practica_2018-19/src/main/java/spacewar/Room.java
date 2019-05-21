@@ -18,6 +18,7 @@ public class Room {
 
 	public State state;
 	public String style;
+	public int roomid;
 
 	private AtomicInteger peopleInside;
 	private final int capacity;
