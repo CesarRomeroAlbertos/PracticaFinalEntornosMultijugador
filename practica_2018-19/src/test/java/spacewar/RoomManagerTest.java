@@ -13,6 +13,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.springframework.web.socket.WebSocketSession;
 
+import spacewar.Room.GameStyle;
+
 @RunWith(value = Parameterized.class)
 public class RoomManagerTest {
 
@@ -48,8 +50,8 @@ public class RoomManagerTest {
 	//en cuyo caso el test ha ido bien
 	@Test
 	public void testConnectNewPlayer() {
-		roomManager.ConnectNewPlayer(testPlayer);
-		assertNotNull("Existe la sala del jugador", testPlayer.GetRoom());
+		roomManager.ConnectNewPlayer(testPlayer,GameStyle.MeteorParty);
+		assertNotNull("Existe la sala del jugador", testPlayer.GetRoomId());
 	}
 
 	/*

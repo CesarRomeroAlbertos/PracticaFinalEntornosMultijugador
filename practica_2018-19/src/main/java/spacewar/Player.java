@@ -11,7 +11,7 @@ public class Player extends Spaceship {
 	private final int playerId;
 	private final String shipType;
 	private String name;
-	private Room room;
+	private int roomId;
 	private  String playerNick;
 
 	public Player(int playerId, WebSocketSession session) {
@@ -57,15 +57,11 @@ public class Player extends Spaceship {
 		this.name = name;
 	}
 
-	public void setRoom(Room room) {
-		this.room = room;
+	public void setRoomId(int roomId) {
+		this.roomId = roomId;
 	}
 
-	public Room GetRoom() {
-		return this.room;
-	}
-
-	public void RemoveFromRoom() {
-		this.room.RemovePlayer(this);
+	public int GetRoomId() {
+		return this.roomId;
 	}
 }

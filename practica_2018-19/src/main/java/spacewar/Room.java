@@ -1,24 +1,32 @@
 package spacewar;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Room {
 
+	private final int id;
 	ConcurrentHashMap<Integer, Player> playerMap;
 	ConcurrentHashMap<Integer, Meteorite> meteoriteMap;
+	Map<GameStyle, Integer> capacityValues= new HashMap<GameStyle, Integer>(){
+		{
+			put(GameStyle.MeteorParty, 10);
+		}
+	};
 	
 
 	public enum State {
 		Waiting, Full, Playing
 	}
 	
-	public enum gameStyle{
+	public enum GameStyle{
 		MeteorParty
 	}
 
 	public State state;
-	public gameStyle style;
+	private final GameStyle gameStyle;
 
 	private AtomicInteger peopleInside;
 	private final int capacity;
@@ -31,14 +39,15 @@ public class Room {
 
 	//inicializa las variables y estructuras de la clase
 	//y asocia el room manager para poder controlar cuando se borra la sala
-	public Room(int capacity, RoomManager roomManager , gameStyle style) {
+	public Room(int id, RoomManager roomManager , GameStyle gameStyle) {
+		this.id = id;
 		this.peopleInside = new AtomicInteger(0);
-		this.capacity = capacity;
+		this.capacity = capacityValues.get(gameStyle);
 		this.state = State.Waiting;
 		this.playerMap = new ConcurrentHashMap<Integer, Player>();
 		this.roomManager = roomManager;
-		this.style = style;
-		if (style == gameStyle.MeteorParty) {
+		this.gameStyle = gameStyle;
+		if (gameStyle == GameStyle.MeteorParty) {
 			initMeteorites();
 		}
 	}
@@ -48,7 +57,7 @@ public class Room {
 	public boolean addPlayer(Player player) {
 		if (peopleInside.get() < capacity) {
 			playerMap.putIfAbsent(player.getPlayerId(), player);
-			player.setRoom(this);
+			player.setRoomId(this.id);
 			peopleInside.incrementAndGet();
 			return true;
 		} else
@@ -68,12 +77,27 @@ public class Room {
 	public int getPeopleInside() {
 		return peopleInside.get();
 	}
+	
+	public GameStyle getGameStyle()
+	{
+		return this.gameStyle;
+	}
 
+	public int getId()
+	{
+		return this.id;
+	}
+	
 	//Este es el hilo que se ejecuta durante la espera para iniciar las partidas
 	public void PreMatchLobbyThread() {
 		do {
 
 		} while (this.state != State.Playing);
+	}
+	
+	public void removePlayer(Player player)
+	{
+		playerMap.remove(player.getPlayerId());
 	}
 
 }

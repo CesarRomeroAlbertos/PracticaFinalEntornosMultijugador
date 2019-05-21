@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import spacewar.Room.GameStyle;
+
 public class WebsocketGameHandler extends TextWebSocketHandler {
 
 	private SpacewarGame game = SpacewarGame.INSTANCE;
@@ -56,7 +58,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
 				break;
 			case "JOIN ROOM":
-				roomManager.ConnectNewPlayer(player);
+				roomManager.ConnectNewPlayer(player,GameStyle.MeteorParty);
 				msg.put("event", "NEW ROOM");
 				msg.put("room", "GLOBAL");
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
@@ -84,7 +86,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		Player player = (Player) session.getAttributes().get(PLAYER_ATTRIBUTE);
-		player.RemoveFromRoom();
+		roomManager.removePlayer(player);
 		game.removePlayer(player);
 
 		ObjectNode msg = mapper.createObjectNode();
