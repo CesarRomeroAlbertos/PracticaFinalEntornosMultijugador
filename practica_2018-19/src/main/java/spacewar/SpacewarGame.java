@@ -126,6 +126,9 @@ public class SpacewarGame {
 					if ((projectile.getOwner().getPlayerId() != player.getPlayerId()) && player.intersect(projectile)) {
 						// System.out.println("Player " + player.getPlayerId() + " was hit!!!");
 						projectile.setHit(true);
+						ObjectNode msg = mapper.createObjectNode();
+						msg.put("event" , "UPDATE HEALTH");
+						player.getSession().sendMessage(new TextMessage(msg.toString()));
 						break;
 					}
 				}

@@ -93,11 +93,7 @@ window.onload = function() {
 					} else {
 						if (projectile.isHit) {
 							// we load explosion
-							let msg = {
-								event: "UPDATE HEALTH"
-							}
-							game.global.socket.send(JSON.stringify(msg));
-							 game.global.socket.send(JSON.stringify(message));
+							
 							let explosion = game.add.sprite(projectile.posX, projectile.posY, 'explosion')
 							explosion.animations.add('explosion')
 							explosion.anchor.setTo(0.5, 0.5)
@@ -113,7 +109,10 @@ window.onload = function() {
 			game.global.myPlayer.health -=1
 			game.global.myPlayer.myHCounter.text =  game.global.myPlayer.health;
 			if (game.global.myPlayer.health == 0 ){
-				
+				let msg = {
+						event : "PLAYER DEAD"		
+				}
+				game.global.socket.send(JSON.stringify(msg))
 			}
 		break
 		case 'REMOVE PLAYER' :
