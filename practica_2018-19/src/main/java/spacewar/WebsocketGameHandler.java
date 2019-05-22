@@ -47,7 +47,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			switch (node.get("event").asText()) {
 			case "NAME":
 				player.setName(node.get("name").asText());
-				msg.put("event" , "SET NAME");
+				msg.put("event", "SET NAME");
 				msg.put("name", player.getPlayerName());
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
 				break;
@@ -79,17 +79,20 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				msg.put("event", "UPDATE HEALTH");
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
 				break;
-			case"PLAYER DEAD" :
-			
+			case "PLAYER DEAD":
+
 				roomManager.removePlayer(player);
 				game.removePlayer(player);
 				msg.put("event", "REMOVE PLAYER");
 				msg.put("id", player.getPlayerId());
 				game.broadcast(msg.toString());
 				break;
-				
+			case "CHAT MESSAGE":
+				roomManager.getChatMessage(msg);
+				break;
+
 			default:
-				
+
 				break;
 			}
 
