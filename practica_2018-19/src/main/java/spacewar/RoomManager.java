@@ -44,7 +44,7 @@ public class RoomManager {
 				if (!tempRoom.addPlayer(player)) {
 
 					if (tempRoom.getPeopleInside() == roomCapacity) {
-						fullRooms.put(tempRoom.getId(),tempRoom);
+						fullRooms.put(tempRoom.getId(), tempRoom);
 						waitingRooms.remove(tempRoom);
 						Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
 						room.addPlayer(player);
@@ -68,12 +68,51 @@ public class RoomManager {
 			fullRooms.remove(room.getId());
 	}
 
-	public void removePlayer(Player player) {
-		for(GameStyle gs: GameStyle.values())
-		{
-			waitingQueues.get(gs).get(player.GetRoomId()).removePlayer(player);
-			fullRooms.get(player.GetRoomId()).removePlayer(player);
+	public void deleteRoom(int id) {
+		for (GameStyle gs : GameStyle.values()) {
+			if (waitingQueues.get(gs).containsKey(id))
+				waitingQueues.get(gs).remove(id);
+			else if (fullRooms.containsKey(id))
+				fullRooms.remove(id);
 		}
+	}
+
+	public void removePlayer(Player player) {
+		for (GameStyle gs : GameStyle.values()) {
+			if (waitingQueues.get(gs).containsKey(player.GetRoomId()))
+				waitingQueues.get(gs).get(player.GetRoomId()).removePlayer(player);
+			else if (fullRooms.containsKey(player.GetRoomId()))
+				fullRooms.get(player.GetRoomId()).removePlayer(player);
+		}
+	}
+
+	/// METODOS PARA TESTEO///
+
+	// Este método existe para testear y comprueba si un jugador existe
+	public boolean checkPlayer(Player player) {
+		boolean check = false;
+		for (GameStyle gs : GameStyle.values()) {
+			if (waitingQueues.get(gs).containsKey(player.GetRoomId())) {
+				if (waitingQueues.get(gs).get(player.GetRoomId()).checkPlayer(player))
+					check = true;
+			} else if (fullRooms.containsKey(player.GetRoomId())) {
+				if (fullRooms.get(player.GetRoomId()).checkPlayer(player))
+					check = true;
+			}
+		}
+		return check;
+	}
+
+	public boolean checkRoom(int id) {
+		boolean check = false;
+		for (GameStyle gs : GameStyle.values()) {
+			if (waitingQueues.get(gs).containsKey(id))
+				check = true;
+			else if (fullRooms.containsKey(id))
+				check = true;
+		}
+		return check;
+
 	}
 
 }

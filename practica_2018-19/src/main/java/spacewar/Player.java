@@ -12,7 +12,7 @@ public class Player extends Spaceship {
 	private final String shipType;
 	private String name;
 	private int roomId;
-	private  String playerNick;
+	private String playerNick;
 
 	public Player(int playerId, WebSocketSession session) {
 		this.playerId = playerId;
@@ -23,9 +23,11 @@ public class Player extends Spaceship {
 	public String getPlayerName() {
 		return this.name;
 	}
+
 	public void setPlayerName(String n) {
 		this.name = n;
 	}
+
 	public int getPlayerId() {
 		return this.playerId;
 	}
