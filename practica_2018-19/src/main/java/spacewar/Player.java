@@ -1,6 +1,7 @@
 package spacewar;
 
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -13,6 +14,7 @@ public class Player extends Spaceship {
 	private String name;
 	private int roomId;
 	private  String playerNick;
+	private AtomicInteger  health = new AtomicInteger(20);//hardcoded
 
 	public Player(int playerId, WebSocketSession session) {
 		this.playerId = playerId;
@@ -64,4 +66,11 @@ public class Player extends Spaceship {
 	public int GetRoomId() {
 		return this.roomId;
 	}
+	public int hitPlayer() {
+		return health.decrementAndGet();
+	}
+	public int getHealth() {
+		return health.get();
+	}
+
 }

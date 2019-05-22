@@ -45,6 +45,9 @@ Spacewar.gameState.prototype = {
 		game.global.myPlayer.nickText.anchor.setTo(0.5);
 		game.global.myPlayer.nickText.fontSize = 20;
 	    game.global.myPlayer.image.addChild(game.global.myPlayer.nickText)
+	    game.global.myPlayer.myHCounter = game.add.text(250, 16, '', { fill: '#ffffff' });
+	    game.global.myPlayer.myHCounter.text =  game.global.myPlayer.health;
+	    
 	},
 
 	create : function() {

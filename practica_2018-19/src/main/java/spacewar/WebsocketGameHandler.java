@@ -31,6 +31,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 		msg.put("event", "JOIN");
 		msg.put("id", player.getPlayerId());
 		msg.put("shipType", player.getShipType());
+		msg.put("health", player.getHealth());
 		player.getSession().sendMessage(new TextMessage(msg.toString()));
 
 		game.addPlayer(player);
@@ -55,10 +56,10 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				msg.put("event", "JOIN");
 				msg.put("id", player.getPlayerId());
 				msg.put("shipType", player.getShipType());
+				msg.put("health", player.getHealth());
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
 				break;
 			case "JOIN ROOM":
-				roomManager.ConnectNewPlayer(player,GameStyle.MeteorParty);
 				msg.put("event", "NEW ROOM");
 				msg.put("room", "GLOBAL");
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
@@ -73,7 +74,22 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 					game.addProjectile(projectile.getId(), projectile);
 				}
 				break;
+			case "UPDATE HEALTH":
+				player.hitPlayer();
+				msg.put("event", "UPDATE HEALTH");
+				player.getSession().sendMessage(new TextMessage(msg.toString()));
+				break;
+			case"PLAYER DEAD" :
+			
+				roomManager.removePlayer(player);
+				game.removePlayer(player);
+				msg.put("event", "REMOVE PLAYER");
+				msg.put("id", player.getPlayerId());
+				game.broadcast(msg.toString());
+				break;
+				
 			default:
+				
 				break;
 			}
 

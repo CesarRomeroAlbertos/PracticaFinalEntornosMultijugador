@@ -6,10 +6,12 @@ window.onload = function() {
 	game.global = {
 		FPS : 30,
 		DEBUG_MODE : false,
+		DEBUG_MODE_CARMEN : true,
 		socket : null,
 		myPlayer : new Object(),
 		otherPlayers : [],
 		projectiles : []
+		
 	}
 
 	// WEBSOCKET CONFIGURATOR
@@ -41,6 +43,7 @@ window.onload = function() {
 			}
 			game.global.myPlayer.id = msg.id
 			game.global.myPlayer.shipType = msg.shipType
+			game.global.myPlayer.health = msg.health
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] ID assigned to player: ' + game.global.myPlayer.id)
 			}
@@ -90,6 +93,11 @@ window.onload = function() {
 					} else {
 						if (projectile.isHit) {
 							// we load explosion
+							let msg = {
+								event: "UPDATE HEALTH"
+							}
+							game.global.socket.send(JSON.stringify(msg));
+							 game.global.socket.send(JSON.stringify(message));
 							let explosion = game.add.sprite(projectile.posX, projectile.posY, 'explosion')
 							explosion.animations.add('explosion')
 							explosion.anchor.setTo(0.5, 0.5)
@@ -101,6 +109,13 @@ window.onload = function() {
 				}
 			}
 			break
+		case 'UPDATE HEALTH':
+			game.global.myPlayer.health -=1
+			game.global.myPlayer.myHCounter.text =  game.global.myPlayer.health;
+			if (game.global.myPlayer.health == 0 ){
+				
+			}
+		break
 		case 'REMOVE PLAYER' :
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] REMOVE PLAYER message recieved')
