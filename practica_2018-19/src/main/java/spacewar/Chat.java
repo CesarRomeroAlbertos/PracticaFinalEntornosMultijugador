@@ -19,16 +19,16 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class Chat {
 
 	private BlockingQueue<ObjectNode> messages;
-	private HashMap<Integer, Player> playerMap;
+	private Map<Integer, Player> playerMap;
 	private ObjectMapper mapper;
 	private CyclicBarrier barrier;
 	private Executor executor;
 
 	public Chat(Map<Integer, Player> playerMap) {
-		this.playerMap = (HashMap<Integer, Player>) playerMap;
+		this.playerMap = playerMap;
 		messages = new LinkedBlockingQueue<ObjectNode>();
 		mapper = new ObjectMapper();
-		barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
+		barrier = new CyclicBarrier(1, () -> deleteMessage());
 		executor = Executors.newCachedThreadPool();
 	}
 
@@ -43,12 +43,7 @@ public class Chat {
 		ObjectNode message = mapper.createObjectNode();
 		message.put("event", "chatMessageReception");
 		message.put("messageText", messageText);
-		try {
-			messages.put(message);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			messages.add(message);
 		barrier.reset();
 		for (Player player : playerMap.values()) {
 			executor.execute(() -> sendMessage(player.getPlayerId()));
@@ -59,14 +54,8 @@ public class Chat {
 		try {
 			playerMap.get(id).getSession().sendMessage(new TextMessage(messages.peek().toString()));
 			barrier.await();
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException | BrokenBarrierException e) {
 			System.out.println("Error al enviar mensaje al jugador id: " + id);
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BrokenBarrierException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -80,14 +69,14 @@ public class Chat {
 		}
 	}
 	
-	private void addPlayer(Player player)
+	public void addPlayer(Player player)
 	{
 		playerMap.put(player.getPlayerId(), player);
 		barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
 		broadcastMessage("Ha entrado "+ player.getName()+ " en la sala");
 	}
 	
-	private void removePlayer(int id)
+	public void removePlayer(int id)
 	{
 		String message = "Ha salido "+ playerMap.get(id).getName()+ " de la sala";
 		playerMap.remove(id);
@@ -96,7 +85,7 @@ public class Chat {
 		
 	}
 	
-	private void removePlayer(Player player)
+	public void removePlayer(Player player)
 	{
 		String message = "Ha salido "+ player.getName()+ " de la sala";
 		playerMap.remove(player.getPlayerId());

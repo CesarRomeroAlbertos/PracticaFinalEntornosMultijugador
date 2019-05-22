@@ -63,6 +63,7 @@ public class Room {
 			playerMap.putIfAbsent(player.getPlayerId(), player);
 			player.setRoomId(this.id);
 			peopleInside.incrementAndGet();
+			chat.addPlayer(player);
 			return true;
 		} else
 			return false;
@@ -74,6 +75,7 @@ public class Room {
 	public void RemovePlayer(Player player) {
 		peopleInside.decrementAndGet();
 		playerMap.remove(player.getPlayerId());
+		chat.removePlayer(player.getPlayerId());
 		if (peopleInside.get() == 0)
 			roomManager.deleteRoom(this);
 	}

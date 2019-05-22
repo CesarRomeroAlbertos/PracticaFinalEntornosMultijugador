@@ -7,6 +7,8 @@ import static org.mockito.Mockito.mock;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +16,9 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.socket.WebSocketSession;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import spacewar.Room.GameStyle;
 
@@ -23,6 +28,8 @@ public class RoomManagerTest {
 	RoomManager roomManager;
 	final static int numPlayers = 100;
 	Player testPlayer;
+	
+	private ObjectMapper mapper;
 
 	// Creamos jugadores con una sesión falsa que serán los parametros para el test
 	@Parameters
@@ -46,6 +53,7 @@ public class RoomManagerTest {
 	@Before
 	public void SetUp() {
 		roomManager = new RoomManager();
+		mapper = new ObjectMapper();
 	}
 
 	// Probamos a asociar a todos los jugadores a salas y ver si tienen asociada una
@@ -71,6 +79,25 @@ public class RoomManagerTest {
 		roomManager.ConnectNewPlayer(testPlayer, GameStyle.MeteorParty);
 		roomManager.deleteRoom(testPlayer.GetRoomId());
 		assertFalse(roomManager.checkRoom(testPlayer.GetRoomId()));
+	}
+	
+	@Test
+	@Order(4)
+	public void testChat()
+	{
+		roomManager.ConnectNewPlayer(testPlayer, GameStyle.MeteorParty);
+		ObjectNode msg = mapper.createObjectNode();
+		msg.put("Event", "CHAT MESSAGE");
+		msg.put("player", "Nombre Placeholder");
+		msg.put("room", testPlayer.GetRoomId());
+		msg.put("message", "Hola Mundo jugador " + testPlayer.getPlayerId());
+		roomManager.getChatMessage(msg);
+	}
+	
+	@After
+	public void clear()
+	{
+		roomManager.removePlayer(testPlayer);
 	}
 
 }
