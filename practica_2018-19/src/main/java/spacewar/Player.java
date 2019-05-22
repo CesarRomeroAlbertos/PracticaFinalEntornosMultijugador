@@ -25,9 +25,11 @@ public class Player extends Spaceship {
 	public String getPlayerName() {
 		return this.name;
 	}
+
 	public void setPlayerName(String n) {
 		this.name = n;
 	}
+
 	public int getPlayerId() {
 		return this.playerId;
 	}
