@@ -7,7 +7,12 @@
 <!-- Título de la página -->
 <title>SpaceWar!</title>
 
+ <link rel = "stylesheet"
+   type = "text/css"
+   href = "src/style.css" />
+
 <!-- Cargamos los archivos JS -->
+<script src="src/chat.js"></script>
 <script src="scripts/phaser.min.js"></script>
 <script src="src/states/boot.js"></script>
 <script src="src/states/preload.js"></script>
@@ -17,10 +22,25 @@
 <script src="src/states/room.js"></script>
 <script src="src/states/game.js"></script>
 <script src="src/index.js"></script>
+
 </head>
 
 <body>
 	<!-- div donde ubicaremos el juego -->
-	<div id="gameDiv"></div>
+	<div  id="gameDiv"></div>
+	<div id = "chatDiv">
+
+	</div>
+
+	<table style="width:100%"  id = chatTable>
+
+</table>
+
+<form action="/action_page.php">
+  message : <input type="text" name="fname" id = msgField><br>
+</form>
+	<button onclick="sendChatMsg()">Send</button>
+	</div>
+	
 </body>
 </html>
