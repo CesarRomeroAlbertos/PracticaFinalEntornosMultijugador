@@ -53,6 +53,14 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				game.broadcast(msg.toString());
 
 				break;
+			case "PLAYER LEFT":
+				msg.put("id", player.getPlayerId());
+				msg.put("event", "REMOVE PLAYER");
+				game.broadcast(msg.toString());
+				game.removePlayer(player);
+
+				
+			break;
 				
 			case "NAME":
 				player.setName(node.get("name").asText());

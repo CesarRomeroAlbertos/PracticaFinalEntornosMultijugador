@@ -177,6 +177,10 @@ window.onload = function() {
 				console.log('[DEBUG] REMOVE PLAYER message recieved')
 				console.dir(msg.players)
 			}
+			if(msg.id == game.global.myPlayer.id ){
+				 game.global.myPlayer.id = "undefined"
+					
+			}
 			game.global.otherPlayers[msg.id].image.destroy()
 			delete game.global.otherPlayers[msg.id]
 		default :
