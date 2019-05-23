@@ -34,6 +34,7 @@ public class Room {
 
 	private RoomManager roomManager;
 	private Chat chat;
+	private SpacewarGame game;
 
 	public void initMeteorites() {
 		// Poner meteoritos en el mapa de meteoritos , habra que asignarles ids de forma
@@ -54,6 +55,7 @@ public class Room {
 		if (gameStyle == GameStyle.MeteorParty) {
 			initMeteorites();
 		}
+		startGame();
 	}
 
 	// aumenta el contador de personas en la sala y añade a la persona al mapa,
@@ -100,16 +102,33 @@ public class Room {
 		} while (this.state != State.Playing);
 	}
 
+	public void startGame() {
+		game = SpacewarGame.INSTANCE;
+		for (Player player : playerMap.values()) {
+			game.addPlayer(player);
+		}
+	}
+
+	/*
+	 * public void endGame() { game=null; }
+	 */
+
 	public void removePlayer(Player player) {
 		playerMap.remove(player.getPlayerId());
+		if (game != null) {
+			game.removePlayer(player);
+		}
 	}
-	
-	public void sendChatMessage(ObjectNode msg)
-	{
+
+	public SpacewarGame getGame() {
+		return this.game;
+	}
+
+	public void sendChatMessage(ObjectNode msg) {
 		chat.receiveMessage(msg);
 	}
 
-	///MÉTODOS PARA TESTEO
+	/// MÉTODOS PARA TESTEO
 	public boolean checkPlayer(Player player) {
 		return (playerMap.contains(player));
 	}

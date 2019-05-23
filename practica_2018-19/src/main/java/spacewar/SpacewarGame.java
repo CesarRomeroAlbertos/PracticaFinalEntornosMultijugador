@@ -49,12 +49,13 @@ public class SpacewarGame {
 	public Collection<Player> getPlayers() {
 		return players.values();
 	}
+
 	public void getforNames() {
 		ArrayNode arrayNodePlayers = mapper.createArrayNode();
 		ObjectNode json = mapper.createObjectNode();
 		for (Player player : getPlayers()) {
 			ObjectNode jsonPlayer = mapper.createObjectNode();
-			
+
 			jsonPlayer.put("name", player.getName());
 			arrayNodePlayers.addPOJO(jsonPlayer);
 		}
@@ -137,12 +138,13 @@ public class SpacewarGame {
 
 				// Handle collision
 				for (Player player : getPlayers()) {
-					if ((projectile.getOwner().getPlayerId() != player.getPlayerId()) && player.intersect(projectile) && !player.getGhost()) {
+					if ((projectile.getOwner().getPlayerId() != player.getPlayerId()) && player.intersect(projectile)
+							&& !player.getGhost()) {
 						// System.out.println("Player " + player.getPlayerId() + " was hit!!!");
 						projectile.setHit(true);
 						ObjectNode msg = mapper.createObjectNode();
-						msg.put("event" , "UPDATE HEALTH");
-						player.getSession().sendMessage(new TextMessage(msg.toString()));
+						msg.put("event", "UPDATE HEALTH");
+						player.sendMessage(msg.toString());
 						break;
 					}
 				}

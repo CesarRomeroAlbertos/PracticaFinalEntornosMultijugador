@@ -13,8 +13,7 @@ public class Player extends Spaceship {
 	private final String shipType;
 	private String name = null;
 	private int roomId;
-	private  String playerNick;
-	private AtomicInteger  health = new AtomicInteger(1);//hardcoded
+	private AtomicInteger health = new AtomicInteger(1);// hardcoded
 	private boolean isGhost;
 
 	public Player(int playerId, WebSocketSession session) {
@@ -26,21 +25,21 @@ public class Player extends Spaceship {
 
 	public void revive() {
 		this.isGhost = true;
-		this.health.set(1);//hardcoded
-		this.name = null;
+		this.health.set(1);// hardcoded
+		// this.name = null;
 	}
 
 	public boolean getGhost() {
 		return this.isGhost;
 	}
+
 	public void setGhost() {
 		this.isGhost = true;
 	}
+
 	public String getPlayerName() {
 		return this.name;
 	}
-
-	
 
 	public int getPlayerId() {
 		return this.playerId;
@@ -51,7 +50,9 @@ public class Player extends Spaceship {
 	}
 
 	public void sendMessage(String msg) throws Exception {
-		this.session.sendMessage(new TextMessage(msg));
+		synchronized (this.session) {
+			this.session.sendMessage(new TextMessage(msg));
+		}
 	}
 
 	public String getShipType() {
@@ -80,9 +81,11 @@ public class Player extends Spaceship {
 	public int GetRoomId() {
 		return this.roomId;
 	}
+
 	public int hitPlayer() {
 		return health.decrementAndGet();
 	}
+
 	public int getHealth() {
 		return health.get();
 	}

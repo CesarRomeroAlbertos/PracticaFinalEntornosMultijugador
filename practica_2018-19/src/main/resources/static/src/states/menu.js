@@ -33,12 +33,15 @@ Spacewar.menuState.prototype = {
 					 name : person
 			 }
 			 game.global.socket.send(JSON.stringify(message))
-			  }
+		 }
+		 //game.global.myPlayer.name = person
 		}
 		var  menubutton = game.add.button(game.world.centerX-200 ,game.world.centerY, "namebutton" , showPrompt, this);
 	},
 
 	update : function() {
+		console.log(game.global.myPlayer.id)
+		console.log(game.global.myPlayer.name)
 		if (typeof game.global.myPlayer.id !== 'undefined' && typeof game.global.myPlayer.name !== "undefined") {
 			game.state.start('lobbyState')
 		}

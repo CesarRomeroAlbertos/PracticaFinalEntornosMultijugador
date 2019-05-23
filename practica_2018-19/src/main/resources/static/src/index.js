@@ -34,7 +34,7 @@ window.onload = function() {
 	
 	game.global.socket.onmessage = (message) => {
 		var msg = JSON.parse(message.data)
-		
+		console.log(msg.event)
 		switch (msg.event) {
 		case "SET NAME" :
 			if(msg.id == game.global.myPlayer.id){

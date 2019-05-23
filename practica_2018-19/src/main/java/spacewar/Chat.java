@@ -37,13 +37,12 @@ public class Chat {
 				+ msg.get("message").asText() + "\n";
 		broadcastMessage(messageText);
 	}
-	
-	public void broadcastMessage(String messageText)
-	{
+
+	public void broadcastMessage(String messageText) {
 		ObjectNode message = mapper.createObjectNode();
 		message.put("event", "chatMessageReception");
 		message.put("messageText", messageText);
-			messages.add(message);
+		messages.add(message);
 		barrier.reset();
 		for (Player player : playerMap.values()) {
 			executor.execute(() -> sendMessage(player.getPlayerId()));
@@ -52,9 +51,9 @@ public class Chat {
 
 	private void sendMessage(int id) {
 		try {
-			playerMap.get(id).getSession().sendMessage(new TextMessage(messages.peek().toString()));
+			playerMap.get(id).sendMessage(messages.peek().toString());
 			barrier.await();
-		} catch (IOException | InterruptedException | BrokenBarrierException e) {
+		} catch (Exception e) {
 			System.out.println("Error al enviar mensaje al jugador id: " + id);
 			e.printStackTrace();
 		}
@@ -68,26 +67,23 @@ public class Chat {
 			e.printStackTrace();
 		}
 	}
-	
-	public void addPlayer(Player player)
-	{
+
+	public void addPlayer(Player player) {
 		playerMap.put(player.getPlayerId(), player);
 		barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
-		broadcastMessage("Ha entrado "+ player.getName()+ " en la sala");
+		broadcastMessage("Ha entrado " + player.getName() + " en la sala");
 	}
-	
-	public void removePlayer(int id)
-	{
-		String message = "Ha salido "+ playerMap.get(id).getName()+ " de la sala";
+
+	public void removePlayer(int id) {
+		String message = "Ha salido " + playerMap.get(id).getName() + " de la sala";
 		playerMap.remove(id);
 		barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
 		broadcastMessage(message);
-		
+
 	}
-	
-	public void removePlayer(Player player)
-	{
-		String message = "Ha salido "+ player.getName()+ " de la sala";
+
+	public void removePlayer(Player player) {
+		String message = "Ha salido " + player.getName() + " de la sala";
 		playerMap.remove(player.getPlayerId());
 		barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
 		broadcastMessage(message);

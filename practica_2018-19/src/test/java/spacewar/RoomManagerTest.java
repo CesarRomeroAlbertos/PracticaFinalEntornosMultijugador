@@ -87,7 +87,7 @@ public class RoomManagerTest {
 	{
 		roomManager.ConnectNewPlayer(testPlayer, GameStyle.MeteorParty);
 		ObjectNode msg = mapper.createObjectNode();
-		msg.put("Event", "CHAT MESSAGE");
+		msg.put("event", "CHAT MESSAGE");
 		msg.put("player", "Nombre Placeholder");
 		msg.put("room", testPlayer.GetRoomId());
 		msg.put("message", "Hola Mundo jugador " + testPlayer.getPlayerId());

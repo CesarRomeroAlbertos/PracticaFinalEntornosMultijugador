@@ -15,7 +15,7 @@ import spacewar.Room.GameStyle;
 
 public class WebsocketGameHandler extends TextWebSocketHandler {
 
-	private SpacewarGame game = SpacewarGame.INSTANCE;
+	// private SpacewarGame game = SpacewarGame.INSTANCE;
 	private static final String PLAYER_ATTRIBUTE = "PLAYER";
 	private ObjectMapper mapper = new ObjectMapper();
 	private AtomicInteger playerId = new AtomicInteger(0);
@@ -32,10 +32,10 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 		msg.put("id", player.getPlayerId());
 		msg.put("shipType", player.getShipType());
 		msg.put("health", player.getHealth());
-		msg.put("ghost" , player.getGhost());
-		player.getSession().sendMessage(new TextMessage(msg.toString()));
+		msg.put("ghost", player.getGhost());
+		player.sendMessage(msg.toString());
 
-		game.addPlayer(player);
+		// game.addPlayer(player);
 	}
 
 	@Override
@@ -46,29 +46,29 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			Player player = (Player) session.getAttributes().get(PLAYER_ATTRIBUTE);
 
 			switch (node.get("event").asText()) {
-			case"RESURECTION" :
+			case "RESURECTION":
 				player.revive();
-				msg.put("event","PLAYER RESURECTS");
+				msg.put("event", "PLAYER RESURECTS");
 				msg.put("id", player.getPlayerId());
-				game.broadcast(msg.toString());
+				roomManager.getGame(player.GetRoomId()).broadcast(msg.toString());
 
 				break;
 			case "PLAYER LEFT":
 				msg.put("id", player.getPlayerId());
 				msg.put("event", "REMOVE PLAYER");
-				game.broadcast(msg.toString());
-				game.removePlayer(player);
+				roomManager.getGame(player.GetRoomId()).broadcast(msg.toString());
+				roomManager.getGame(player.GetRoomId()).removePlayer(player);
 
-				
-			break;
-				
+				break;
+
 			case "NAME":
 				player.setName(node.get("name").asText());
-				msg.put("event" , "SET NAME");
+				msg.put("event", "SET NAME");
 				msg.put("name", player.getName());
 				msg.put("id", player.getPlayerId());
-				game.broadcast(msg.toString());
-				//game.getforNames();
+				player.sendMessage(msg.toString());
+				// roomManager.getGame(player.GetRoomId()).broadcast(msg.toString());
+				// game.getforNames();
 				break;
 			case "JOIN":
 				player.setName(node.get("name").asText());
@@ -76,13 +76,14 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				msg.put("id", player.getPlayerId());
 				msg.put("shipType", player.getShipType());
 				msg.put("health", player.getHealth());
-				msg.put("ghost" , player.getGhost());
-				player.getSession().sendMessage(new TextMessage(msg.toString()));
+				msg.put("ghost", player.getGhost());
+				player.sendMessage(msg.toString());
 				break;
 			case "JOIN ROOM":
 				msg.put("event", "NEW ROOM");
-				msg.put("room", "GLOBAL");
-				player.getSession().sendMessage(new TextMessage(msg.toString()));
+				roomManager.ConnectNewPlayer(player, GameStyle.MeteorParty);
+				msg.put("room", player.GetRoomId());
+				player.sendMessage(msg.toString());
 				break;
 			case "UPDATE MOVEMENT":
 				player.loadMovement(node.path("movement").get("thrust").asBoolean(),
@@ -91,19 +92,19 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 						node.path("movement").get("rotRight").asBoolean());
 				if (node.path("bullet").asBoolean() && !player.getGhost()) {
 					Projectile projectile = new Projectile(player, this.projectileId.incrementAndGet());
-					game.addProjectile(projectile.getId(), projectile);
+					roomManager.getGame(player.GetRoomId()).addProjectile(projectile.getId(), projectile);
 				}
 				break;
 			case "UPDATE HEALTH":
 				player.hitPlayer();
 				msg.put("event", "UPDATE HEALTH");
-				player.getSession().sendMessage(new TextMessage(msg.toString()));
+				player.sendMessage(msg.toString());
 				break;
-			case"PLAYER DEAD" :
+			case "PLAYER DEAD":
 				player.setGhost();
 				msg.put("event", "PLAYER GHOST");
 				msg.put("id", player.getPlayerId());
-				game.broadcast(msg.toString());
+				roomManager.getGame(player.GetRoomId()).broadcast(msg.toString());
 
 				break;
 			case "CHAT MESSAGE":
@@ -125,11 +126,11 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		Player player = (Player) session.getAttributes().get(PLAYER_ATTRIBUTE);
 		roomManager.removePlayer(player);
-		game.removePlayer(player);
+		roomManager.getGame(player.GetRoomId()).removePlayer(player);
 
 		ObjectNode msg = mapper.createObjectNode();
 		msg.put("event", "REMOVE PLAYER");
 		msg.put("id", player.getPlayerId());
-		game.broadcast(msg.toString());
+		roomManager.getGame(player.GetRoomId()).broadcast(msg.toString());
 	}
 }

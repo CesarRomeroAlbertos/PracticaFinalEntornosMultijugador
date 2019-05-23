@@ -68,31 +68,49 @@ public class RoomManager {
 	}
 
 	public void deleteRoom(int id) {
-		for (GameStyle gs : GameStyle.values()) {
-			if (waitingRoomsMap.get(gs).containsKey(id))
-				waitingRoomsMap.get(gs).remove(id);
-			else if (fullRooms.containsKey(id))
-				fullRooms.remove(id);
+		if (fullRooms.containsKey(id))
+			fullRooms.remove(id);
+		else {
+			for (GameStyle gs : GameStyle.values()) {
+				if (waitingRoomsMap.get(gs).containsKey(id))
+					waitingRoomsMap.get(gs).remove(id);
+			}
 		}
 	}
 
 	public void removePlayer(Player player) {
-		for (GameStyle gs : GameStyle.values()) {
-			if (waitingRoomsMap.get(gs).containsKey(player.GetRoomId()))
-				waitingRoomsMap.get(gs).get(player.GetRoomId()).removePlayer(player);
-			else if (fullRooms.containsKey(player.GetRoomId()))
-				fullRooms.get(player.GetRoomId()).removePlayer(player);
+		if (fullRooms.containsKey(player.GetRoomId()))
+			fullRooms.get(player.GetRoomId()).removePlayer(player);
+		else {
+			for (GameStyle gs : GameStyle.values()) {
+				if (waitingRoomsMap.get(gs).containsKey(player.GetRoomId()))
+					waitingRoomsMap.get(gs).get(player.GetRoomId()).removePlayer(player);
+			}
 		}
 	}
 
 	public void getChatMessage(ObjectNode msg) {
 		int id = msg.get("room").asInt();
-		for (GameStyle gs : GameStyle.values()) {
-			if (waitingRoomsMap.get(gs).containsKey(id))
-				waitingRoomsMap.get(gs).get(id).sendChatMessage(msg);
-		}
 		if (fullRooms.containsKey(id))
 			fullRooms.get(id).sendChatMessage(msg);
+		else {
+			for (GameStyle gs : GameStyle.values()) {
+				if (waitingRoomsMap.get(gs).containsKey(id))
+					waitingRoomsMap.get(gs).get(id).sendChatMessage(msg);
+			}
+		}
+	}
+
+	public SpacewarGame getGame(int id) {
+		if (fullRooms.containsKey(id)) {
+			return fullRooms.get(id).getGame();
+		} else {
+			for (GameStyle gs : GameStyle.values()) {
+				if (waitingRoomsMap.get(gs).containsKey(id))
+					return waitingRoomsMap.get(gs).get(id).getGame();
+			}
+		}
+		return null;
 	}
 
 	/// METODOS PARA TESTEO///
@@ -100,13 +118,16 @@ public class RoomManager {
 	// Este método existe para testear y comprueba si un jugador existe
 	public boolean checkPlayer(Player player) {
 		boolean check = false;
-		for (GameStyle gs : GameStyle.values()) {
-			if (waitingRoomsMap.get(gs).containsKey(player.GetRoomId())) {
-				if (waitingRoomsMap.get(gs).get(player.GetRoomId()).checkPlayer(player))
-					check = true;
-			} else if (fullRooms.containsKey(player.GetRoomId())) {
-				if (fullRooms.get(player.GetRoomId()).checkPlayer(player))
-					check = true;
+		if (fullRooms.containsKey(player.GetRoomId())) {
+			if (fullRooms.get(player.GetRoomId()).checkPlayer(player))
+				check = true;
+		} else {
+			for (GameStyle gs : GameStyle.values()) {
+				if (waitingRoomsMap.get(gs).containsKey(player.GetRoomId())) {
+					if (waitingRoomsMap.get(gs).get(player.GetRoomId()).checkPlayer(player))
+						check = true;
+				}
+
 			}
 		}
 		return check;
@@ -114,11 +135,13 @@ public class RoomManager {
 
 	public boolean checkRoom(int id) {
 		boolean check = false;
-		for (GameStyle gs : GameStyle.values()) {
-			if (waitingRoomsMap.get(gs).containsKey(id))
-				check = true;
-			else if (fullRooms.containsKey(id))
-				check = true;
+		if (fullRooms.containsKey(id))
+			check = true;
+		else {
+			for (GameStyle gs : GameStyle.values()) {
+				if (waitingRoomsMap.get(gs).containsKey(id))
+					check = true;
+			}
 		}
 		return check;
 
