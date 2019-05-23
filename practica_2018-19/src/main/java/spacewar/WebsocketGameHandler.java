@@ -89,9 +89,12 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				game.broadcast(msg.toString());
 
 				break;
-				
+			case "CHAT MESSAGE":
+				roomManager.getChatMessage(msg);
+				break;
+
 			default:
-				
+
 				break;
 			}
 

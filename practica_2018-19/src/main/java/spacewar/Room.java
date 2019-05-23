@@ -5,12 +5,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 public class Room {
 
 	private final int id;
-	ConcurrentHashMap<Integer, Player> playerMap;
-	ConcurrentHashMap<Integer, Meteorite> meteoriteMap;
-	Map<GameStyle, Integer> capacityValues = new HashMap<GameStyle, Integer>() {
+	private ConcurrentHashMap<Integer, Player> playerMap;
+	private ConcurrentHashMap<Integer, Meteorite> meteoriteMap;
+	private Map<GameStyle, Integer> capacityValues = new HashMap<GameStyle, Integer>() {
 		{
 			put(GameStyle.MeteorParty, 10);
 		}
@@ -31,6 +33,7 @@ public class Room {
 	private final int capacity;
 
 	private RoomManager roomManager;
+	private Chat chat;
 
 	public void initMeteorites() {
 		// Poner meteoritos en el mapa de meteoritos , habra que asignarles ids de forma
@@ -47,6 +50,7 @@ public class Room {
 		this.playerMap = new ConcurrentHashMap<Integer, Player>();
 		this.roomManager = roomManager;
 		this.gameStyle = gameStyle;
+		this.chat = new Chat(playerMap);
 		if (gameStyle == GameStyle.MeteorParty) {
 			initMeteorites();
 		}
@@ -59,6 +63,7 @@ public class Room {
 			playerMap.putIfAbsent(player.getPlayerId(), player);
 			player.setRoomId(this.id);
 			peopleInside.incrementAndGet();
+			chat.addPlayer(player);
 			return true;
 		} else
 			return false;
@@ -70,6 +75,7 @@ public class Room {
 	public void RemovePlayer(Player player) {
 		peopleInside.decrementAndGet();
 		playerMap.remove(player.getPlayerId());
+		chat.removePlayer(player.getPlayerId());
 		if (peopleInside.get() == 0)
 			roomManager.deleteRoom(this);
 	}
@@ -97,7 +103,13 @@ public class Room {
 	public void removePlayer(Player player) {
 		playerMap.remove(player.getPlayerId());
 	}
+	
+	public void sendChatMessage(ObjectNode msg)
+	{
+		chat.receiveMessage(msg);
+	}
 
+	///MÉTODOS PARA TESTEO
 	public boolean checkPlayer(Player player) {
 		return (playerMap.contains(player));
 	}

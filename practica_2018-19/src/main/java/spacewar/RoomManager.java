@@ -1,21 +1,19 @@
 package spacewar;
 
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import spacewar.Room.GameStyle;
 
 public class RoomManager {
 	private Executor roomExecutor;
 	private final int roomCapacity = 6;
-	private Map<GameStyle, ConcurrentHashMap<Integer, Room>> waitingQueues = new ConcurrentHashMap<GameStyle, ConcurrentHashMap<Integer, Room>>();
-	// private BlockingQueue<Room> waitingRooms;
+	private Map<GameStyle, ConcurrentHashMap<Integer, Room>> waitingRoomsMap = new ConcurrentHashMap<GameStyle, ConcurrentHashMap<Integer, Room>>();
 	private ConcurrentHashMap<Integer, Room> fullRooms;
 	private AtomicInteger roomIdCounter;
 
@@ -23,7 +21,7 @@ public class RoomManager {
 	public RoomManager() {
 		this.roomExecutor = Executors.newCachedThreadPool();
 		for (GameStyle gs : GameStyle.values())
-			waitingQueues.put(gs, new ConcurrentHashMap<Integer, Room>());
+			waitingRoomsMap.put(gs, new ConcurrentHashMap<Integer, Room>());
 		fullRooms = new ConcurrentHashMap<Integer, Room>();
 		roomIdCounter = new AtomicInteger(0);
 	}
@@ -32,7 +30,8 @@ public class RoomManager {
 	// la cola,
 	// que se presume que es la más antigua. Si no hay salas crea una.
 	public void ConnectNewPlayer(Player player, GameStyle gameStyle) {
-		ConcurrentHashMap<Integer, Room> waitingRooms = (ConcurrentHashMap<Integer, Room>) waitingQueues.get(gameStyle);
+		ConcurrentHashMap<Integer, Room> waitingRooms = (ConcurrentHashMap<Integer, Room>) waitingRoomsMap
+				.get(gameStyle);
 		synchronized (waitingRooms) {
 			if (waitingRooms.isEmpty()) {
 				Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
@@ -64,14 +63,14 @@ public class RoomManager {
 	// pero si no está entonces la borra de las que no están en espera, el otro
 	// sitio donde puede estar
 	public void deleteRoom(Room room) {
-		if (waitingQueues.get(room.getGameStyle()).remove(room.getId()) == null)
+		if (waitingRoomsMap.get(room.getGameStyle()).remove(room.getId()) == null)
 			fullRooms.remove(room.getId());
 	}
 
 	public void deleteRoom(int id) {
 		for (GameStyle gs : GameStyle.values()) {
-			if (waitingQueues.get(gs).containsKey(id))
-				waitingQueues.get(gs).remove(id);
+			if (waitingRoomsMap.get(gs).containsKey(id))
+				waitingRoomsMap.get(gs).remove(id);
 			else if (fullRooms.containsKey(id))
 				fullRooms.remove(id);
 		}
@@ -79,11 +78,21 @@ public class RoomManager {
 
 	public void removePlayer(Player player) {
 		for (GameStyle gs : GameStyle.values()) {
-			if (waitingQueues.get(gs).containsKey(player.GetRoomId()))
-				waitingQueues.get(gs).get(player.GetRoomId()).removePlayer(player);
+			if (waitingRoomsMap.get(gs).containsKey(player.GetRoomId()))
+				waitingRoomsMap.get(gs).get(player.GetRoomId()).removePlayer(player);
 			else if (fullRooms.containsKey(player.GetRoomId()))
 				fullRooms.get(player.GetRoomId()).removePlayer(player);
 		}
+	}
+
+	public void getChatMessage(ObjectNode msg) {
+		int id = msg.get("room").asInt();
+		for (GameStyle gs : GameStyle.values()) {
+			if (waitingRoomsMap.get(gs).containsKey(id))
+				waitingRoomsMap.get(gs).get(id).sendChatMessage(msg);
+		}
+		if (fullRooms.containsKey(id))
+			fullRooms.get(id).sendChatMessage(msg);
 	}
 
 	/// METODOS PARA TESTEO///
@@ -92,8 +101,8 @@ public class RoomManager {
 	public boolean checkPlayer(Player player) {
 		boolean check = false;
 		for (GameStyle gs : GameStyle.values()) {
-			if (waitingQueues.get(gs).containsKey(player.GetRoomId())) {
-				if (waitingQueues.get(gs).get(player.GetRoomId()).checkPlayer(player))
+			if (waitingRoomsMap.get(gs).containsKey(player.GetRoomId())) {
+				if (waitingRoomsMap.get(gs).get(player.GetRoomId()).checkPlayer(player))
 					check = true;
 			} else if (fullRooms.containsKey(player.GetRoomId())) {
 				if (fullRooms.get(player.GetRoomId()).checkPlayer(player))
@@ -106,7 +115,7 @@ public class RoomManager {
 	public boolean checkRoom(int id) {
 		boolean check = false;
 		for (GameStyle gs : GameStyle.values()) {
-			if (waitingQueues.get(gs).containsKey(id))
+			if (waitingRoomsMap.get(gs).containsKey(id))
 				check = true;
 			else if (fullRooms.containsKey(id))
 				check = true;
