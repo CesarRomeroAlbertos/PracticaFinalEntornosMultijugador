@@ -49,6 +49,19 @@ public class SpacewarGame {
 	public Collection<Player> getPlayers() {
 		return players.values();
 	}
+	public void getforNames() {
+		ArrayNode arrayNodePlayers = mapper.createArrayNode();
+		ObjectNode json = mapper.createObjectNode();
+		for (Player player : getPlayers()) {
+			ObjectNode jsonPlayer = mapper.createObjectNode();
+			
+			jsonPlayer.put("name", player.getName());
+			arrayNodePlayers.addPOJO(jsonPlayer);
+		}
+		json.putPOJO("players", arrayNodePlayers);
+		json.put("event", "PAINT NAMES");
+		this.broadcast(json.toString());
+	}
 
 	public void removePlayer(Player player) {
 		players.remove(player.getSession().getId());
@@ -161,8 +174,6 @@ public class SpacewarGame {
 			json.put("event", "GAME STATE UPDATE");
 			json.putPOJO("players", arrayNodePlayers);
 			json.putPOJO("projectiles", arrayNodeProjectiles);
-			
-
 			this.broadcast(json.toString());
 		} catch (Throwable ex) {
 

@@ -98,14 +98,7 @@ window.onload = function() {
 							else{
 								game.global.otherPlayers[player.id].image.alpha = 0
 							}
-							if ((game.global.otherPlayers[player.id].image) && player.name != null && player.id != game.global.myPlayer.id) {
-								game.global.otherPlayers[player.id] = {
-								name :  game.add.text(player.posX, player.posY + 30, player.name ,otherstyle)
-								}
-								game.global.otherPlayers[player.id].name.fontSize = 20;
-								game.global.otherPlayers[player.id].image.addChild(game.global.otherPlayers[player.id].name)
-							
-							}
+						
 						}
 					
 					}
@@ -134,6 +127,19 @@ window.onload = function() {
 				}
 			}
 			break
+			
+			
+		case "PAINT NAMES" :
+			for (var player of msg.players) {
+				if(game.global.otherPlayers.length != 0 &&player.id != game.global.myPlayer.id && game.global.otherPlayers[player.id].image !== "undefined"){
+					game.global.otherPlayres[palyer.id].name =  game.add.text(game.global.myPlayer.image.x, game.global.myPlayer.image.y + 30, game.global.myPlayer.name ,otherstyle);
+					game.global.otherPlayres[palyer.id].name.anchor.setTo(0.5);
+					game.global.otherPlayres[palyer.id].name.fontSize = 20;
+					game.global.otherPlayres[palyer.id].image.addChild(game.global.otherPlayres[palyer.id].name);
+				}
+			}
+			break
+			
 		case 'UPDATE HEALTH':
 			game.global.myPlayer.health -=1
 			game.global.myPlayer.myHCounter.text =  game.global.myPlayer.health;
