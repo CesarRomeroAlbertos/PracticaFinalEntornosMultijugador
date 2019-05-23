@@ -14,21 +14,27 @@ public class Player extends Spaceship {
 	private String name;
 	private int roomId;
 	private  String playerNick;
-	private AtomicInteger  health = new AtomicInteger(20);//hardcoded
+	private AtomicInteger  health = new AtomicInteger(1);//hardcoded
+	private boolean isGhost;
 
 	public Player(int playerId, WebSocketSession session) {
 		this.playerId = playerId;
 		this.session = session;
 		this.shipType = this.getRandomShipType();
+		this.isGhost = false;
 	}
 
+	public boolean getGhost() {
+		return this.isGhost;
+	}
+	public void setGhost() {
+		this.isGhost = true;
+	}
 	public String getPlayerName() {
 		return this.name;
 	}
 
-	public void setPlayerName(String n) {
-		this.name = n;
-	}
+	
 
 	public int getPlayerId() {
 		return this.playerId;

@@ -10,9 +10,11 @@ window.onload = function() {
 		socket : null,
 		myPlayer : new Object(),
 		otherPlayers : [],
-		projectiles : []
+		projectiles : [],
+		
 		
 	}
+	var otherstyle = { font: "bold 32px Arial", fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle" }
 
 	// WEBSOCKET CONFIGURATOR
 	game.global.socket = new WebSocket("ws://127.0.0.1:8080/spacewar")
@@ -34,7 +36,12 @@ window.onload = function() {
 		
 		switch (msg.event) {
 		case "SET NAME" :
+			if(msg.id == game.global.myPlayer.id){
 			game.global.myPlayer.name = msg.name
+			}
+			else{
+				game.global.otherPlayers[msg.id].name = msg.name
+			}
 			break
 		case 'JOIN':
 			if (game.global.DEBUG_MODE) {
@@ -44,6 +51,7 @@ window.onload = function() {
 			game.global.myPlayer.id = msg.id
 			game.global.myPlayer.shipType = msg.shipType
 			game.global.myPlayer.health = msg.health
+			game.global.myPlayer.playerIsGhost = msg.ghost
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] ID assigned to player: ' + game.global.myPlayer.id)
 			}
@@ -69,15 +77,26 @@ window.onload = function() {
 						game.global.myPlayer.image.y = player.posY
 						game.global.myPlayer.image.angle = player.facingAngle
 					} else {
-						if (typeof game.global.otherPlayers[player.id] == 'undefined') {
+						if (typeof game.global.otherPlayers[player.id] == 'undefined' ) {
 							game.global.otherPlayers[player.id] = {
-									image : game.add.sprite(player.posX, player.posY, 'spacewar', player.shipType)
+									image : game.add.sprite(player.posX, player.posY, 'spacewar', player.shipType),
+									name :  game.add.text(player.posX, player.posY + 30, player.name ,otherstyle),
+									playerIsGhost : player.isGhost
 							}
+							console.log("NAME IS " + player.name)
 							game.global.otherPlayers[player.id].image.anchor.setTo(0.5, 0.5)
-						} else {
+							game.global.otherPlayers[player.id].name.fontSize = 20;
+							game.global.otherPlayers[player.id].image.addChild(game.global.otherPlayers[player.id].name)
+						} else  {
+							if (!game.global.otherPlayers[player.id].playerIsGhost){
 							game.global.otherPlayers[player.id].image.x = player.posX
 							game.global.otherPlayers[player.id].image.y = player.posY
 							game.global.otherPlayers[player.id].image.angle = player.facingAngle
+							
+							}
+							else{
+								game.global.otherPlayers[player.id].image.alpha = 0
+							}
 						}
 					}
 				}
@@ -108,13 +127,22 @@ window.onload = function() {
 		case 'UPDATE HEALTH':
 			game.global.myPlayer.health -=1
 			game.global.myPlayer.myHCounter.text =  game.global.myPlayer.health;
-			if (game.global.myPlayer.health == 0 ){
+			if (game.global.myPlayer.health <= 0 ){
+			
 				let msg = {
 						event : "PLAYER DEAD"		
 				}
 				game.global.socket.send(JSON.stringify(msg))
 			}
 		break
+		case "PLAYER GHOST":
+			if(msg.id == game.global.myPlayer.id){
+			game.global.myPlayer.playerIsGhost = true
+			}
+			else{
+				game.global.otherPlayers[msg.id].playerIsGhost = true
+			}
+		break;
 		case 'REMOVE PLAYER' :
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] REMOVE PLAYER message recieved')

@@ -41,10 +41,10 @@ Spacewar.gameState.prototype = {
 				game.global.myPlayer.shipType)
 		game.global.myPlayer.image.anchor.setTo(0.5, 0.5)
 		var style = { font: "bold 32px Arial", fill: "#ffe500", boundsAlignH: "center", boundsAlignV: "middle" };
-		game.global.myPlayer.nickText = game.add.text(game.global.myPlayer.image.x, game.global.myPlayer.image.y + 30, game.global.myPlayer.name ,style);
-		game.global.myPlayer.nickText.anchor.setTo(0.5);
-		game.global.myPlayer.nickText.fontSize = 20;
-	    game.global.myPlayer.image.addChild(game.global.myPlayer.nickText)
+		game.global.myPlayer.name = game.add.text(game.global.myPlayer.image.x, game.global.myPlayer.image.y + 30, game.global.myPlayer.name ,style);
+		game.global.myPlayer.name.anchor.setTo(0.5);
+		game.global.myPlayer.name.fontSize = 20;
+	    game.global.myPlayer.image.addChild(game.global.myPlayer.name)
 	    game.global.myPlayer.myHCounter = game.add.text(250, 16, '', { fill: '#ffffff' });
 	    game.global.myPlayer.myHCounter.text =  game.global.myPlayer.health;
 	    
@@ -77,6 +77,11 @@ Spacewar.gameState.prototype = {
 	},
 
 	update : function() {
+		if (game.global.myPlayer.playerIsGhost){
+			console.log("que la pasa")
+			//this.spaceKey = null;
+			game.global.myPlayer.image.alpha = 0.25;
+		}
 		let msg = new Object()
 		msg.event = 'UPDATE MOVEMENT'
 
@@ -86,6 +91,8 @@ Spacewar.gameState.prototype = {
 			rotLeft : false,
 			rotRight : false
 		}
+		
+	
 
 		msg.bullet = false
 

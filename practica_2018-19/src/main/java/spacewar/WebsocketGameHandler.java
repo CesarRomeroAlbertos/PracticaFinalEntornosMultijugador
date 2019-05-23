@@ -32,6 +32,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 		msg.put("id", player.getPlayerId());
 		msg.put("shipType", player.getShipType());
 		msg.put("health", player.getHealth());
+		msg.put("ghost" , player.getGhost());
 		player.getSession().sendMessage(new TextMessage(msg.toString()));
 
 		game.addPlayer(player);
@@ -48,8 +49,9 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			case "NAME":
 				player.setName(node.get("name").asText());
 				msg.put("event" , "SET NAME");
-				msg.put("name", player.getPlayerName());
-				player.getSession().sendMessage(new TextMessage(msg.toString()));
+				msg.put("name", player.getName());
+				msg.put("id", player.getPlayerId());
+				game.broadcast(msg.toString());
 				break;
 			case "JOIN":
 				player.setName(node.get("name").asText());
@@ -57,6 +59,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				msg.put("id", player.getPlayerId());
 				msg.put("shipType", player.getShipType());
 				msg.put("health", player.getHealth());
+				msg.put("ghost" , player.getGhost());
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
 				break;
 			case "JOIN ROOM":
@@ -69,7 +72,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 						node.path("movement").get("brake").asBoolean(),
 						node.path("movement").get("rotLeft").asBoolean(),
 						node.path("movement").get("rotRight").asBoolean());
-				if (node.path("bullet").asBoolean()) {
+				if (node.path("bullet").asBoolean() && !player.getGhost()) {
 					Projectile projectile = new Projectile(player, this.projectileId.incrementAndGet());
 					game.addProjectile(projectile.getId(), projectile);
 				}
@@ -80,12 +83,11 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				player.getSession().sendMessage(new TextMessage(msg.toString()));
 				break;
 			case"PLAYER DEAD" :
-			
-				roomManager.removePlayer(player);
-				game.removePlayer(player);
-				msg.put("event", "REMOVE PLAYER");
+				player.setGhost();
+				msg.put("event", "PLAYER GHOST");
 				msg.put("id", player.getPlayerId());
 				game.broadcast(msg.toString());
+
 				break;
 				
 			default:

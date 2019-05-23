@@ -123,7 +123,7 @@ public class SpacewarGame {
 
 				// Handle collision
 				for (Player player : getPlayers()) {
-					if ((projectile.getOwner().getPlayerId() != player.getPlayerId()) && player.intersect(projectile)) {
+					if ((projectile.getOwner().getPlayerId() != player.getPlayerId()) && player.intersect(projectile) && !player.getGhost()) {
 						// System.out.println("Player " + player.getPlayerId() + " was hit!!!");
 						projectile.setHit(true);
 						ObjectNode msg = mapper.createObjectNode();
@@ -160,6 +160,7 @@ public class SpacewarGame {
 			json.put("event", "GAME STATE UPDATE");
 			json.putPOJO("players", arrayNodePlayers);
 			json.putPOJO("projectiles", arrayNodeProjectiles);
+			
 
 			this.broadcast(json.toString());
 		} catch (Throwable ex) {
