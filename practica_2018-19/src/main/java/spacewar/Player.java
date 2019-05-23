@@ -11,7 +11,7 @@ public class Player extends Spaceship {
 	private final WebSocketSession session;
 	private final int playerId;
 	private final String shipType;
-	private String name;
+	private String name = null;
 	private int roomId;
 	private  String playerNick;
 	private AtomicInteger  health = new AtomicInteger(1);//hardcoded

@@ -70,8 +70,11 @@ window.onload = function() {
 				console.log('[DEBUG] GAME STATE UPDATE message recieved')
 				console.dir(msg)
 			}
+			
 			if (typeof game.global.myPlayer.image !== 'undefined') {
 				for (var player of msg.players) {
+					
+					
 					if (game.global.myPlayer.id == player.id) {
 						game.global.myPlayer.image.x = player.posX
 						game.global.myPlayer.image.y = player.posY
@@ -80,13 +83,11 @@ window.onload = function() {
 						if (typeof game.global.otherPlayers[player.id] == 'undefined' ) {
 							game.global.otherPlayers[player.id] = {
 									image : game.add.sprite(player.posX, player.posY, 'spacewar', player.shipType),
-									name :  game.add.text(player.posX, player.posY + 30, player.name ,otherstyle),
 									playerIsGhost : player.isGhost
 							}
 							console.log("NAME IS " + player.name)
 							game.global.otherPlayers[player.id].image.anchor.setTo(0.5, 0.5)
-							game.global.otherPlayers[player.id].name.fontSize = 20;
-							game.global.otherPlayers[player.id].image.addChild(game.global.otherPlayers[player.id].name)
+							
 						} else  {
 							if (!game.global.otherPlayers[player.id].playerIsGhost){
 							game.global.otherPlayers[player.id].image.x = player.posX
@@ -97,7 +98,16 @@ window.onload = function() {
 							else{
 								game.global.otherPlayers[player.id].image.alpha = 0
 							}
+							if ((game.global.otherPlayers[player.id].image) && player.name != null && player.id != game.global.myPlayer.id) {
+								game.global.otherPlayers[player.id] = {
+								name :  game.add.text(player.posX, player.posY + 30, player.name ,otherstyle)
+								}
+								game.global.otherPlayers[player.id].name.fontSize = 20;
+								game.global.otherPlayers[player.id].image.addChild(game.global.otherPlayers[player.id].name)
+							
+							}
 						}
+					
 					}
 				}
 				
