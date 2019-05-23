@@ -46,6 +46,13 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			Player player = (Player) session.getAttributes().get(PLAYER_ATTRIBUTE);
 
 			switch (node.get("event").asText()) {
+			case"RESURECTION" :
+				player.revive();
+				msg.put("event","PLAYER RESURECTS");
+				game.broadcast(msg.toString());
+
+				break;
+				
 			case "NAME":
 				player.setName(node.get("name").asText());
 				msg.put("event" , "SET NAME");

@@ -24,6 +24,10 @@ public class Player extends Spaceship {
 		this.isGhost = false;
 	}
 
+	public void revive() {
+		this.isGhost = true;
+	}
+
 	public boolean getGhost() {
 		return this.isGhost;
 	}

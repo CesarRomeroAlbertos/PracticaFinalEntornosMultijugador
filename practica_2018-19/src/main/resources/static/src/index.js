@@ -161,6 +161,15 @@ window.onload = function() {
 			}
 	
 		break;
+		case "PLAYER RESURECTS":
+			if(msg.id == game.global.myPlayer.id){
+			game.global.myPlayer.playerIsGhost = false
+			}
+			else{
+				game.global.otherPlayers[msg.id].playerIsGhost = false
+			}
+	
+		break;
 		case 'REMOVE PLAYER' :
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] REMOVE PLAYER message recieved')
