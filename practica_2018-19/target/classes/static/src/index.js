@@ -3,6 +3,7 @@ window.onload = function() {
 	game = new Phaser.Game(1024, 600, Phaser.AUTO, 'gameDiv')
 
 	// GLOBAL VARIABLES
+	//No meter nada aqui bajo ninguna circunstancia
 	game.global = {
 		FPS : 30,
 		DEBUG_MODE : false,
@@ -10,12 +11,12 @@ window.onload = function() {
 		socket : null,
 		myPlayer : new Object(),
 		otherPlayers : [],
-		projectiles : [],
+		projectiles : []
 		
 		
 	}
 	var otherstyle = { font: "bold 32px Arial", fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle" }
-
+	
 	// WEBSOCKET CONFIGURATOR
 	game.global.socket = new WebSocket("ws://127.0.0.1:8080/spacewar")
 	
@@ -158,6 +159,7 @@ window.onload = function() {
 			else{
 				game.global.otherPlayers[msg.id].playerIsGhost = true
 			}
+	
 		break;
 		case 'REMOVE PLAYER' :
 			if (game.global.DEBUG_MODE) {

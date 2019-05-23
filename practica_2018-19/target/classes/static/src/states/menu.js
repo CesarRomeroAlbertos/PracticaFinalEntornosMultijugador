@@ -24,6 +24,8 @@ Spacewar.menuState.prototype = {
 	},
 
 	create : function() {
+		game.add.tileSprite(0, 0,1024, 600, "menubackground");
+		function showPrompt(){
 		 let person = prompt("Please enter your name");
 		 if (person != null) {
 			 let message = {
@@ -32,6 +34,8 @@ Spacewar.menuState.prototype = {
 			 }
 			 game.global.socket.send(JSON.stringify(message))
 			  }
+		}
+		var  menubutton = game.add.button(game.world.centerX-200 ,game.world.centerY, "namebutton" , showPrompt, this);
 	},
 
 	update : function() {

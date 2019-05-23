@@ -3,7 +3,9 @@ Spacewar.gameState = function(game) {
 	this.fireBullet
 	this.numStars = 100 // Should be canvas size dependant
 	this.maxProjectiles = 800 // 8 per player
+	
 }
+var quitbutton
 
 Spacewar.gameState.prototype = {
 
@@ -51,6 +53,12 @@ Spacewar.gameState.prototype = {
 	},
 
 	create : function() {
+		function backtoMenu(){
+			console.log("Backtomenu")
+		}
+		quitbutton = game.add.button(game.world.centerX-175 ,game.world.centerY, "quitbutton" , backtoMenu, this);
+		quitbutton.alpha= 0;
+		quitbutton.inputEnabled = false
 		this.bulletTime = 0
 		this.fireBullet = function() {
 			if (game.time.now > this.bulletTime) {
@@ -77,10 +85,14 @@ Spacewar.gameState.prototype = {
 	},
 
 	update : function() {
+		
+		
 		if (game.global.myPlayer.playerIsGhost){
 			console.log("que la pasa")
 			//this.spaceKey = null;
 			game.global.myPlayer.image.alpha = 0.25;
+			quitbutton.alpha = 1;
+			quitbutton.inputEnabled = true;
 		}
 		let msg = new Object()
 		msg.event = 'UPDATE MOVEMENT'

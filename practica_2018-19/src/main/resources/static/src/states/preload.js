@@ -17,6 +17,11 @@ Spacewar.preloadState.prototype = {
 		game.load.atlas('explosion', 'assets/atlas/explosion.png',
 				'assets/atlas/explosion.json',
 				Phaser.Loader.TEXTURE_ATLAS_JSON_HASH)
+		game.load.image("menubackground", "assets/images/mmBackground.png");  
+		//by  Luke.RUSTLTD : https://opengameart.org/content/4-large-planets
+		
+		game.load.image("namebutton", "assets/images/namebutton.png");  
+		game.load.image("quitbutton", "assets/images/quitbutton.png"); 
 	},
 
 	create : function() {
