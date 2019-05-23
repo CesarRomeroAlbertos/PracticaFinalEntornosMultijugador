@@ -26,6 +26,8 @@ public class Player extends Spaceship {
 
 	public void revive() {
 		this.isGhost = true;
+		this.health.set(1);//hardcoded
+		this.name = null;
 	}
 
 	public boolean getGhost() {

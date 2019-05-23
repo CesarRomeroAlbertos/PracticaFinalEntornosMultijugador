@@ -164,6 +164,8 @@ window.onload = function() {
 		case "PLAYER RESURECTS":
 			if(msg.id == game.global.myPlayer.id){
 			game.global.myPlayer.playerIsGhost = false
+			game.global.myPlayer.health = 1 //hardcoded
+			game.global.myPlayer.name = "undefined"
 			}
 			else{
 				game.global.otherPlayers[msg.id].playerIsGhost = false

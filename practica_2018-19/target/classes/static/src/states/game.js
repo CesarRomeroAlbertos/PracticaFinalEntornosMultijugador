@@ -53,14 +53,14 @@ Spacewar.gameState.prototype = {
 	},
 
 	create : function() {
-		function backtoMenu(){
+		async function backtoMenu(){
 			console.log("Backtomenu")
 			let msg = {
 				event : "RESURECTION",
 				id:  game.global.myPlayer.id
 			}
+			await(game.global.socket.send(JSON.stringify(msg)))
 			game.state.start('menuState')
-			game.global.socket.send(JSON.stringify(msg))
 
 
 		}

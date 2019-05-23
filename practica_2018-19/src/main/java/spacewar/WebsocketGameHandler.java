@@ -49,6 +49,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			case"RESURECTION" :
 				player.revive();
 				msg.put("event","PLAYER RESURECTS");
+				msg.put("id", player.getPlayerId());
 				game.broadcast(msg.toString());
 
 				break;
