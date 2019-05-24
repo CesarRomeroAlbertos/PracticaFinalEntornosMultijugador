@@ -97,9 +97,9 @@ public class SpacewarGame {
 	}
 
 	public void broadcast(String message) {
-		for (Player player : getPlayers()) {
+		for (Player player : players.values()) {
 			try {
-				player.getSession().sendMessage(new TextMessage(message.toString()));
+				player.sendMessage(message.toString());
 			} catch (Throwable ex) {
 				System.err.println("Execption sending message to player " + player.getSession().getId());
 				ex.printStackTrace(System.err);

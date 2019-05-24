@@ -98,8 +98,10 @@ public class Room {
 	// Este es el hilo que se ejecuta durante la espera para iniciar las partidas
 	public void PreMatchLobbyThread() {
 		do {
-
+			//TEMPORAL
+			this.state = State.Playing;
 		} while (this.state != State.Playing);
+		startGame();
 	}
 
 	public void startGame() {
@@ -107,6 +109,7 @@ public class Room {
 		for (Player player : playerMap.values()) {
 			game.addPlayer(player);
 		}
+		game.startGameLoop();
 	}
 
 	/*
