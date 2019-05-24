@@ -1,4 +1,12 @@
-canvasclass {
+
+.cDiv {
+	position : relative;
+	
+}
+.cTable {
     background-color: #7bf0ff;
+     overflow:auto;
+     height : 275px;
+     width:70%;
     
 }
