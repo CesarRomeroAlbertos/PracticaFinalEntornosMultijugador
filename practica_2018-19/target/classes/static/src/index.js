@@ -17,6 +17,9 @@ window.onload = function() {
 	}
 	var otherstyle = { font: "bold 32px Arial", fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle" }
 	
+	
+
+	
 	// WEBSOCKET CONFIGURATOR
 	game.global.socket = new WebSocket("ws://127.0.0.1:8080/spacewar")
 	
@@ -36,6 +39,13 @@ window.onload = function() {
 		var msg = JSON.parse(message.data)
 		console.log(msg.event)
 		switch (msg.event) {
+		
+		case "chatMessageReception":
+			console.log("tienes un mensaje")
+			let latestChatMessage = msg.messageText
+			paintNewestMessage(latestChatMessage)
+			break
+			
 		case "SET NAME" :
 			if(msg.id == game.global.myPlayer.id){
 			game.global.myPlayer.name = msg.name
@@ -67,6 +77,8 @@ window.onload = function() {
 			}
 			break
 		case 'GAME STATE UPDATE' :
+			console.log("entra en game state update")
+
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] GAME STATE UPDATE message recieved')
 				console.dir(msg)
@@ -75,7 +87,7 @@ window.onload = function() {
 			if (typeof game.global.myPlayer.image !== 'undefined') {
 				for (var player of msg.players) {
 					
-					
+
 					if (game.global.myPlayer.id == player.id) {
 						game.global.myPlayer.image.x = player.posX
 						game.global.myPlayer.image.y = player.posY
