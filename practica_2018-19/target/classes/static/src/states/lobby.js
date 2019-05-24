@@ -2,6 +2,12 @@ Spacewar.lobbyState = function(game) {
 
 }
 
+function startnext(){
+	game.state.start('roomState')
+
+}
+
+
 Spacewar.lobbyState.prototype = {
 
 	init : function() {
@@ -18,8 +24,10 @@ Spacewar.lobbyState.prototype = {
 	create : function() {
 		
 		
+		
 		var gamediv = document.getElementById("gameDiv")
 		var div = document.createElement("div");
+		div.setAttribute("id","deletethis")
 		div.style.width = "700px";
 		div.style.height = "300px";
 		div.style.background = "red";
@@ -38,7 +46,7 @@ Spacewar.lobbyState.prototype = {
 		div.appendChild(roomtablediv)
 		roomtablediv.appendChild(roomtable)
 		
-		
+	
 	
 		var newroomname
 		
@@ -74,6 +82,9 @@ Spacewar.lobbyState.prototype = {
 	},
 
 	update : function() {
+	
+		
+	
 
 	}
 }

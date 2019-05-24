@@ -79,7 +79,7 @@ public class RoomManager {
 				ObjectNode msg = mapper.createObjectNode();
 				msg.put("event", "ROOM ASSIGNED");
 				msg.put("roomid", room.getId());
-				player.sendMessage(msg.asText());
+				player.sendMessage(msg.toString());
 			}else {
 				ObjectNode msg = mapper.createObjectNode();
 				msg.put("event", "ROOM DENIED");

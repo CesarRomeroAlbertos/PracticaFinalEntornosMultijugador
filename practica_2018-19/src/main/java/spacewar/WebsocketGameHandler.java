@@ -96,6 +96,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				msg.put("room", player.GetRoomId());
 				player.sendMessage(msg.toString());
 				break;
+			
 			case "UPDATE MOVEMENT":
 				player.loadMovement(node.path("movement").get("thrust").asBoolean(),
 						node.path("movement").get("brake").asBoolean(),

@@ -15,6 +15,10 @@ Spacewar.roomState.prototype = {
 	},
 
 	create : function() {
+		var thediv = document.getElementById("deletethis")
+		  thediv.parentNode.removeChild(thediv);
+		
+		
 		function imReady () {
 			console.log("IM READY")
 			

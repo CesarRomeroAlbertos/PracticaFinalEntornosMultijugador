@@ -10,7 +10,8 @@ window.onload = function() {
 		socket : null,
 		myPlayer : new Object(),
 		otherPlayers : [],
-		projectiles : []
+		projectiles : [],
+		
 		
 		
 	}
@@ -39,8 +40,15 @@ window.onload = function() {
 		console.log(msg.event)
 		switch (msg.event) {
 		
+		case "ROOM ASIGNED":
+			game.global.myPlayer.room.name = msg.roomname
+			game.global.myPlayer.room.id = msg.roomid
+			game.global.myPlayer.isWaiting = true 
+		
+			break
+		
 		case "UPDATE ROOM TABLE":
-			updateRoomTable(msg.roomcreator,msg.roomname)
+			updateRoomTable(msg.roomcreator,msg.roomname,msg.roomid)
 			break
 		
 		case "chatMessageReception":
@@ -66,6 +74,8 @@ window.onload = function() {
 			game.global.myPlayer.shipType = msg.shipType
 			game.global.myPlayer.health = msg.health
 			game.global.myPlayer.playerIsGhost = msg.ghost
+			game.global.myPlayer.isWaiting = false
+
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] ID assigned to player: ' + game.global.myPlayer.id)
 			}
