@@ -7,7 +7,6 @@ window.onload = function() {
 	game.global = {
 		FPS : 30,
 		DEBUG_MODE : false,
-		DEBUG_MODE_CARMEN : true,
 		socket : null,
 		myPlayer : new Object(),
 		otherPlayers : [],
