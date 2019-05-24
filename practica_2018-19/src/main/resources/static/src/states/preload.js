@@ -22,6 +22,10 @@ Spacewar.preloadState.prototype = {
 		
 		game.load.image("namebutton", "assets/images/namebutton.png");  
 		game.load.image("quitbutton", "assets/images/quitbutton.png"); 
+		game.load.image("readybutton", "assets/images/readybutton.png"); 
+		game.load.image("makeroombutton", "assets/images/makeroombutton.png"); 
+
+
 	},
 
 	create : function() {

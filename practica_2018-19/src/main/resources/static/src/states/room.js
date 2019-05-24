@@ -15,10 +15,16 @@ Spacewar.roomState.prototype = {
 	},
 
 	create : function() {
-
+		function imReady () {
+			console.log("IM READY")
+			
+			game.state.start('gameState')
+		}
+		
+		var readybutton = game.add.button(game.world.centerX ,game.world.centerY, "readybutton" , imReady, this);
+		
 	},
 
 	update : function() {
-		game.state.start('gameState')
 	}
 }

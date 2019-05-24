@@ -40,6 +40,10 @@ window.onload = function() {
 		console.log(msg.event)
 		switch (msg.event) {
 		
+		case "UPDATE ROOM TABLE":
+			updateRoomTable(msg.roomcreator,msg.roomname)
+			break
+		
 		case "chatMessageReception":
 			console.log("tienes un mensaje")
 			let latestChatMessage = msg.messageText

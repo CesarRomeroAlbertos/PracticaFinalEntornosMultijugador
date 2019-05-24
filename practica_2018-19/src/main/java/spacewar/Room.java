@@ -8,13 +8,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Room {
-
+	public String name;
+	public String creator;
 	private final int id;
 	private ConcurrentHashMap<Integer, Player> playerMap;
 	private ConcurrentHashMap<Integer, Meteorite> meteoriteMap;
 	private Map<GameStyle, Integer> capacityValues = new HashMap<GameStyle, Integer>() {
 		{
-			put(GameStyle.MeteorParty, 10);
+			put(GameStyle.battleRoyale, 10);
 		}
 	};
 
@@ -23,7 +24,7 @@ public class Room {
 	}
 
 	public enum GameStyle {
-		MeteorParty
+		battleRoyale
 	}
 
 	public State state;
@@ -52,7 +53,7 @@ public class Room {
 		this.roomManager = roomManager;
 		this.gameStyle = gameStyle;
 		this.chat = new Chat(playerMap);
-		if (gameStyle == GameStyle.MeteorParty) {
+		if (gameStyle == GameStyle.battleRoyale) {
 			initMeteorites();
 		}
 		startGame();
