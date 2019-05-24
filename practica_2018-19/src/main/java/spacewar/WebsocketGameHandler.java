@@ -60,6 +60,10 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				roomManager.getGame(player.GetRoomId()).removePlayer(player);
 
 				break;
+				
+			case "PLAYER IS READY" :
+				
+				break;
 
 			case "NAME":
 				player.setName(node.get("name").asText());
@@ -81,7 +85,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				break;
 			case "JOIN ROOM":
 				msg.put("event", "NEW ROOM");
-				roomManager.ConnectNewPlayer(player, GameStyle.MeteorParty);
+				roomManager.ConnectNewPlayer(player, GameStyle.battleRoyale);
 				msg.put("room", player.GetRoomId());
 				player.sendMessage(msg.toString());
 				break;
@@ -109,6 +113,10 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				break;
 			case "CHAT MESSAGE":
 				roomManager.getChatMessage(msg);
+				break;
+				
+			case "MAKE ROOM":
+				roomManager.createNewRoom(GameStyle.battleRoyale,node.get("roomname").asText(), node.get("roomcreator").asText());
 				break;
 
 			default:

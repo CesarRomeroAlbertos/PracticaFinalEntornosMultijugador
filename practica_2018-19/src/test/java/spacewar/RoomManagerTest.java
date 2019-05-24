@@ -62,7 +62,7 @@ public class RoomManagerTest {
 	@Test
 	@Order(1)
 	public void testConnectNewPlayer() {
-		roomManager.ConnectNewPlayer(testPlayer, GameStyle.MeteorParty);
+		roomManager.ConnectNewPlayer(testPlayer, GameStyle.battleRoyale);
 		assertNotNull("Existe la sala del jugador", testPlayer.GetRoomId());
 	}
 
@@ -76,7 +76,7 @@ public class RoomManagerTest {
 	@Test
 	@Order(3)
 	public void testDeleteRoom() {
-		roomManager.ConnectNewPlayer(testPlayer, GameStyle.MeteorParty);
+		roomManager.ConnectNewPlayer(testPlayer, GameStyle.battleRoyale);
 		roomManager.deleteRoom(testPlayer.GetRoomId());
 		assertFalse(roomManager.checkRoom(testPlayer.GetRoomId()));
 	}
@@ -85,7 +85,7 @@ public class RoomManagerTest {
 	@Order(4)
 	public void testChat()
 	{
-		roomManager.ConnectNewPlayer(testPlayer, GameStyle.MeteorParty);
+		roomManager.ConnectNewPlayer(testPlayer, GameStyle.battleRoyale);
 		ObjectNode msg = mapper.createObjectNode();
 		msg.put("event", "CHAT MESSAGE");
 		msg.put("player", "Nombre Placeholder");

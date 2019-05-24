@@ -29,6 +29,19 @@ public class RoomManager {
 	// Recibe un jugador, mira si hay salas disponibles y le asocia a la primera de
 	// la cola,
 	// que se presume que es la más antigua. Si no hay salas crea una.
+	
+	public void createNewRoom (GameStyle gameStyle , String roomname , String roomcreator ) {
+		Room room = new Room (roomIdCounter.incrementAndGet(), this, gameStyle);
+		room.name = roomname;
+		room.creator = roomcreator;
+		ConcurrentHashMap<Integer, Room> waitingRooms = (ConcurrentHashMap<Integer, Room>) waitingRoomsMap
+				.get(gameStyle);
+		synchronized(waitingRooms) {
+			waitingRooms.put(room.getId(), room);
+		}
+	}
+	
+	//Vamos a dejar esto por si nos hace falta para  el matchmaking
 	public void ConnectNewPlayer(Player player, GameStyle gameStyle) {
 		ConcurrentHashMap<Integer, Room> waitingRooms = (ConcurrentHashMap<Integer, Room>) waitingRoomsMap
 				.get(gameStyle);
