@@ -127,6 +127,7 @@ public class RoomManager {
 			fullRooms.remove(room.getId());
 	}
 
+	// sobrecarga del método anterior usando la id en vez de la sala
 	public void deleteRoom(int id) {
 		if (fullRooms.containsKey(id))
 			fullRooms.remove(id);
@@ -138,6 +139,8 @@ public class RoomManager {
 		}
 	}
 
+	// método para borrar a un jugador, el cual busca la sala del mismo y la
+	// notifica
 	public void removePlayer(Player player) {
 		if (fullRooms.containsKey(player.GetRoomId()))
 			fullRooms.get(player.GetRoomId()).removePlayer(player);
@@ -149,6 +152,7 @@ public class RoomManager {
 		}
 	}
 
+	// método que busca la sala a la que pertenece
 	public void getChatMessage(ObjectNode msg) {
 		int id = msg.get("room").asInt();
 		if (fullRooms.containsKey(id))
