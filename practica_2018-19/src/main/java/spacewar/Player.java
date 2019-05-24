@@ -16,6 +16,7 @@ public class Player extends Spaceship {
 	private AtomicInteger health = new AtomicInteger(1);// hardcoded
 	private boolean isGhost;
 
+	// Constructor de la clase Player que inicializa sus variables
 	public Player(int playerId, WebSocketSession session) {
 		this.playerId = playerId;
 		this.session = session;
@@ -49,6 +50,8 @@ public class Player extends Spaceship {
 		return this.session;
 	}
 
+	// Este método manda mensajes al cliente del jugador usando un lock en la misma
+	// ya que la función de mandar mensajes a la sesión no es thread-safe
 	public void sendMessage(String msg) throws Exception {
 		synchronized (this.session) {
 			this.session.sendMessage(new TextMessage(msg));
@@ -59,6 +62,7 @@ public class Player extends Spaceship {
 		return shipType;
 	}
 
+	// Este método asocia al jugador una nave aleatoria de las disponibles
 	private String getRandomShipType() {
 		String[] randomShips = { "blue", "darkgrey", "green", "metalic", "orange", "purple", "red" };
 		String ship = (randomShips[new Random().nextInt(randomShips.length)]);

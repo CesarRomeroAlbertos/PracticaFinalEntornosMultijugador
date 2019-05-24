@@ -38,6 +38,9 @@ public class Chat {
 		broadcastMessage(messageText);
 	}
 
+	//función que manda mensajes a todos los jugadores
+	//utiliza hilos para mandarlo a todos y luego la cyclic barrier al llegar todos
+	//borra el mensaje de la pila
 	public void broadcastMessage(String messageText) {
 		ObjectNode message = mapper.createObjectNode();
 		message.put("event", "chatMessageReception");
@@ -49,6 +52,7 @@ public class Chat {
 		}
 	}
 
+	//función que manda un mensaje a un jugador
 	private void sendMessage(int id) {
 		try {
 			playerMap.get(id).sendMessage(messages.peek().toString());
@@ -59,6 +63,8 @@ public class Chat {
 		}
 	}
 
+	//método que borra el primer mensaje de la pila
+	//lo llama la cyclic barrier cuando el mensaje se ha enviado a todos los jugadores
 	private void deleteMessage() {
 		try {
 			messages.take();
@@ -68,12 +74,14 @@ public class Chat {
 		}
 	}
 
+	//método para añadir jugadores al chat
 	public void addPlayer(Player player) {
 		playerMap.put(player.getPlayerId(), player);
 		barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
 		broadcastMessage("Ha entrado " + player.getName() + " en la sala");
 	}
 
+	//método para quitar jugadores del chat
 	public void removePlayer(int id) {
 		String message = "Ha salido " + playerMap.get(id).getName() + " de la sala";
 		playerMap.remove(id);
@@ -82,6 +90,7 @@ public class Chat {
 
 	}
 
+	//sobrecarga del método anterior
 	public void removePlayer(Player player) {
 		String message = "Ha salido " + player.getName() + " de la sala";
 		playerMap.remove(player.getPlayerId());

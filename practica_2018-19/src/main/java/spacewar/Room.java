@@ -98,12 +98,13 @@ public class Room {
 	// Este es el hilo que se ejecuta durante la espera para iniciar las partidas
 	public void PreMatchLobbyThread() {
 		do {
-			//TEMPORAL
+			// TEMPORAL
 			this.state = State.Playing;
 		} while (this.state != State.Playing);
 		startGame();
 	}
 
+	// Este método es el que inicializa la partida
 	public void startGame() {
 		game = SpacewarGame.INSTANCE;
 		for (Player player : playerMap.values()) {
@@ -116,6 +117,8 @@ public class Room {
 	 * public void endGame() { game=null; }
 	 */
 
+	// Este método se usa cuando se borra a un jugador
+	// lo elimina del mapa y notifica al juego para que borre al jugador
 	public void removePlayer(Player player) {
 		playerMap.remove(player.getPlayerId());
 		if (game != null) {
@@ -123,10 +126,15 @@ public class Room {
 		}
 	}
 
+	// Este método devuelve el juego, se usa para las funciones externas que
+	// necesitan
+	// llamar a métodos del mismo
 	public SpacewarGame getGame() {
 		return this.game;
 	}
 
+	// este método se usa para notificar al chat para que envie un mensaje a todos
+	// los jugadores
 	public void sendChatMessage(ObjectNode msg) {
 		chat.receiveMessage(msg);
 	}
