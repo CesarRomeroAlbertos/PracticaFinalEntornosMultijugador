@@ -29,6 +29,7 @@ Spacewar.lobbyState.prototype = {
 		div.style.left =  "200px";
 		div.style.top =  "150px";
 		gamediv.appendChild(div);
+		div.style.overflow = "auto"
 		var roomtablediv = document.createElement("div");
 		roomtablediv.style.overflow = "auto"
 		var roomtable = document.createElement("table");

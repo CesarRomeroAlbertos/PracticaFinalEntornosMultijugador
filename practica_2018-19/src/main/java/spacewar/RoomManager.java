@@ -6,16 +6,19 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import spacewar.Room.GameStyle;
-
 public class RoomManager {
 	private Executor roomExecutor;
 	private final int roomCapacity = 6;
+	
 	private Map<GameStyle, ConcurrentHashMap<Integer, Room>> waitingRoomsMap = new ConcurrentHashMap<GameStyle, ConcurrentHashMap<Integer, Room>>();
 	private ConcurrentHashMap<Integer, Room> fullRooms;
+	private ConcurrentHashMap<Integer, Player> noRoomPlayers = new ConcurrentHashMap<Integer , Player>();
 	private AtomicInteger roomIdCounter;
+	private ObjectMapper mapper = new ObjectMapper();
 
 	// El contructor inicializa las colas y el threadpool que controla las salas
 	public RoomManager() {
@@ -30,14 +33,58 @@ public class RoomManager {
 	// la cola,
 	// que se presume que es la más antigua. Si no hay salas crea una.
 	
+	public void addNoRoomPlayer(Player player) {
+		noRoomPlayers.put(player.getPlayerId(), player);
+	}
+	
 	public void createNewRoom (GameStyle gameStyle , String roomname , String roomcreator ) {
 		Room room = new Room (roomIdCounter.incrementAndGet(), this, gameStyle);
 		room.name = roomname;
 		room.creator = roomcreator;
 		ConcurrentHashMap<Integer, Room> waitingRooms = (ConcurrentHashMap<Integer, Room>) waitingRoomsMap
 				.get(gameStyle);
-		synchronized(waitingRooms) {
+		
 			waitingRooms.put(room.getId(), room);
+		
+			ObjectNode msg = mapper.createObjectNode();
+			msg.put("event", "UPDATE ROOM TABLE");
+			msg.put("roomname", room.name);
+			msg.put("roomcreator", room.creator);
+			msg.put("roomid", room.getId());
+			
+			
+		for (Player player : noRoomPlayers.values()){
+			roomExecutor.execute(()->{
+				try {
+					player.sendMessage(msg.toString());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
+			
+		
+		}
+			
+		
+	}
+	public void ConnectToExisting (Player player , GameStyle gameStyle , int id) throws Exception {
+		ConcurrentHashMap<Integer, Room> waitingRooms = (ConcurrentHashMap<Integer, Room>) waitingRoomsMap
+				.get(gameStyle);
+		synchronized (waitingRooms) {
+			if(waitingRooms.containsKey(id)){
+				Room room = waitingRooms.get(id);
+				room.addPlayer(player);
+				noRoomPlayers.remove(player.getPlayerId());
+				ObjectNode msg = mapper.createObjectNode();
+				msg.put("event", "ROOM ASSIGNED");
+				msg.put("roomid", room.getId());
+				player.sendMessage(msg.asText());
+			}else {
+				ObjectNode msg = mapper.createObjectNode();
+				msg.put("event", "ROOM DENIED");
+				player.sendMessage(msg.asText());
+			}
 		}
 	}
 	

@@ -81,7 +81,12 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				msg.put("shipType", player.getShipType());
 				msg.put("health", player.getHealth());
 				msg.put("ghost", player.getGhost());
+				roomManager.addNoRoomPlayer(player);
 				player.sendMessage(msg.toString());
+				break;
+				
+			case "JOIN EXISTING ROOM":
+			    roomManager.ConnectToExisting(player, GameStyle.battleRoyale, node.get("roomid").asInt());
 				break;
 			case "JOIN ROOM":
 				msg.put("event", "NEW ROOM");
