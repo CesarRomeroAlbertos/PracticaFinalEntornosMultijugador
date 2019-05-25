@@ -21,6 +21,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 	private AtomicInteger playerId = new AtomicInteger(0);
 	private AtomicInteger projectileId = new AtomicInteger(0);
 	private RoomManager roomManager = new RoomManager();
+	
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -35,6 +36,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 		msg.put("ghost", player.getGhost());
 		player.sendMessage(msg.toString());
 		roomManager.addNoRoomPlayer(player);
+		
 
 
 		// game.addPlayer(player);
@@ -102,7 +104,16 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 						node.path("movement").get("brake").asBoolean(),
 						node.path("movement").get("rotLeft").asBoolean(),
 						node.path("movement").get("rotRight").asBoolean());
-				if (node.path("bullet").asBoolean() && !player.getGhost()) {
+				if(node.path("reload").asBoolean() && player.getAmmo() == 0 ) {
+					player.setAmmo();
+					msg.put("event", "RELOAD UPDATE");
+					
+				}
+				
+				if (node.path("bullet").asBoolean() && !player.getGhost()&& player.getAmmo() > 0) {
+					player.decrementAmmo();
+					msg.put("event", "AMMO UPDATE");
+					player.sendMessage(msg.toString());
 					Projectile projectile = new Projectile(player, this.projectileId.incrementAndGet());
 					roomManager.getGame(player.GetRoomId()).addProjectile(projectile.getId(), projectile);
 				}

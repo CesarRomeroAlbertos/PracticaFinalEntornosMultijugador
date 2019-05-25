@@ -7,6 +7,14 @@ Spacewar.gameState = function(game) {
 }
 var quitbutton
 
+function reloadAmmo(){
+	setTimeout(() => {
+		  game.global.myPlayer.ammo = 20 //hardcoded
+		  myAmmo.text = game.global.myPlayer.ammo;
+		}, 5000);
+}
+
+
 Spacewar.gameState.prototype = {
 
 	init : function() {
@@ -16,6 +24,8 @@ Spacewar.gameState.prototype = {
 	},
 
 	preload : function() {
+		game.global.myPlayer.ammo = 20 //hardcoded
+
 		// We create a procedural starfield background
 		for (var i = 0; i < this.numStars; i++) {
 			let sprite = game.add.sprite(game.world.randomX,
@@ -49,10 +59,15 @@ Spacewar.gameState.prototype = {
 	    game.global.myPlayer.image.addChild(game.global.myPlayer.name)
 	    game.global.myPlayer.myHCounter = game.add.text(250, 16, '', { fill: '#ffffff' });
 	    game.global.myPlayer.myHCounter.text =  game.global.myPlayer.health;
+	   game.global.myPlayer.myAmmoCounter = game.add.text(265, 16, '', { fill: '#37ff0a' });
+	    game.global.myPlayer.myAmmoCounter.text = game.global.myPlayer.ammo;
 	    
 	},
 
 	create : function() {
+		
+		
+		
 		async function backtoMenu(){
 			console.log("Backtomenu")
 			let msg = {
@@ -83,11 +98,12 @@ Spacewar.gameState.prototype = {
 		this.aKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
 		this.dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
 		this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+		this.eKey = game.input.keyboard.addKey(Phaser.Keyboard.E);
 
 		// Stop the following keys from propagating up to the browser
 		game.input.keyboard.addKeyCapture([ Phaser.Keyboard.W,
 				Phaser.Keyboard.S, Phaser.Keyboard.A, Phaser.Keyboard.D,
-				Phaser.Keyboard.SPACEBAR ]);
+				Phaser.Keyboard.SPACEBAR , Phaser.Keyboard.E]);
 
 		game.camera.follow(game.global.myPlayer.image);
 	},
@@ -124,9 +140,14 @@ Spacewar.gameState.prototype = {
 			msg.movement.rotLeft = true;
 		if (this.dKey.isDown)
 			msg.movement.rotRight = true;
-		if (this.spaceKey.isDown) {
+		if (this.spaceKey.isDown ) {
 			msg.bullet = this.fireBullet()
 		}
+		if(this.eKey.isDown){
+			msg.reload = true;
+		}
+			
+		
 
 		if (game.global.DEBUG_MODE) {
 			console.log("[DEBUG] Sending UPDATE MOVEMENT message to server")

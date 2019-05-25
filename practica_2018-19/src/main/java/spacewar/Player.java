@@ -15,6 +15,7 @@ public class Player extends Spaceship {
 	private int roomId;
 	private AtomicInteger health = new AtomicInteger(1);// hardcoded
 	private boolean isGhost;
+	private AtomicInteger ammo = new AtomicInteger(20);//hardcoded
 
 	// Constructor de la clase Player que inicializa sus variables
 	public Player(int playerId, WebSocketSession session) {
@@ -23,7 +24,16 @@ public class Player extends Spaceship {
 		this.shipType = this.getRandomShipType();
 		this.isGhost = false;
 	}
-
+	public void decrementAmmo() {
+		this.ammo.decrementAndGet();
+	}
+	public void setAmmo() {
+		this.ammo.set(20);;
+	}
+	public int getAmmo() {
+		return this.ammo.get();
+	}
+	
 	public void revive() {
 		this.isGhost = true;
 		this.health.set(1);// hardcoded

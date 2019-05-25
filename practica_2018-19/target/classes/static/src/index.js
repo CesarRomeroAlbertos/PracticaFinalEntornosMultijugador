@@ -40,6 +40,13 @@ window.onload = function() {
 		console.log(msg.event)
 		switch (msg.event) {
 		
+		case "AMMO UPDATE":
+			game.global.myPlayer.ammo -= 1 
+			game.global.myPlayer.myAmmoCounter.text =  game.global.myPlayer.ammo;
+
+			
+			break
+		
 		case "ROOM ASIGNED":
 			game.global.myPlayer.room.name = msg.roomname
 			game.global.myPlayer.room.id = msg.roomid
