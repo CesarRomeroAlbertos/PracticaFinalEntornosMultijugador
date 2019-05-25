@@ -10,51 +10,74 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import spacewar.Room.GameStyle;
+
 public class RoomManager {
 	private Executor roomExecutor;
 	private final int roomCapacity = 6;
-	
-	private Map<GameStyle, ConcurrentHashMap<Integer, Room>> waitingRoomsMap = new ConcurrentHashMap<GameStyle, ConcurrentHashMap<Integer, Room>>();
+
+	private Map<GameStyle, ConcurrentHashMap<Integer, Room>> waitingRoomsMap;
 	private ConcurrentHashMap<Integer, Room> fullRooms;
-	private ConcurrentHashMap<Integer, Player> noRoomPlayers = new ConcurrentHashMap<Integer , Player>();
+	private ConcurrentHashMap<Integer, Player> noRoomPlayers;
 	private AtomicInteger roomIdCounter;
 	private ObjectMapper mapper = new ObjectMapper();
 
+	private static RoomManager roomManagerInstance;
+
 	// El contructor inicializa las colas y el threadpool que controla las salas
-	public RoomManager() {
+	private RoomManager() {
 		this.roomExecutor = Executors.newCachedThreadPool();
+		waitingRoomsMap = new ConcurrentHashMap<GameStyle, ConcurrentHashMap<Integer, Room>>();
 		for (GameStyle gs : GameStyle.values())
 			waitingRoomsMap.put(gs, new ConcurrentHashMap<Integer, Room>());
 		fullRooms = new ConcurrentHashMap<Integer, Room>();
+		noRoomPlayers = new ConcurrentHashMap<Integer, Player>();
 		roomIdCounter = new AtomicInteger(0);
+	}
+
+	//Método para obtener la instancia de roomManager que es un singleton
+	public static RoomManager getSingletonInstance() {
+		if (roomManagerInstance == null)
+			roomManagerInstance = new RoomManager();
+
+		return roomManagerInstance;
+	}
+	
+	//override para que no se pueda clonar la clase
+	@Override
+	public RoomManager clone(){
+	    try {
+	        throw new CloneNotSupportedException();
+	    } catch (CloneNotSupportedException ex) {
+	        System.out.println("RoomManager es un objeto singleton, no se puede clonar.");
+	    }
+	    return null; 
 	}
 
 	// Recibe un jugador, mira si hay salas disponibles y le asocia a la primera de
 	// la cola,
 	// que se presume que es la más antigua. Si no hay salas crea una.
-	
+
 	public void addNoRoomPlayer(Player player) {
 		noRoomPlayers.put(player.getPlayerId(), player);
 	}
-	
-	public void createNewRoom (GameStyle gameStyle , String roomname , String roomcreator ) {
-		Room room = new Room (roomIdCounter.incrementAndGet(), this, gameStyle);
+
+	public void createNewRoom(GameStyle gameStyle, String roomname, String roomcreator) {
+		Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
 		room.name = roomname;
 		room.creator = roomcreator;
 		ConcurrentHashMap<Integer, Room> waitingRooms = (ConcurrentHashMap<Integer, Room>) waitingRoomsMap
 				.get(gameStyle);
-		
-			waitingRooms.put(room.getId(), room);
-		
-			ObjectNode msg = mapper.createObjectNode();
-			msg.put("event", "UPDATE ROOM TABLE");
-			msg.put("roomname", room.name);
-			msg.put("roomcreator", room.creator);
-			msg.put("roomid", room.getId());
-			
-			
-		for (Player player : noRoomPlayers.values()){
-			roomExecutor.execute(()->{
+
+		waitingRooms.put(room.getId(), room);
+
+		ObjectNode msg = mapper.createObjectNode();
+		msg.put("event", "UPDATE ROOM TABLE");
+		msg.put("roomname", room.name);
+		msg.put("roomcreator", room.creator);
+		msg.put("roomid", room.getId());
+
+		for (Player player : noRoomPlayers.values()) {
+			roomExecutor.execute(() -> {
 				try {
 					player.sendMessage(msg.toString());
 				} catch (Exception e) {
@@ -62,17 +85,16 @@ public class RoomManager {
 					e.printStackTrace();
 				}
 			});
-			
-		
+
 		}
-			
-		
+
 	}
-	public void ConnectToExisting (Player player , GameStyle gameStyle , int id) throws Exception {
+
+	public void ConnectToExisting(Player player, GameStyle gameStyle, int id) throws Exception {
 		ConcurrentHashMap<Integer, Room> waitingRooms = (ConcurrentHashMap<Integer, Room>) waitingRoomsMap
 				.get(gameStyle);
 		synchronized (waitingRooms) {
-			if(waitingRooms.containsKey(id)){
+			if (waitingRooms.containsKey(id)) {
 				Room room = waitingRooms.get(id);
 				room.addPlayer(player);
 				noRoomPlayers.remove(player.getPlayerId());
@@ -80,15 +102,15 @@ public class RoomManager {
 				msg.put("event", "ROOM ASSIGNED");
 				msg.put("roomid", room.getId());
 				player.sendMessage(msg.toString());
-			}else {
+			} else {
 				ObjectNode msg = mapper.createObjectNode();
 				msg.put("event", "ROOM DENIED");
 				player.sendMessage(msg.asText());
 			}
 		}
 	}
-	
-	//Vamos a dejar esto por si nos hace falta para  el matchmaking
+
+	// Vamos a dejar esto por si nos hace falta para el matchmaking
 	public void ConnectNewPlayer(Player player, GameStyle gameStyle) {
 		ConcurrentHashMap<Integer, Room> waitingRooms = (ConcurrentHashMap<Integer, Room>) waitingRoomsMap
 				.get(gameStyle);

@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class SpacewarGame {
 
-	public final static SpacewarGame INSTANCE = new SpacewarGame();
+	//public final static SpacewarGame INSTANCE = new SpacewarGame();
 
 	private final static int FPS = 30;
 	private final static long TICK_DELAY = 1000 / FPS;
@@ -33,9 +33,9 @@ public class SpacewarGame {
 	private Map<Integer, Projectile> projectiles = new ConcurrentHashMap<>();
 	private AtomicInteger numPlayers = new AtomicInteger();
 
-	private SpacewarGame() {
+	/*public SpacewarGame() {
 
-	}
+	}*/
 
 	public void addPlayer(Player player) {
 		players.put(player.getSession().getId(), player);

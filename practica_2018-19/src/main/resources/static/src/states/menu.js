@@ -40,8 +40,6 @@ Spacewar.menuState.prototype = {
 	},
 
 	update : function() {
-		console.log(game.global.myPlayer.id)
-		console.log(game.global.myPlayer.name)
 		if (typeof game.global.myPlayer.id !== 'undefined' && typeof game.global.myPlayer.name !== "undefined") {
 			game.state.start('lobbyState')
 		}

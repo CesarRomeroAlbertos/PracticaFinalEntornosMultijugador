@@ -52,7 +52,7 @@ public class RoomManagerTest {
 	// Inicializamos antes de los tests el room manager
 	@Before
 	public void SetUp() {
-		roomManager = new RoomManager();
+		roomManager = RoomManager.getSingletonInstance();
 		mapper = new ObjectMapper();
 	}
 

@@ -107,7 +107,7 @@ public class Room {
 
 	// Este método es el que inicializa la partida
 	public void startGame() {
-		game = SpacewarGame.INSTANCE;
+		game = new SpacewarGame();
 		for (Player player : playerMap.values()) {
 			game.addPlayer(player);
 		}
