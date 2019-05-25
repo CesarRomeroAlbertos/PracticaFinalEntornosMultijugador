@@ -20,8 +20,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 	private ObjectMapper mapper = new ObjectMapper();
 	private AtomicInteger playerId = new AtomicInteger(0);
 	private AtomicInteger projectileId = new AtomicInteger(0);
-	private RoomManager roomManager = new RoomManager();
-	
+	private RoomManager roomManager = RoomManager.getSingletonInstance();
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
