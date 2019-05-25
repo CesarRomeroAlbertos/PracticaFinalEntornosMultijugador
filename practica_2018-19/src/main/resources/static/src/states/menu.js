@@ -24,6 +24,33 @@ Spacewar.menuState.prototype = {
 	},
 
 	create : function() {
+		
+		
+		
+		
+		var gamediv = document.getElementById("gameDiv")
+		var nameform = document.createElement("form");
+		nameform.setAttribute("action","/action_page.php")
+		nameform.setAttribute("id","deletemenuform")
+		nameform.style.position = "absolute";
+		nameform.style.zIndex = "1000";
+		nameform.style.left =  "200px";
+		nameform.style.top =  "150px";
+		
+		var br = document.createElement("br")
+		br.setAttribute("input type","text")
+		br.setAttribute("name" , "fnName")
+		br.setAttribute("id","nameField")
+		
+		nameform.appendChild(br)
+
+
+
+		
+		
+		
+		
+		
 		game.add.tileSprite(0, 0,1024, 600, "menubackground");
 		function showPrompt(){
 		 let person = prompt("Please enter your name");

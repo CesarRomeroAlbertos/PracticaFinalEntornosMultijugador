@@ -66,7 +66,8 @@ Spacewar.gameState.prototype = {
 
 	create : function() {
 		
-		
+		game.state.start('scoresState')
+
 		
 		async function backtoMenu(){
 			console.log("Backtomenu")
