@@ -34,23 +34,23 @@ public class RoomManager {
 		roomIdCounter = new AtomicInteger(0);
 	}
 
-	//Método para obtener la instancia de roomManager que es un singleton
+	// Método para obtener la instancia de roomManager que es un singleton
 	public static RoomManager getSingletonInstance() {
 		if (roomManagerInstance == null)
 			roomManagerInstance = new RoomManager();
 
 		return roomManagerInstance;
 	}
-	
-	//override para que no se pueda clonar la clase
+
+	// override para que no se pueda clonar la clase
 	@Override
-	public RoomManager clone(){
-	    try {
-	        throw new CloneNotSupportedException();
-	    } catch (CloneNotSupportedException ex) {
-	        System.out.println("RoomManager es un objeto singleton, no se puede clonar.");
-	    }
-	    return null; 
+	public RoomManager clone() {
+		try {
+			throw new CloneNotSupportedException();
+		} catch (CloneNotSupportedException ex) {
+			System.out.println("RoomManager es un objeto singleton, no se puede clonar.");
+		}
+		return null;
 	}
 
 	// Recibe un jugador, mira si hay salas disponibles y le asocia a la primera de
@@ -65,11 +65,7 @@ public class RoomManager {
 		Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
 		room.name = roomname;
 		room.creator = roomcreator;
-		ConcurrentHashMap<Integer, Room> waitingRooms = (ConcurrentHashMap<Integer, Room>) waitingRoomsMap
-				.get(gameStyle);
-
-		waitingRooms.put(room.getId(), room);
-
+		waitingRoomsMap.get(gameStyle).put(room.getId(), room);
 		ObjectNode msg = mapper.createObjectNode();
 		msg.put("event", "UPDATE ROOM TABLE");
 		msg.put("roomname", room.name);
@@ -91,53 +87,47 @@ public class RoomManager {
 	}
 
 	public void ConnectToExisting(Player player, GameStyle gameStyle, int id) throws Exception {
-		ConcurrentHashMap<Integer, Room> waitingRooms = (ConcurrentHashMap<Integer, Room>) waitingRoomsMap
-				.get(gameStyle);
-		synchronized (waitingRooms) {
-			if (waitingRooms.containsKey(id)) {
-				Room room = waitingRooms.get(id);
-				room.addPlayer(player);
-				noRoomPlayers.remove(player.getPlayerId());
-				ObjectNode msg = mapper.createObjectNode();
-				msg.put("event", "ROOM ASSIGNED");
-				msg.put("roomid", room.getId());
-				player.sendMessage(msg.toString());
-			} else {
-				ObjectNode msg = mapper.createObjectNode();
-				msg.put("event", "ROOM DENIED");
-				player.sendMessage(msg.asText());
-			}
+		if (waitingRoomsMap.get(gameStyle).containsKey(id)) {
+			Room room = waitingRoomsMap.get(gameStyle).get(id);
+			room.addPlayer(player);
+			noRoomPlayers.remove(player.getPlayerId());
+			ObjectNode msg = mapper.createObjectNode();
+			msg.put("event", "ROOM ASSIGNED");
+			msg.put("roomid", room.getId());
+			player.sendMessage(msg.toString());
+		} else {
+			ObjectNode msg = mapper.createObjectNode();
+			msg.put("event", "ROOM DENIED");
+			player.sendMessage(msg.asText());
 		}
+		// }
 	}
 
 	// Vamos a dejar esto por si nos hace falta para el matchmaking
 	public void ConnectNewPlayer(Player player, GameStyle gameStyle) {
-		ConcurrentHashMap<Integer, Room> waitingRooms = (ConcurrentHashMap<Integer, Room>) waitingRoomsMap
-				.get(gameStyle);
-		synchronized (waitingRooms) {
-			if (waitingRooms.isEmpty()) {
-				Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
-				room.addPlayer(player);
-				roomExecutor.execute(() -> room.PreMatchLobbyThread());
-				waitingRooms.put(room.getId(), room);
-			} else {
-				Room tempRoom = waitingRooms.elements().nextElement();
-				if (!tempRoom.addPlayer(player)) {
+		if (waitingRoomsMap.get(gameStyle).isEmpty()) {
+			Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
+			room.addPlayer(player);
+			roomExecutor.execute(() -> room.PreMatchLobbyThread());
+			waitingRoomsMap.get(gameStyle).put(room.getId(), room);
+		} else {
+			Room tempRoom = waitingRoomsMap.get(gameStyle).elements().nextElement();
+			if (!tempRoom.addPlayer(player)) {
 
-					if (tempRoom.getPeopleInside() == roomCapacity) {
-						fullRooms.put(tempRoom.getId(), tempRoom);
-						waitingRooms.remove(tempRoom);
-						Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
-						room.addPlayer(player);
-						roomExecutor.execute(() -> room.PreMatchLobbyThread());
-						waitingRooms.put(room.getId(), room);
-					} else {
-						System.out.println("Error al añadir al jugador a una sala, intentando de nuevo.");
-						ConnectNewPlayer(player, gameStyle);
-					}
+				if (tempRoom.getPeopleInside() == roomCapacity) {
+					fullRooms.put(tempRoom.getId(), tempRoom);
+					waitingRoomsMap.get(gameStyle).remove(tempRoom);
+					Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
+					room.addPlayer(player);
+					roomExecutor.execute(() -> room.PreMatchLobbyThread());
+					waitingRoomsMap.get(gameStyle).put(room.getId(), room);
+				} else {
+					System.out.println("Error al añadir al jugador a una sala, intentando de nuevo.");
+					ConnectNewPlayer(player, gameStyle);
 				}
 			}
 		}
+		// }
 	}
 
 	// intenta borrar la sala de la lista de salas en espera, donde debería estar si

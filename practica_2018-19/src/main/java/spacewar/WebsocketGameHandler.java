@@ -35,10 +35,6 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 		msg.put("ghost", player.getGhost());
 		player.sendMessage(msg.toString());
 		roomManager.addNoRoomPlayer(player);
-		
-
-
-		// game.addPlayer(player);
 	}
 
 	@Override
