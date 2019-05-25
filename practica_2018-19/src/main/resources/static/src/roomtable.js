@@ -1,9 +1,35 @@
 
 var currentRoomRows = 0 
 
-function updateRoomTable(nombrecreador,nombresala,idsala){
+function clearTable(){
 	
 	var table = document.getElementById("roomtable")
+	
+	for(var i = document.getElementById("roomtable").rows.length; i > 0;i--)
+{
+document.getElementById("roomtable").deleteRow(i -1);
+}
+	
+	
+}
+
+async function tableisClear(){
+	await(clearTable())
+	
+	let msg = {
+		event : "TABLE CLEARED WARNING"
+	}
+	game.global.socket.send(JSON.stringify(msg))
+
+}
+
+function updateRoomTable(nombrecreador,nombresala,idsala){
+	
+	
+	
+	var table = document.getElementById("roomtable")
+	
+
 	var newestRoomRow = table.insertRow(currentRoomRows)
 		 var creator = newestRoomRow.insertCell(0);
 		 var roomname = newestRoomRow.insertCell(1);

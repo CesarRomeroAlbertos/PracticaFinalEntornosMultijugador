@@ -63,6 +63,14 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			case "PLAYER IS READY" :
 				
 				break;
+				
+			case "REQUEST ALL EXISTING ROOMS":
+				roomManager.updateMyTable(player);
+				break;
+				
+			case "TABLE CLEARED WARNING":
+				roomManager.updateAllTable();
+				break;
 
 			case "NAME":
 				player.setName(node.get("name").asText());
@@ -82,6 +90,10 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				msg.put("ghost", player.getGhost());
 				roomManager.addNoRoomPlayer(player);
 				player.sendMessage(msg.toString());
+				break;
+				
+			case "AUX START GAME":
+				roomManager.auxStartGame(node.get("roomid").asInt(), player);
 				break;
 				
 			case "JOIN EXISTING ROOM":

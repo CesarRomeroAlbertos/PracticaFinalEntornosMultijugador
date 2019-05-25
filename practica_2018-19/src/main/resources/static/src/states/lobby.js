@@ -23,7 +23,12 @@ Spacewar.lobbyState.prototype = {
 
 	create : function() {
 		
-		
+		let requestmsg = {
+				event : "REQUEST ALL EXISTING ROOMS"
+				
+		}
+		game.global.socket.send(JSON.stringify(requestmsg))
+
 		
 		var gamediv = document.getElementById("gameDiv")
 		var div = document.createElement("div");

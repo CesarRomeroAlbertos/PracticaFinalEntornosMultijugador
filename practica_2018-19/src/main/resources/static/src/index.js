@@ -11,6 +11,7 @@ window.onload = function() {
 		myPlayer : new Object(),
 		otherPlayers : [],
 		projectiles : [],
+		room : new Object(),
 		
 		
 		
@@ -40,6 +41,10 @@ window.onload = function() {
 		console.log(msg.event)
 		switch (msg.event) {
 		
+		case "CLEAR TABLE":
+			tableisClear()
+			break
+		
 		case "AMMO UPDATE":
 			game.global.myPlayer.ammo -= 1 
 			game.global.myPlayer.myAmmoCounter.text =  game.global.myPlayer.ammo;
@@ -48,8 +53,8 @@ window.onload = function() {
 			break
 		
 		case "ROOM ASIGNED":
-			game.global.myPlayer.room.name = msg.roomname
-			game.global.myPlayer.room.id = msg.roomid
+			game.global.room.name= msg.roomname
+			game.global.room.id = msg.roomid
 			game.global.myPlayer.isWaiting = true 
 		
 			break

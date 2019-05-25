@@ -53,9 +53,7 @@ public class Room {
 		this.roomManager = roomManager;
 		this.gameStyle = gameStyle;
 		this.chat = new Chat(playerMap);
-		if (gameStyle == GameStyle.battleRoyale) {
-			initMeteorites();
-		}
+	
 		startGame();
 	}
 
@@ -67,6 +65,8 @@ public class Room {
 			player.setRoomId(this.id);
 			peopleInside.incrementAndGet();
 			chat.addPlayer(player);
+			game.addPlayer(player);
+			
 			return true;
 		} else
 			return false;

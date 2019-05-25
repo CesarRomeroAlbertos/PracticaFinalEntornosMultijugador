@@ -60,17 +60,82 @@ public class RoomManager {
 	public void addNoRoomPlayer(Player player) {
 		noRoomPlayers.put(player.getPlayerId(), player);
 	}
+	
+	public void auxStartGame(int roomid , Player player) {
+	 waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).addPlayer(player);
+	}
+	
+	
+	public void updateMyTable(Player player) {
+		for (Room room : waitingRoomsMap.get(GameStyle.battleRoyale).values()) {
+			
+			ObjectNode msg = mapper.createObjectNode();
+			msg.put("event", "UPDATE ROOM TABLE");
+			msg.put("roomname", room.name);
+			msg.put("roomcreator", room.creator);
+			msg.put("roomid", room.getId());
+			roomExecutor.execute(()->{try {
+				player.sendMessage(msg.toString());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}});			
+		
+	}
+		
+	}
+	public void updateAllTable() {
+		for (Player player : noRoomPlayers.values()) {
+			for (Room room : waitingRoomsMap.get(GameStyle.battleRoyale).values()) {
+				
+				ObjectNode msg = mapper.createObjectNode();
+				msg.put("event", "UPDATE ROOM TABLE");
+				msg.put("roomname", room.name);
+				msg.put("roomcreator", room.creator);
+				msg.put("roomid", room.getId());
+				roomExecutor.execute(()->{try {
+					player.sendMessage(msg.toString());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}});			
+			
+		}
+		
+	}
+	}
+	
+	
+	
+	public void clearAllTables() {
+		
+
+		ObjectNode msg = mapper.createObjectNode();
+		msg.put("event", "CLEAR TABLE");
+		for(Player player: noRoomPlayers.values()) {
+		roomExecutor.execute(()->{try {
+			player.sendMessage(msg.toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}});
+		}
+		
+	}
 
 	public void createNewRoom(GameStyle gameStyle, String roomname, String roomcreator) {
 		Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
 		room.name = roomname;
 		room.creator = roomcreator;
 		waitingRoomsMap.get(gameStyle).put(room.getId(), room);
+		clearAllTables();
+		/*
 		ObjectNode msg = mapper.createObjectNode();
 		msg.put("event", "UPDATE ROOM TABLE");
 		msg.put("roomname", room.name);
 		msg.put("roomcreator", room.creator);
 		msg.put("roomid", room.getId());
+		
 
 		for (Player player : noRoomPlayers.values()) {
 			roomExecutor.execute(() -> {
@@ -82,7 +147,7 @@ public class RoomManager {
 				}
 			});
 
-		}
+		}*/
 
 	}
 
@@ -92,13 +157,14 @@ public class RoomManager {
 			room.addPlayer(player);
 			noRoomPlayers.remove(player.getPlayerId());
 			ObjectNode msg = mapper.createObjectNode();
-			msg.put("event", "ROOM ASSIGNED");
+			msg.put("event", "ROOM ASIGNED");
 			msg.put("roomid", room.getId());
+			msg.put("roomname",room.name);
 			player.sendMessage(msg.toString());
 		} else {
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "ROOM DENIED");
-			player.sendMessage(msg.asText());
+			player.sendMessage(msg.toString());
 		}
 		// }
 	}
