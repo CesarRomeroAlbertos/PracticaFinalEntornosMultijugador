@@ -1,6 +1,7 @@
 package spacewar;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.springframework.web.socket.TextMessage;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -32,8 +34,11 @@ public class Chat {
 		executor = Executors.newCachedThreadPool();
 	}
 
-	public void receiveMessage(ObjectNode msg) {
-		String messageText = msg.get("player").asText() + " (" + new GregorianCalendar().HOUR_OF_DAY + "): "
+	public void receiveMessage(JsonNode msg) {
+		GregorianCalendar calendar = new GregorianCalendar();
+		String messageText = msg.get("player").asText()
+				+ " (" + calendar.get(Calendar.HOUR_OF_DAY)
+				+ ":" + calendar.get(Calendar.MINUTE) +"): "
 				+ msg.get("message").asText() + "\n";
 		broadcastMessage(messageText);
 	}

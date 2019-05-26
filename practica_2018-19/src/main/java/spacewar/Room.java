@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Room {
@@ -180,7 +181,7 @@ synchronized(playerMap) {
 
 	// este método se usa para notificar al chat para que envie un mensaje a todos
 	// los jugadores
-	public void sendChatMessage(ObjectNode msg) {
+	public void sendChatMessage(JsonNode msg) {
 		chat.receiveMessage(msg);
 	}
 
