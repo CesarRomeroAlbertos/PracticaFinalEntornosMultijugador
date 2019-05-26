@@ -52,6 +52,11 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				roomManager.getGame(player.GetRoomId()).broadcast(msg.toString());
 
 				break;
+			case "REQUEST ROOM STATUS":
+				roomManager.requestRoomStatus(player , node.get("roomid").asInt());
+				
+				break;
+				
 			case "PLAYER LEFT":
 				msg.put("id", player.getPlayerId());
 				msg.put("event", "REMOVE PLAYER");

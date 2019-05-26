@@ -68,6 +68,10 @@ window.onload = function() {
 			updateRoomTable(msg.roomcreator,msg.roomname,msg.roomid , msg.playersinside , msg.totalcapacity)
 			break
 		
+		case "ROOM STATUS":
+			game.global.myPlayer.playersWithMe.text = msg.playersinside + "/" + msg.totalcapacity 
+			//game.global.myPlayer.playersWithMeReady = game.add.text(250, 24, '', { fill: '#42f4c5' });
+			break
 		case "chatMessageReception":
 			console.log("tienes un mensaje")
 			let latestChatMessage = msg.messageText

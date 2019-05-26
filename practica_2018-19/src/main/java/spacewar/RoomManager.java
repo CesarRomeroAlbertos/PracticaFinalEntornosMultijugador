@@ -158,6 +158,28 @@ public class RoomManager {
 		}
 		// }
 	}
+	
+	public void requestRoomStatus(Player player , int roomid) {
+		if (waitingRoomsMap.get(GameStyle.battleRoyale).contains(roomid)) {
+			Room current = waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid);
+			ObjectNode msg = mapper.createObjectNode();
+			msg.put("event", "ROOM STATUS");
+			msg.put("totalcapacity", current.capacity);
+			msg.put("playersinside", current.getPeopleInside());
+			player.sendMessage(msg.toString());
+			
+		}else if (fullRooms.containsKey(roomid)) {
+			ObjectNode msg = mapper.createObjectNode();
+			Room current = fullRooms.get(roomid);
+			msg.put("event", "ROOM STATUS");
+			msg.put("totalcapacity", current.capacity);
+			msg.put("playersinside", current.getPeopleInside());
+			player.sendMessage(msg.toString());
+
+		}
+		
+		
+	}
 
 	
 	public void roomIsFull(int roomid , GameStyle style , Room room) {

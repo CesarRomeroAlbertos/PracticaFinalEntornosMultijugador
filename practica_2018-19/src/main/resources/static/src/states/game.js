@@ -66,13 +66,7 @@ Spacewar.gameState.prototype = {
 
 	create : function() {
 		
-		let auxmsg = {
-				event: "AUX START GAME",
-				roomid : game.global.room.id
-		}
-		game.global.socket.send(JSON.stringify(auxmsg))
-
-		
+	
 		//game.state.start('scoresState')
 
 		

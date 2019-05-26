@@ -15,6 +15,21 @@ Spacewar.roomState.prototype = {
 	},
 
 	create : function() {
+		
+		game.global.myPlayer.playersWithMe = game.add.text(250, 16, '', { fill: '#ffffff' });
+		game.global.myPlayer.playersWithMeReady = game.add.text(250, 24, '', { fill: '#42f4c5' });
+		
+		
+		let requestroomstatus = {
+				event : "REQUEST ROOM STATUS",
+				roomid : game.global.room.id
+				
+				
+		}
+		
+		game.global.socket.send(JSON.stringify(requestroomstatus))
+
+		
 		var thediv = document.getElementById("deletethis")
 		  thediv.parentNode.removeChild(thediv);
 		
