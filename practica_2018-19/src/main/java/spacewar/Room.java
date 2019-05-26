@@ -145,7 +145,7 @@ synchronized(playerMap) {
 		// startGame();
 	}
 
-	// Este método es el que inicializa la partida
+	// Este método es el que unseals la partida
 	public void startGame()  {
 		synchronized(playerMap) {
 		game = new SpacewarGame();
