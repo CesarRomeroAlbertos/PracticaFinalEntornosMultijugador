@@ -47,7 +47,7 @@ public class SpacewarGame {
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "START GAME");
 			player.sendMessage(msg.toString());
-			this.startGameLoop();
+			//this.startGameLoop();
 		}
 	}
 
