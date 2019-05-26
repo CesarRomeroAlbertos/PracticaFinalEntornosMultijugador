@@ -35,7 +35,12 @@ function updateRoomTable(nombrecreador,nombresala,idsala){
 		 var roomname = newestRoomRow.insertCell(1);
 		 var roomid = newestRoomRow.insertCell(2)
 		 var rowbuttonspace = newestRoomRow.insertCell(3);
-		
+	
+			creator.innerHTML  = nombrecreador
+			roomname.innerHTML = nombresala
+			roomid.innerHTML = idsala
+			
+			currentRoomRows++
 		 
 		 var rowbutton = document.createElement("button")
 		 rowbutton.innerHTML = "join"
@@ -49,13 +54,8 @@ function updateRoomTable(nombrecreador,nombresala,idsala){
 			 game.global.socket.send(JSON.stringify(msg))
 			 startnext()
 				});
-		 rowbuttonspace.appendChild(rowbutton)
-		creator.innerHTML  = nombrecreador
-		roomname.innerHTML = nombresala
-		roomid.innerHTML = idsala
-		
-		currentRoomRows++
-		
+	
+			 rowbuttonspace.appendChild(rowbutton)
 }
 
 
