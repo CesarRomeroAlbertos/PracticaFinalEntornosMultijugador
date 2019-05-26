@@ -166,6 +166,8 @@ public class RoomManager {
 			msg.put("event", "ROOM STATUS");
 			msg.put("totalcapacity", current.capacity);
 			msg.put("playersinside", current.getPeopleInside());
+			msg.put("playersready", current.getNReady());
+			
 			player.sendMessage(msg.toString());
 			
 		}else if (fullRooms.containsKey(roomid)) {
@@ -174,6 +176,8 @@ public class RoomManager {
 			msg.put("event", "ROOM STATUS");
 			msg.put("totalcapacity", current.capacity);
 			msg.put("playersinside", current.getPeopleInside());
+			msg.put("playersready", current.getNReady());
+
 			player.sendMessage(msg.toString());
 
 		}

@@ -15,6 +15,8 @@ Spacewar.roomState.prototype = {
 	},
 
 	create : function() {
+		game.add.tileSprite(0, 0,1024, 600, "readybackground");
+
 		
 		game.global.myPlayer.playersWithMe = game.add.text(250, 16, '', { fill: '#ffffff' });
 		game.global.myPlayer.playersWithMeReady = game.add.text(250, 24, '', { fill: '#42f4c5' });
@@ -47,7 +49,8 @@ Spacewar.roomState.prototype = {
 		}
 		
 		var readybutton = game.add.button(game.world.centerX ,game.world.centerY, "readybutton" , imReady, this);
-		
+		readybutton.anchor.setTo(0.5)
+
 	},
 
 	update : function() {

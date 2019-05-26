@@ -22,6 +22,7 @@ Spacewar.lobbyState.prototype = {
 	},
 
 	create : function() {
+		game.add.tileSprite(0, 0,1024, 600, "roomsbackground");
 		
 		let requestmsg = {
 				event : "REQUEST ALL EXISTING ROOMS"
@@ -35,7 +36,8 @@ Spacewar.lobbyState.prototype = {
 		div.setAttribute("id","deletethis")
 		div.style.width = "700px";
 		div.style.height = "300px";
-		div.style.background = "red";
+		div.style.background = "mediumpurple";
+		div.style.opacity = 0.5;
 		div.style.color = "white";
 		div.style.position = "absolute";
 		div.style.zIndex = "1000";

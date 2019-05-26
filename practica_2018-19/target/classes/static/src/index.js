@@ -70,7 +70,7 @@ window.onload = function() {
 		
 		case "ROOM STATUS":
 			game.global.myPlayer.playersWithMe.text = msg.playersinside + "/" + msg.totalcapacity 
-			//game.global.myPlayer.playersWithMeReady = game.add.text(250, 24, '', { fill: '#42f4c5' });
+			game.global.myPlayer.playersWithMeReady.text = msg.playersready + "/" + msg.totalcapacity
 			break
 		case "chatMessageReception":
 			console.log("tienes un mensaje")

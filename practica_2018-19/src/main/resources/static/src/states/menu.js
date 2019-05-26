@@ -38,7 +38,8 @@ Spacewar.menuState.prototype = {
 		 }
 		 //game.global.myPlayer.name = person
 		}
-		var  menubutton = game.add.button(game.world.centerX-200 ,game.world.centerY, "namebutton" , showPrompt, this);
+		var  menubutton = game.add.button(game.world.centerX ,game.world.centerY, "namebutton" , showPrompt, this);
+		menubutton.anchor.setTo(0.5)
 	},
 
 	update : function() {

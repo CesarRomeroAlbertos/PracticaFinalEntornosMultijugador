@@ -1,12 +1,20 @@
-
 .cDiv {
-	position : relative;
+	position: relative;
+	left: 1024px;
+
 	
 }
+
 .cTable {
-    background-color: #7bf0ff;
-     overflow:auto;
-     height : 275px;
-     width:70%;
-    
+	
+	background-color: mediumpurple	;
+	overflow: auto;
+	height:560px;
+	width: 40%;
+	
+	
+	
+}
+.gDiv {
+	position : absolute;
 }
