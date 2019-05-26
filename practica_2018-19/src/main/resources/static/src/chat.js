@@ -5,11 +5,12 @@ var table
 function sendChatMsg(){
 	var input = document.getElementById("msgField").value
 	console.log("you just said " + input)
+	let name  = game.global.myPlayer.name
 	let cmessage = {
-		room : game.global.myPlayer.room ,
+		room : game.global.room.id ,
 		message : input,
 		event : "CHAT MESSAGE",
-		player : game.global.myPlayer.name,
+		player : name
 		
 	}
 	game.global.socket.send(JSON.stringify(cmessage))
