@@ -138,7 +138,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 
 				break;
 			case "CHAT MESSAGE":
-				roomManager.getChatMessage(msg);
+				roomManager.getChatMessage(node);
 				break;
 				
 			case "MAKE ROOM":

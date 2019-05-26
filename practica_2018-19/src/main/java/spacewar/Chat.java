@@ -13,6 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.springframework.web.socket.TextMessage;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -32,8 +33,9 @@ public class Chat {
 		executor = Executors.newCachedThreadPool();
 	}
 
-	public void receiveMessage(ObjectNode msg) {
-		String messageText = msg.get("player").asText() + " (" + new GregorianCalendar().HOUR_OF_DAY + "): "
+	public void receiveMessage(JsonNode msg) {
+		GregorianCalendar calendar = new GregorianCalendar();
+		String messageText = msg.get("player").asText() + " (" + calendar.HOUR_OF_DAY + "): "
 				+ msg.get("message").asText() + "\n";
 		broadcastMessage(messageText);
 	}

@@ -6,6 +6,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -235,7 +236,7 @@ public class RoomManager {
 	}
 
 	// método que busca la sala a la que pertenece
-	public void getChatMessage(ObjectNode msg) {
+	public void getChatMessage(JsonNode msg) {
 		int id = msg.get("room").asInt();
 		if (fullRooms.containsKey(id))
 			fullRooms.get(id).sendChatMessage(msg);
