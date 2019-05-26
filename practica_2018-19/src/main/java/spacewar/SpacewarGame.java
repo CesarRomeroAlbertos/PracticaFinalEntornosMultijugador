@@ -42,13 +42,12 @@ public class SpacewarGame {
 	public void addPlayer(Player player)  {
 		players.put(player.getSession().getId(), player);
 
-		int count = numPlayers.getAndIncrement();
-		if (count == 0) {
+		
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "START GAME");
 			player.sendMessage(msg.toString());
 			//this.startGameLoop();
-		}
+		
 	}
 
 	public Collection<Player> getPlayers() {
