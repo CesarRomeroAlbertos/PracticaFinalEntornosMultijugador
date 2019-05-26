@@ -61,7 +61,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				break;
 				
 			case "PLAYER IS READY" :
-				
+				roomManager.sendPlayerReady(player , node.get("roomid").asInt());
 				break;
 				
 			case "REQUEST ALL EXISTING ROOMS":

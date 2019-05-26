@@ -22,7 +22,14 @@ Spacewar.roomState.prototype = {
 		function imReady () {
 			console.log("IM READY")
 			
-			game.state.start('gameState')
+			let readymsg = {
+				event : "PLAYER IS READY",
+				roomid : game.global.room.id
+			}
+			
+			game.global.socket.send(JSON.stringify(readymsg))
+
+			//game.state.start('gameState')
 		}
 		
 		var readybutton = game.add.button(game.world.centerX ,game.world.centerY, "readybutton" , imReady, this);

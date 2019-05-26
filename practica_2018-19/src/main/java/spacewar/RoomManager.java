@@ -121,6 +121,10 @@ public class RoomManager {
 		}
 		
 	}
+	
+	public void sendPlayerReady(Player player , int roomid) {
+		waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).readyAndCheck(player);
+	}
 
 	public void createNewRoom(GameStyle gameStyle, String roomname, String roomcreator) {
 		Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
@@ -186,6 +190,7 @@ public class RoomManager {
 	public void deleteRoom(Room room) {
 		if (waitingRoomsMap.get(room.getGameStyle()).remove(room.getId()) == null)
 			fullRooms.remove(room.getId());
+		clearAllTables();
 			
 	}
 
@@ -199,6 +204,7 @@ public class RoomManager {
 					waitingRoomsMap.get(gs).remove(id);
 			}
 		}
+		clearAllTables();
 	}
 
 	// método para borrar a un jugador, el cual busca la sala del mismo y la

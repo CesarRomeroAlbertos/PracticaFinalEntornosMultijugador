@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -29,6 +30,7 @@ public class Room {
 
 	public State state;
 	private final GameStyle gameStyle;
+	private ReentrantLock entrylock = new ReentrantLock();
 
 	private AtomicInteger peopleInside;
 	private final int capacity;
@@ -57,35 +59,71 @@ public class Room {
 		startGame();
 	}
 
+	
+	
+	public void readyAndCheck(Player player) {
+		synchronized(peopleInside) {
+			player.setReady(true);
+			boolean allready = true;
+			
+			for(Player p : playerMap.values()) {
+				if (!p.getReady()) {
+					allready = false;
+					break;
+				} 
+			}
+			if (allready) {
+				System.out.println("All players are ready");
+			}
+			else {
+				System.out.println("Not all players are ready");
+			}
+			
+			
+			
+		}
+	}
+	
+	
+	
 	// aumenta el contador de personas en la sala y añade a la persona al mapa,
 	// pero si la sala ya está llena devuelve false
 	public boolean addPlayer(Player player) {
+synchronized(peopleInside) {
 		if (peopleInside.get() < capacity) {
+			
 			playerMap.putIfAbsent(player.getPlayerId(), player);
 			player.setRoomId(this.id);
+			player.setReady(false);
 			peopleInside.incrementAndGet();
 			chat.addPlayer(player);
 			game.addPlayer(player);
-			
 			return true;
+			
 		} else
 			return false;
+}
 	}
 
 	// Reduce el contador de personas dentro de la sala y quita al jugador del mapa
 	// de jugadores
 	// Si no quedan jugadores en la sala la borra
 	public void RemovePlayer(Player player) {
+		synchronized(peopleInside) {
 		peopleInside.decrementAndGet();
 		playerMap.remove(player.getPlayerId());
 		chat.removePlayer(player.getPlayerId());
 		if (peopleInside.get() == 0)
 			roomManager.deleteRoom(this);
+		}
 	}
 
 	// No sé si se usará o no este método. En caso de que no, se borrará.
 	public int getPeopleInside() {
+		synchronized (peopleInside) {
 		return peopleInside.get();
+		}
+		
 	}
 
 	public GameStyle getGameStyle() {
@@ -107,11 +145,13 @@ public class Room {
 
 	// Este método es el que inicializa la partida
 	public void startGame() {
+		synchronized(peopleInside) {
 		game = new SpacewarGame();
 		for (Player player : playerMap.values()) {
 			game.addPlayer(player);
 		}
 		game.startGameLoop();
+		}
 	}
 
 	/*
@@ -121,9 +161,11 @@ public class Room {
 	// Este método se usa cuando se borra a un jugador
 	// lo elimina del mapa y notifica al juego para que borre al jugador
 	public void removePlayer(Player player) {
+		synchronized(peopleInside) {
 		playerMap.remove(player.getPlayerId());
 		if (game != null) {
 			game.removePlayer(player);
+		}
 		}
 	}
 
