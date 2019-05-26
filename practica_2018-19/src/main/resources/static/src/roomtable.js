@@ -10,7 +10,7 @@ function clearTable(){
 document.getElementById("roomtable").deleteRow(i -1);
 }
 	
-	
+	currentRoomRows = 0 
 }
 
 async function tableisClear(){

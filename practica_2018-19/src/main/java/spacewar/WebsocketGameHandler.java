@@ -69,7 +69,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				break;
 				
 			case "TABLE CLEARED WARNING":
-				roomManager.updateAllTable();
+				roomManager.updateAllTableOf(player);
 				break;
 
 			case "NAME":
