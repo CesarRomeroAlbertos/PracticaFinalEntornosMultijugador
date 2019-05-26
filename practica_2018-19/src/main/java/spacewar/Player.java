@@ -1,5 +1,6 @@
 package spacewar;
 
+import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -70,9 +71,14 @@ public class Player extends Spaceship {
 
 	// Este método manda mensajes al cliente del jugador usando un lock en la misma
 	// ya que la función de mandar mensajes a la sesión no es thread-safe
-	public void sendMessage(String msg) throws Exception {
+	public void sendMessage(String msg) {
 		synchronized (this.session) {
-			this.session.sendMessage(new TextMessage(msg));
+			try {
+				this.session.sendMessage(new TextMessage(msg));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
