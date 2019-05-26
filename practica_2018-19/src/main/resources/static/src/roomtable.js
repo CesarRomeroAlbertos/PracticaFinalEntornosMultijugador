@@ -23,7 +23,7 @@ async function tableisClear(){
 
 }
 
-function updateRoomTable(nombrecreador,nombresala,idsala){
+function updateRoomTable(nombrecreador,nombresala,idsala ,gentedentro , capacidad){
 	
 	
 	
@@ -35,11 +35,12 @@ function updateRoomTable(nombrecreador,nombresala,idsala){
 		 var roomname = newestRoomRow.insertCell(1);
 		 var roomid = newestRoomRow.insertCell(2)
 		 var rowbuttonspace = newestRoomRow.insertCell(3);
+		 var roomplayers = newestRoomRow.insertCell(4);
 	
 			creator.innerHTML  = nombrecreador
 			roomname.innerHTML = nombresala
 			roomid.innerHTML = idsala
-			
+			roomplayers.innerHTML = gentedentro +"/" + capacidad
 			currentRoomRows++
 		 
 		 var rowbutton = document.createElement("button")

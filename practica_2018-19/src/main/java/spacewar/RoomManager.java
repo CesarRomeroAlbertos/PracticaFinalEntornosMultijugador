@@ -75,6 +75,8 @@ public class RoomManager {
 			msg.put("roomname", room.name);
 			msg.put("roomcreator", room.creator);
 			msg.put("roomid", room.getId());
+			msg.put("playersinside", room.getPeopleInside());
+			msg.put("totalcapacity", room.capacity);
 			roomExecutor.execute(()->{try {
 				player.sendMessage(msg.toString());
 			} catch (Exception e) {
@@ -94,6 +96,8 @@ public class RoomManager {
 			msg.put("roomname", room.name);
 			msg.put("roomcreator", room.creator);
 			msg.put("roomid", room.getId());
+			msg.put("playersinside", room.getPeopleInside());
+			msg.put("totalcapacity", room.capacity);
 			roomExecutor.execute(()->{try {
 				player.sendMessage(msg.toString());
 			} catch (Exception e) {
@@ -155,6 +159,13 @@ public class RoomManager {
 		// }
 	}
 
+	
+	public void roomIsFull(int roomid , GameStyle style , Room room) {
+		
+		waitingRoomsMap.get(style).remove(roomid);
+		fullRooms.put(roomid, room);
+		clearAllTables();
+	}
 	// Vamos a dejar esto por si nos hace falta para el matchmaking
 	public void ConnectNewPlayer(Player player, GameStyle gameStyle){
 		if (waitingRoomsMap.get(gameStyle).isEmpty()) {

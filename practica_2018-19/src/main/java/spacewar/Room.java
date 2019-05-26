@@ -34,7 +34,7 @@ public class Room {
 	private ReentrantLock entrylock = new ReentrantLock();
 
 	private AtomicInteger peopleInside;
-	private final int capacity;
+	public final int capacity;
 
 	private RoomManager roomManager;
 	private Chat chat;
@@ -73,8 +73,10 @@ public class Room {
 					break;
 				}
 			}
+		
 			if (allready && state == State.Full) {
 				System.out.println("All players are ready");
+				
 				startGame();
 			} else {
 				System.out.println("Not all players are ready");
@@ -94,10 +96,15 @@ synchronized(playerMap) {
 			player.setReady(false);
 			peopleInside.incrementAndGet();
 			chat.addPlayer(player);
+			roomManager.clearAllTables();
 			//game.addPlayer(player);
 			if (peopleInside.get() == capacity) {
 				state = State.Full;
 			}
+			if(state == State.Full) {
+				roomManager.roomIsFull(this.id, this.gameStyle, this);
+			}
+			
 			return true;
 			
 		} else
@@ -113,6 +120,8 @@ synchronized(playerMap) {
 		peopleInside.decrementAndGet();
 		playerMap.remove(player.getPlayerId());
 		chat.removePlayer(player.getPlayerId());
+		roomManager.clearAllTables();
+
 		if (peopleInside.get() < capacity && state != State.Waiting) {
 			state = State.Waiting;
 		}
@@ -150,9 +159,11 @@ synchronized(playerMap) {
 	public void startGame()  {
 		synchronized(playerMap) {
 		game = new SpacewarGame();
+		
 		for (Player player : playerMap.values()) {
 			game.addPlayer(player);
 		}
+		this.state = State.Playing;
 		game.startGameLoop();
 		}
 	}

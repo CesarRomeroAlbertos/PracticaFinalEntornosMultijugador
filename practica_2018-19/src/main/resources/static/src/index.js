@@ -65,7 +65,7 @@ window.onload = function() {
 			break
 		
 		case "UPDATE ROOM TABLE":
-			updateRoomTable(msg.roomcreator,msg.roomname,msg.roomid)
+			updateRoomTable(msg.roomcreator,msg.roomname,msg.roomid , msg.playersinside , msg.totalcapacity)
 			break
 		
 		case "chatMessageReception":
