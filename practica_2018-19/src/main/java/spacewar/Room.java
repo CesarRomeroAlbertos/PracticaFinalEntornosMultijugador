@@ -16,7 +16,7 @@ public class Room {
 	private ConcurrentHashMap<Integer, Meteorite> meteoriteMap;
 	private Map<GameStyle, Integer> capacityValues = new HashMap<GameStyle, Integer>() {
 		{
-			put(GameStyle.battleRoyale, 10);
+			put(GameStyle.battleRoyale, 2);
 		}
 	};
 
@@ -72,7 +72,7 @@ public class Room {
 					break;
 				}
 			}
-			if (allready) {
+			if (allready && state == State.Full) {
 				System.out.println("All players are ready");
 				startGame();
 			} else {
@@ -93,7 +93,10 @@ synchronized(playerMap) {
 			player.setReady(false);
 			peopleInside.incrementAndGet();
 			chat.addPlayer(player);
-			game.addPlayer(player);
+			//game.addPlayer(player);
+			if (peopleInside.get() == capacity) {
+				state = State.Full;
+			}
 			return true;
 			
 		} else
@@ -109,6 +112,9 @@ synchronized(playerMap) {
 		peopleInside.decrementAndGet();
 		playerMap.remove(player.getPlayerId());
 		chat.removePlayer(player.getPlayerId());
+		if (peopleInside.get() < capacity && state != State.Waiting) {
+			state = State.Waiting;
+		}
 		if (peopleInside.get() == 0)
 			roomManager.deleteRoom(this);
 		}
