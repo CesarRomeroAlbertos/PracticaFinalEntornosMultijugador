@@ -61,7 +61,7 @@ public class Room {
 	
 	
 	public void readyAndCheck(Player player)  {
-		synchronized(peopleInside) {
+		synchronized(playerMap) {
 			player.setReady(true);
 			boolean allready = true;
 			
@@ -89,7 +89,7 @@ public class Room {
 	// aumenta el contador de personas en la sala y añade a la persona al mapa,
 	// pero si la sala ya está llena devuelve false
 	public boolean addPlayer(Player player)   {
-synchronized(peopleInside) {
+synchronized(playerMap) {
 		if (peopleInside.get() < capacity) {
 			
 			playerMap.putIfAbsent(player.getPlayerId(), player);
@@ -109,7 +109,7 @@ synchronized(peopleInside) {
 	// de jugadores
 	// Si no quedan jugadores en la sala la borra
 	public void RemovePlayer(Player player) {
-		synchronized(peopleInside) {
+		synchronized(playerMap) {
 		peopleInside.decrementAndGet();
 		playerMap.remove(player.getPlayerId());
 		chat.removePlayer(player.getPlayerId());
@@ -120,7 +120,7 @@ synchronized(peopleInside) {
 
 	// No sé si se usará o no este método. En caso de que no, se borrará.
 	public int getPeopleInside() {
-		synchronized (peopleInside) {
+		synchronized (playerMap) {
 		return peopleInside.get();
 		}
 		
@@ -145,7 +145,7 @@ synchronized(peopleInside) {
 
 	// Este método es el que inicializa la partida
 	public void startGame()  {
-		synchronized(peopleInside) {
+		synchronized(playerMap) {
 		game = new SpacewarGame();
 		for (Player player : playerMap.values()) {
 			game.addPlayer(player);
@@ -161,7 +161,7 @@ synchronized(peopleInside) {
 	// Este método se usa cuando se borra a un jugador
 	// lo elimina del mapa y notifica al juego para que borre al jugador
 	public void removePlayer(Player player) {
-		synchronized(peopleInside) {
+		synchronized(playerMap) {
 		playerMap.remove(player.getPlayerId());
 		if (game != null) {
 			game.removePlayer(player);
