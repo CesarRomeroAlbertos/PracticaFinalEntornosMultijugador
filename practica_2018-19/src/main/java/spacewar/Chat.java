@@ -1,6 +1,7 @@
 package spacewar;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,9 @@ public class Chat {
 
 	public void receiveMessage(JsonNode msg) {
 		GregorianCalendar calendar = new GregorianCalendar();
-		String messageText = msg.get("player").asText() + " (" + calendar.HOUR_OF_DAY + "): "
+		String messageText = msg.get("player").asText()
+				+ " (" + calendar.get(Calendar.HOUR_OF_DAY)
+				+ ":" + calendar.get(Calendar.MINUTE) +"): "
 				+ msg.get("message").asText() + "\n";
 		broadcastMessage(messageText);
 	}
