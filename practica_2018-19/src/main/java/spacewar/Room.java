@@ -46,7 +46,7 @@ public class Room {
 
 	// inicializa las variables y estructuras de la clase
 	// y asocia el room manager para poder controlar cuando se borra la sala
-	public Room(int id, RoomManager roomManager, GameStyle gameStyle) {
+	public Room(int id, RoomManager roomManager, GameStyle gameStyle)  {
 		this.id = id;
 		this.peopleInside = new AtomicInteger(0);
 		this.capacity = capacityValues.get(gameStyle);
@@ -56,12 +56,11 @@ public class Room {
 		this.gameStyle = gameStyle;
 		this.chat = new Chat(playerMap);
 	
-		startGame();
 	}
 
 	
 	
-	public void readyAndCheck(Player player) {
+	public void readyAndCheck(Player player)  {
 		synchronized(peopleInside) {
 			player.setReady(true);
 			boolean allready = true;
@@ -74,6 +73,7 @@ public class Room {
 			}
 			if (allready) {
 				System.out.println("All players are ready");
+				startGame();
 			}
 			else {
 				System.out.println("Not all players are ready");
@@ -88,7 +88,7 @@ public class Room {
 	
 	// aumenta el contador de personas en la sala y añade a la persona al mapa,
 	// pero si la sala ya está llena devuelve false
-	public boolean addPlayer(Player player) {
+	public boolean addPlayer(Player player)   {
 synchronized(peopleInside) {
 		if (peopleInside.get() < capacity) {
 			
@@ -135,16 +135,16 @@ synchronized(peopleInside) {
 	}
 
 	// Este es el hilo que se ejecuta durante la espera para iniciar las partidas
-	public void PreMatchLobbyThread() {
+	public void PreMatchLobbyThread()  {
 		do {
 			// TEMPORAL
 			this.state = State.Playing;
 		} while (this.state != State.Playing);
-		startGame();
+		//startGame();
 	}
 
 	// Este método es el que inicializa la partida
-	public void startGame() {
+	public void startGame()  {
 		synchronized(peopleInside) {
 		game = new SpacewarGame();
 		for (Player player : playerMap.values()) {

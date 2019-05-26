@@ -45,6 +45,11 @@ window.onload = function() {
 			tableisClear()
 			break
 		
+			
+		case "START GAME" :
+			game.state.start('gameState')
+			break
+			
 		case "AMMO UPDATE":
 			game.global.myPlayer.ammo -= 1 
 			game.global.myPlayer.myAmmoCounter.text =  game.global.myPlayer.ammo;

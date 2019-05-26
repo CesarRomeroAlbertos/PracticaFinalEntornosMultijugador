@@ -24,6 +24,8 @@ public class SpacewarGame {
 	private final static long TICK_DELAY = 1000 / FPS;
 	public final static boolean DEBUG_MODE = true;
 	public final static boolean VERBOSE_MODE = true;
+	
+	
 
 	ObjectMapper mapper = new ObjectMapper();
 	private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -37,11 +39,14 @@ public class SpacewarGame {
 
 	}*/
 
-	public void addPlayer(Player player) {
+	public void addPlayer(Player player)  {
 		players.put(player.getSession().getId(), player);
 
 		int count = numPlayers.getAndIncrement();
 		if (count == 0) {
+			ObjectNode msg = mapper.createObjectNode();
+			msg.put("event", "START GAME");
+			player.sendMessage(msg.toString());
 			this.startGameLoop();
 		}
 	}

@@ -61,7 +61,7 @@ public class RoomManager {
 		noRoomPlayers.put(player.getPlayerId(), player);
 	}
 	
-	public void auxStartGame(int roomid , Player player) {
+	public void auxStartGame(int roomid , Player player)  {
 	 waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).addPlayer(player);
 	}
 	
@@ -122,7 +122,7 @@ public class RoomManager {
 		
 	}
 	
-	public void sendPlayerReady(Player player , int roomid) {
+	public void sendPlayerReady(Player player , int roomid)  {
 		waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).readyAndCheck(player);
 	}
 
@@ -136,7 +136,7 @@ public class RoomManager {
 
 	}
 
-	public void ConnectToExisting(Player player, GameStyle gameStyle, int id) throws Exception {
+	public void ConnectToExisting(Player player, GameStyle gameStyle, int id)  {
 		if (waitingRoomsMap.get(gameStyle).containsKey(id)) {
 			Room room = waitingRoomsMap.get(gameStyle).get(id);
 			room.addPlayer(player);
@@ -155,11 +155,18 @@ public class RoomManager {
 	}
 
 	// Vamos a dejar esto por si nos hace falta para el matchmaking
-	public void ConnectNewPlayer(Player player, GameStyle gameStyle) {
+	public void ConnectNewPlayer(Player player, GameStyle gameStyle){
 		if (waitingRoomsMap.get(gameStyle).isEmpty()) {
 			Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
 			room.addPlayer(player);
-			roomExecutor.execute(() -> room.PreMatchLobbyThread());
+			roomExecutor.execute(() -> {
+				try {
+					room.PreMatchLobbyThread();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
 			waitingRoomsMap.get(gameStyle).put(room.getId(), room);
 			clearAllTables();
 		} else {
@@ -172,7 +179,14 @@ public class RoomManager {
 					Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
 					clearAllTables();
 					room.addPlayer(player);
-					roomExecutor.execute(() -> room.PreMatchLobbyThread());
+					roomExecutor.execute(() -> {
+						try {
+							room.PreMatchLobbyThread();
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					});
 					waitingRoomsMap.get(gameStyle).put(room.getId(), room);
 				} else {
 					System.out.println("Error al añadir al jugador a una sala, intentando de nuevo.");
