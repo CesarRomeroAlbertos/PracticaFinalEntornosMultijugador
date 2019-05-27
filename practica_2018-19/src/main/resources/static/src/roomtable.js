@@ -43,6 +43,12 @@ function updateRoomTable(nombrecreador,nombresala,idsala ,gentedentro , capacida
 			roomplayers.innerHTML = gentedentro +"/" + capacidad
 			currentRoomRows++
 		 
+			let promise = new Promise((ressolve, reject)=>
+			{
+				
+			}
+					)
+			
 		 var rowbutton = document.createElement("button")
 		 rowbutton.innerHTML = "join"
 		 rowbutton.addEventListener ("click", function() {
