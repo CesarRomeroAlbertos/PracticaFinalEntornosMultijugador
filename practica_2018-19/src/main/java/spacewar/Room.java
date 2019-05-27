@@ -42,9 +42,6 @@ public class Room {
 	private SpacewarGame game;
 	private ObjectMapper mapper = new ObjectMapper();
 
-
-
-
 	// inicializa las variables y estructuras de la clase
 	// y asocia el room manager para poder controlar cuando se borra la sala
 	public Room(int id, RoomManager roomManager, GameStyle gameStyle) {
@@ -60,22 +57,19 @@ public class Room {
 
 	}
 
-	
 	public void playerCanceled(Player player) {
-		synchronized(playerMap) {
+		synchronized (playerMap) {
 			player.setReady(false);
 			this.RemovePlayer(player);
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "CANCELED UPDATE");
 			player.sendMessage(msg.toString());
-			
-			
+
 		}
 	}
-	
-	
-	public void readyAndCheck(Player player)  {
-		synchronized(playerMap) {
+
+	public void readyAndCheck(Player player) {
+		synchronized (playerMap) {
 			player.setReady(true);
 			boolean allready = true;
 
@@ -85,10 +79,10 @@ public class Room {
 					break;
 				}
 			}
-		
+
 			if (allready && state == State.Full) {
 				System.out.println("All players are ready");
-				
+
 				startGame();
 			} else {
 				System.out.println("Not all players are ready");
@@ -99,70 +93,70 @@ public class Room {
 
 	// aumenta el contador de personas en la sala y añade a la persona al mapa,
 	// pero si la sala ya está llena devuelve false
-	
+
 	public int getNReady() {
 		int nready = 0;
-		synchronized(playerMap) {
+		synchronized (playerMap) {
 			for (Player player : playerMap.values()) {
-				if(player.getReady()) {
+				if (player.getReady()) {
 					nready++;
 				}
 			}
 			return nready;
 		}
 	}
-	
-	
-	public boolean addPlayer(Player player)   {
-synchronized(playerMap) {
-		if (peopleInside.get() < capacity) {
-			
-			playerMap.putIfAbsent(player.getPlayerId(), player);
-			player.setRoomId(this.id);
-			player.setReady(false);
-			peopleInside.incrementAndGet();
-			chat.addPlayer(player);
-			roomManager.clearAllTables();
-			//game.addPlayer(player);
-			if (peopleInside.get() == capacity) {
-				state = State.Full;
-			}
-			if(state == State.Full) {
-				roomManager.roomIsFull(this.id, this.gameStyle, this);
-			}
-			
-			return true;
-			
-		} else
-			return false;
-}
+
+	public boolean addPlayer(Player player) {
+		synchronized (playerMap) {
+			if (peopleInside.get() < capacity) {
+
+				playerMap.putIfAbsent(player.getPlayerId(), player);
+				player.setRoomId(this.id);
+				player.setReady(false);
+				peopleInside.incrementAndGet();
+				chat.addPlayer(player);
+				roomManager.clearAllTables();
+				// game.addPlayer(player);
+				if (peopleInside.get() == capacity) {
+					state = State.Full;
+				}
+				if (state == State.Full) {
+					roomManager.roomIsFull(this.id, this.gameStyle, this);
+				}
+
+				return true;
+
+			} else
+				return false;
+		}
 	}
 
 	// Reduce el contador de personas dentro de la sala y quita al jugador del mapa
 	// de jugadores
 	// Si no quedan jugadores en la sala la borra
 	public void RemovePlayer(Player player) {
-		synchronized(playerMap) {
-		peopleInside.decrementAndGet();
-		playerMap.remove(player.getPlayerId());
-		chat.removePlayer(player.getPlayerId());
-		roomManager.clearAllTables();
+		synchronized (playerMap) {
+			peopleInside.decrementAndGet();
+			playerMap.remove(player.getPlayerId());
+			chat.removePlayer(player);
+			roomManager.clearAllTables();
+			game.removePlayer(player);
 
-		if (peopleInside.get() < capacity && state != State.Waiting) {
-			state = State.Waiting;
-			roomManager.roomIsWaiting(this);
-		}
-		if (peopleInside.get() == 0)
-			roomManager.deleteRoom(this);
+			if (peopleInside.get() < capacity && state != State.Waiting) {
+				state = State.Waiting;
+				roomManager.roomIsWaiting(this);
+			}
+			if (peopleInside.get() == 0)
+				roomManager.deleteRoom(this);
 		}
 	}
 
 	// No sé si se usará o no este método. En caso de que no, se borrará.
 	public int getPeopleInside() {
 		synchronized (playerMap) {
-		return peopleInside.get();
+			return peopleInside.get();
 		}
-		
+
 	}
 
 	public GameStyle getGameStyle() {
@@ -183,15 +177,15 @@ synchronized(playerMap) {
 	}
 
 	// Este método es el que unseals la partida
-	public void startGame()  {
-		synchronized(playerMap) {
-		game = new SpacewarGame();
-		
-		for (Player player : playerMap.values()) {
-			game.addPlayer(player);
-		}
-		this.state = State.Playing;
-		game.startGameLoop();
+	public void startGame() {
+		synchronized (playerMap) {
+			game = new SpacewarGame();
+
+			for (Player player : playerMap.values()) {
+				game.addPlayer(player);
+			}
+			this.state = State.Playing;
+			game.startGameLoop();
 		}
 	}
 
@@ -201,14 +195,11 @@ synchronized(playerMap) {
 
 	// Este método se usa cuando se borra a un jugador
 	// lo elimina del mapa y notifica al juego para que borre al jugador
-	public void removePlayer(Player player) {
-		synchronized(playerMap) {
-		playerMap.remove(player.getPlayerId());
-		if (game != null) {
-			game.removePlayer(player);
-		}
-		}
-	}
+	/*
+	 * public void removePlayer(Player player) { synchronized(playerMap) {
+	 * playerMap.remove(player.getPlayerId()); if (game != null) {
+	 * game.removePlayer(player); } } }
+	 */
 
 	// Este método devuelve el juego, se usa para las funciones externas que
 	// necesitan

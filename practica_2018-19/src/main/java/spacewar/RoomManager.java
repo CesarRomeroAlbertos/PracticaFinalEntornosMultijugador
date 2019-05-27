@@ -311,11 +311,11 @@ public class RoomManager {
 	// notifica
 	public void removePlayer(Player player) {
 		if (fullRooms.containsKey(player.GetRoomId()))
-			fullRooms.get(player.GetRoomId()).removePlayer(player);
+			fullRooms.get(player.GetRoomId()).RemovePlayer(player);
 		else {
 			for (GameStyle gs : GameStyle.values()) {
 				if (waitingRoomsMap.get(gs).containsKey(player.GetRoomId()))
-					waitingRoomsMap.get(gs).get(player.GetRoomId()).removePlayer(player);
+					waitingRoomsMap.get(gs).get(player.GetRoomId()).RemovePlayer(player);
 			}
 		}
 	}
