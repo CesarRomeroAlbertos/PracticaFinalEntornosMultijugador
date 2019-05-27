@@ -2,6 +2,13 @@ Spacewar.menuState = function(game) {
 
 }
 
+
+function goToLobby(){
+	if (typeof game.global.myPlayer.id !== 'undefined' && typeof game.global.myPlayer.name !== "undefined") {
+		game.state.start('lobbyState')
+}
+}
+
 Spacewar.menuState.prototype = {
 
 	init : function() {
@@ -43,8 +50,7 @@ Spacewar.menuState.prototype = {
 	},
 
 	update : function() {
-		if (typeof game.global.myPlayer.id !== 'undefined' && typeof game.global.myPlayer.name !== "undefined") {
-			game.state.start('lobbyState')
+		
 		}
-	}
+	
 }

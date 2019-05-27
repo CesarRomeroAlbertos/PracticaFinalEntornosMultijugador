@@ -39,9 +39,13 @@ Spacewar.roomState.prototype = {
 		function imReady () {
 			console.log("IM READY")
 			
+			let myroom = game.global.room.id
+			
+			
+			console.log("MI SALA ES " + myroom)
 			let readymsg = {
 				event : "PLAYER IS READY",
-				roomid : game.global.room.id
+				roomid : myroom
 			}
 			
 			game.global.socket.send(JSON.stringify(readymsg))

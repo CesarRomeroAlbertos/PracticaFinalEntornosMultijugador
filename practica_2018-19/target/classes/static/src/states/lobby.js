@@ -65,14 +65,7 @@ Spacewar.lobbyState.prototype = {
 			game.global.socket.send(JSON.stringify(roommsg))
 		}
 		
-		function joinaroom(){
-			let message = {
-					event : 'JOIN ROOM',
-					id : game.global.myPlayer.id
-					
-				}
-				game.global.socket.send(JSON.stringify(message))
-		}
+		
 		
 		function makeroomprompt(){
 			 let rname = prompt("Name your room");

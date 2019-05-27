@@ -85,6 +85,7 @@ window.onload = function() {
 		case "SET NAME" :
 			if(msg.id == game.global.myPlayer.id){
 			game.global.myPlayer.name = msg.name
+			goToLobby();
 			}
 			else{
 				game.global.otherPlayers[msg.id].name = msg.name
