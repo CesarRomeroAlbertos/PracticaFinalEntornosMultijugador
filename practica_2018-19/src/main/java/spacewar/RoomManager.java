@@ -164,9 +164,9 @@ public class RoomManager {
 	
 	public void sendPlayerReady(Player player , int roomid)  {
 		
-		if (waitingRoomsMap.get(GameStyle.battleRoyale).contains(roomid)) {
+		if (waitingRoomsMap.get(GameStyle.battleRoyale).containsKey(roomid)) {
 		waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).readyAndCheck(player);
-		}else if(fullRooms.contains(roomid)) {
+		}else if(fullRooms.containsKey(roomid)) {
 		fullRooms.get(roomid).readyAndCheck(player);
 		}
 	}
