@@ -23,14 +23,14 @@ public class Chat {
 	private BlockingQueue<ObjectNode> messages;
 	private Map<Integer, Player> playerMap;
 	private ObjectMapper mapper;
-	//private CyclicBarrier barrier;
+	// private CyclicBarrier barrier;
 	private Executor executor;
 
 	public Chat(Map<Integer, Player> playerMap) {
 		this.playerMap = playerMap;
 		messages = new LinkedBlockingQueue<ObjectNode>();
 		mapper = new ObjectMapper();
-		//barrier = new CyclicBarrier(1, () -> deleteMessage());
+		// barrier = new CyclicBarrier(1, () -> deleteMessage());
 		executor = Executors.newCachedThreadPool();
 	}
 
@@ -49,12 +49,15 @@ public class Chat {
 		message.put("event", "chatMessageReception");
 		message.put("messageText", messageText);
 		messages.add(message);
-		//barrier.reset();
-		
-		CyclicBarrier barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
-		
-		for (Player player : playerMap.values()) {
-			executor.execute(() -> sendMessage(player.getPlayerId(), barrier));
+		synchronized (playerMap) {
+			// barrier.reset();
+			if (playerMap.size() > 0) {
+				CyclicBarrier barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
+
+				for (Player player : playerMap.values()) {
+					executor.execute(() -> sendMessage(player.getPlayerId(), barrier));
+				}
+			}
 		}
 	}
 
@@ -84,7 +87,7 @@ public class Chat {
 	// método para añadir jugadores al chat
 	public void addPlayer(Player player) {
 		playerMap.put(player.getPlayerId(), player);
-		//barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
+		// barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
 		broadcastMessage("Ha entrado " + player.getName() + " en la sala");
 	}
 
@@ -92,7 +95,7 @@ public class Chat {
 	public void removePlayer(int id) {
 		String message = "Ha salido " + playerMap.get(id).getName() + " de la sala";
 		playerMap.remove(id);
-		//barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
+		// barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
 		broadcastMessage(message);
 
 	}
@@ -102,8 +105,8 @@ public class Chat {
 		String message = "Ha salido " + player.getName() + " de la sala";
 		if (playerMap.containsKey(player.getPlayerId()))
 			playerMap.remove(player.getPlayerId());
-		//barrier.reset();
-		//barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
+		// barrier.reset();
+		// barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
 		broadcastMessage(message);
 	}
 
