@@ -84,6 +84,12 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				roomManager.sendPlayerCanceled(player , node.get("roomid").asInt());
 				break;
 				
+			case "REQUEST SCORES PERMISSION":
+				player.setIsResults(false);
+				msg.put("event", "SCORE PERMISSION");
+				player.sendMessage(msg.toString());
+				break;
+				
 			case "REQUEST ALL EXISTING ROOMS":
 				roomManager.updateMyTable(player);
 				break;

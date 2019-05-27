@@ -48,7 +48,10 @@ window.onload = function() {
 			tableisClear()
 			break
 		
-			
+		case "SCORE PERMISSION":
+			game.global.myPlayer.isResults = true
+			game.state.start("scoresState")
+			break
 		case "START GAME" :
 			game.state.start('gameState')
 			break
@@ -62,8 +65,9 @@ window.onload = function() {
 			break
 			
 		case "UPDATE SCORE TABLE":
+			if(game.global.myPlayer.isResults){
 			updateScoreTable(msg.playername,msg.position)
-			
+			}
 		
 			break
 		

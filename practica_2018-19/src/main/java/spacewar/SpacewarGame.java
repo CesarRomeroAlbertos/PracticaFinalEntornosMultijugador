@@ -174,6 +174,7 @@ public class SpacewarGame {
 		try {
 			// Update players
 			for (Player player : getPlayers()) {
+				if(!player.getIsResults()) {
 				player.calculateMovement();
 
 				ObjectNode jsonPlayer = mapper.createObjectNode();
@@ -184,6 +185,7 @@ public class SpacewarGame {
 				jsonPlayer.put("facingAngle", player.getFacingAngle());
 				jsonPlayer.put("name", player.getName());
 				arrayNodePlayers.addPOJO(jsonPlayer);
+				}
 			}
 
 			// Update bullets and handle collision
@@ -192,6 +194,7 @@ public class SpacewarGame {
 
 				// Handle collision
 				for (Player player : getPlayers()) {
+					if(!player.getIsResults()) {
 					if ((projectile.getOwner().getPlayerId() != player.getPlayerId()) && player.intersect(projectile)
 							&& !player.getGhost()) {
 						// System.out.println("Player " + player.getPlayerId() + " was hit!!!");
@@ -210,6 +213,7 @@ public class SpacewarGame {
 						
 					
 						break;
+					}
 					}
 				}
 
@@ -242,6 +246,7 @@ public class SpacewarGame {
 			json.putPOJO("projectiles", arrayNodeProjectiles);
 			this.broadcast(json.toString());
 			checkGhosts();
+			
 		} catch (Throwable ex) {
 
 		}

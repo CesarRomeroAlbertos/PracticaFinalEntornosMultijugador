@@ -30,6 +30,8 @@ public class Player extends Spaceship {
 	private final static int rechargeTime = 3000;
 	private boolean executorStarted = false;
 	private ObjectMapper mapper = new ObjectMapper();
+	private boolean isResults;
+	
 
 	// Constructor de la clase Player que inicializa sus variables
 	public Player(int playerId, WebSocketSession session) {
@@ -46,6 +48,14 @@ public class Player extends Spaceship {
 			ammoRecharger.scheduleAtFixedRate(()->rechargeBullet(), rechargeTime, rechargeTime, TimeUnit.MILLISECONDS);
 			executorStarted = true;
 		}
+	}
+	
+	public void setIsResults(boolean r) {
+		this.isResults = r;
+	}
+	
+	public boolean getIsResults() {
+		return this.isResults;
 	}
 
 	private void rechargeBullet() {

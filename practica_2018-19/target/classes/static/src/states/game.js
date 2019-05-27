@@ -78,7 +78,10 @@ Spacewar.gameState.prototype = {
 		// game.state.start('scoresState')
 
 		function goToScores(){
-		game.state.start("scoresState")
+			let scmsg = {
+					event : "REQUEST SCORES PERMISSION"
+			}
+			game.global.socket.send(JSON.stringify(scmsg))
 		}
 		
 		async function backtoMenu(){
