@@ -137,6 +137,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				if (node.path("bullet").asBoolean() && !player.getGhost()&& player.getAmmo() > 0) {
 					player.decrementAmmo();
 					msg.put("event", "AMMO UPDATE");
+					msg.put("ammo",player.getAmmo());
 					player.sendMessage(msg.toString());
 					Projectile projectile = new Projectile(player, this.projectileId.incrementAndGet());
 					roomManager.getGame(player.GetRoomId()).addProjectile(projectile.getId(), projectile);

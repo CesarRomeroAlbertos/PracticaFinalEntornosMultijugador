@@ -18,7 +18,7 @@ function activateGhost(){
 
 function reloadAmmo(){
 	setTimeout(() => {
-		  game.global.myPlayer.ammo = 20 //hardcoded
+		  game.global.myPlayer.ammo = 20 // hardcoded
 		  myAmmo.text = game.global.myPlayer.ammo;
 		}, 5000);
 }
@@ -33,7 +33,7 @@ Spacewar.gameState.prototype = {
 	},
 
 	preload : function() {
-		game.global.myPlayer.ammo = 20 //hardcoded
+		game.global.myPlayer.ammo = 20 // hardcoded
 
 		// We create a procedural starfield background
 		for (var i = 0; i < this.numStars; i++) {
@@ -65,7 +65,6 @@ Spacewar.gameState.prototype = {
 		game.global.myPlayer.name = game.add.text(game.global.myPlayer.image.x, game.global.myPlayer.image.y + 30, game.global.myPlayer.name ,style);
 		game.global.myPlayer.name.anchor.setTo(0.5);
 		game.global.myPlayer.name.fontSize = 20;
-	    game.global.myPlayer.image.addChild(game.global.myPlayer.name)
 	    game.global.myPlayer.myHCounter = game.add.text(250, 16, '', { fill: '#ffffff' });
 	    game.global.myPlayer.myHCounter.text =  game.global.myPlayer.health;
 	   game.global.myPlayer.myAmmoCounter = game.add.text(265, 16, '', { fill: '#37ff0a' });
@@ -76,7 +75,7 @@ Spacewar.gameState.prototype = {
 	create : function() {
 		
 	
-		//game.state.start('scoresState')
+		// game.state.start('scoresState')
 
 		function goToScores(){
 		game.state.start("scoresState")
@@ -124,6 +123,8 @@ Spacewar.gameState.prototype = {
 
 	update : function() {
 		
+		game.global.myPlayer.name.x = game.global.myPlayer.image.x;
+		game.global.myPlayer.name.y = game.global.myPlayer.image.y-40;
 		
 		
 		let msg = new Object()

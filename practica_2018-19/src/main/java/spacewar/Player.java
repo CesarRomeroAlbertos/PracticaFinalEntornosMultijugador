@@ -2,10 +2,16 @@ package spacewar;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Player extends Spaceship {
 
@@ -16,46 +22,68 @@ public class Player extends Spaceship {
 	private int roomId;
 	private AtomicInteger health = new AtomicInteger(1);// hardcoded
 	private boolean isGhost;
-	private AtomicInteger ammo = new AtomicInteger(20);//hardcoded
-	private boolean isReady; 
+	private int maxAmmo = 20;
+	private AtomicInteger ammo = new AtomicInteger(maxAmmo);// hardcoded
+	private boolean isReady;
 	private boolean isWaiting;
-	public boolean isInResults; 
-	
+	private ScheduledExecutorService ammoRecharger;
+	private final static int rechargeTime = 3000;
+	private boolean executorStarted = false;
+	private ObjectMapper mapper = new ObjectMapper();
+
 	// Constructor de la clase Player que inicializa sus variables
 	public Player(int playerId, WebSocketSession session) {
 		this.playerId = playerId;
 		this.session = session;
 		this.shipType = this.getRandomShipType();
 		this.isGhost = false;
+		this.ammoRecharger = Executors.newScheduledThreadPool(1);
 	}
-	
-	
 	public void decrementAmmo() {
 		this.ammo.decrementAndGet();
+		if(!executorStarted)
+		{
+			ammoRecharger.scheduleAtFixedRate(()->rechargeBullet(), rechargeTime, rechargeTime, TimeUnit.MILLISECONDS);
+			executorStarted = true;
+		}
 	}
+
+	private void rechargeBullet() {
+		synchronized (ammo) {
+			if (ammo.get() < maxAmmo)
+				ammo.incrementAndGet();
+		}
+
+		ObjectNode msg = mapper.createObjectNode();
+		msg.put("event", "AMMO UPDATE");
+		msg.put("ammo",getAmmo());
+		sendMessage(msg.toString());
+	}
+
 	public void setAmmo() {
-		this.ammo.set(20);;
+		this.ammo.set(20);
 	}
+
 	public int getAmmo() {
 		return this.ammo.get();
 	}
-	
-	
 	public void setWaiting(boolean w) {
 		this.isWaiting = w;
-		
+
 	}
+
 	public boolean getWaiting() {
-		return this.isWaiting; 
+		return this.isWaiting;
 	}
-	
+
 	public void setReady(boolean ready) {
 		this.isReady = ready;
 	}
+
 	public boolean getReady() {
-		return this.isReady; 
+		return this.isReady;
 	}
-	
+
 	public void revive() {
 		this.isGhost = true;
 		this.health.set(1);// hardcoded
