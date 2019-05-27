@@ -71,6 +71,7 @@ window.onload = function() {
 			}
 
 			game.global.socket.send(JSON.stringify(requestroomstatus))
+			
 			startnext()
 		
 			break
