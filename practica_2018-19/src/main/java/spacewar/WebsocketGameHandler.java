@@ -107,6 +107,11 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			case "TABLE CLEARED WARNING":
 				roomManager.updateAllTableOf(player);
 				break;
+			case "SEND BACK TO MENU" : 
+				roomManager.removePlayer(player);
+				msg.put("event", "END OF GAME");
+				player.sendMessage(msg.toString());
+				break;
 
 			case "NAME":
 				player.setName(node.get("name").asText());

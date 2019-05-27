@@ -260,6 +260,11 @@ window.onload = function() {
 		waitforclear()
 		}
 		break
+		
+		case "END OF GAME":
+			game.state.start("menuState")
+			break
+		
 		case "PLAYER GHOST":
 			if(msg.id == game.global.myPlayer.id){
 			game.global.myPlayer.playerIsGhost = true

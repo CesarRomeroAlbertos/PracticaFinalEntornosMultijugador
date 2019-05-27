@@ -60,8 +60,12 @@ Spacewar.scoresState.prototype = {
 			game.global.socket.send(JSON.stringify(btlmsg))
 			
 		}
-		function actuallyquit(){
-			console.log("we quit!")
+		async function actuallyquit(){
+			await(deleteScoreTable())
+			let btmmsg = {
+			event:"SEND BACK TO MENU"
+			}
+			game.global.socket.send(JSON.stringify(btmmsg))
 		}
 		
 		
