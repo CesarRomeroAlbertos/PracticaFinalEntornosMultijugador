@@ -15,39 +15,40 @@ Spacewar.roomState.prototype = {
 	},
 
 	create : function() {
-		
-		game.global.myPlayer.playersWithMe = game.add.text(250, 16, '', { fill: '#ffffff' });
-		game.global.myPlayer.playersWithMeReady = game.add.text(250, 24, '', { fill: '#42f4c5' });
-		
-		
+
+		game.global.myPlayer.playersWithMe = game.add.text(250, 16, '', {
+			fill : '#ffffff'
+		});
+		game.global.myPlayer.playersWithMeReady = game.add.text(250, 24, '', {
+			fill : '#42f4c5'
+		});
+
+		/*
 		let requestroomstatus = {
-				event : "REQUEST ROOM STATUS",
-				roomid : game.global.room.id
-				
-				
+			event : "REQUEST ROOM STATUS",
+			roomid : game.global.room.id
 		}
 		
 		game.global.socket.send(JSON.stringify(requestroomstatus))
-
-		
+*/
 		var thediv = document.getElementById("deletethis")
-		  thediv.parentNode.removeChild(thediv);
-		
-		
-		function imReady () {
+		thediv.parentNode.removeChild(thediv);
+
+		function imReady() {
 			console.log("IM READY")
-			
+
 			let readymsg = {
 				event : "PLAYER IS READY",
 				roomid : game.global.room.id
 			}
-			
+
 			game.global.socket.send(JSON.stringify(readymsg))
 
 		}
-		
-		var readybutton = game.add.button(game.world.centerX ,game.world.centerY, "readybutton" , imReady, this);
-		
+
+		var readybutton = game.add.button(game.world.centerX,
+				game.world.centerY, "readybutton", imReady, this);
+
 	},
 
 	update : function() {

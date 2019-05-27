@@ -61,15 +61,14 @@ public class RoomManager {
 	public void addNoRoomPlayer(Player player) {
 		noRoomPlayers.put(player.getPlayerId(), player);
 	}
-	
-	public void auxStartGame(int roomid , Player player)  {
-	 waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).addPlayer(player);
+
+	public void auxStartGame(int roomid, Player player) {
+		waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).addPlayer(player);
 	}
-	
-	
+
 	public void updateMyTable(Player player) {
 		for (Room room : waitingRoomsMap.get(GameStyle.battleRoyale).values()) {
-			
+
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "UPDATE ROOM TABLE");
 			msg.put("roomname", room.name);
@@ -77,20 +76,22 @@ public class RoomManager {
 			msg.put("roomid", room.getId());
 			msg.put("playersinside", room.getPeopleInside());
 			msg.put("totalcapacity", room.capacity);
-			roomExecutor.execute(()->{try {
-				player.sendMessage(msg.toString());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}});			
-		
+			roomExecutor.execute(() -> {
+				try {
+					player.sendMessage(msg.toString());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
+
+		}
+
 	}
-		
-	}
-	
+
 	public void updateAllTableOf(Player player) {
 		for (Room room : waitingRoomsMap.get(GameStyle.battleRoyale).values()) {
-			
+
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "UPDATE ROOM TABLE");
 			msg.put("roomname", room.name);
@@ -98,36 +99,36 @@ public class RoomManager {
 			msg.put("roomid", room.getId());
 			msg.put("playersinside", room.getPeopleInside());
 			msg.put("totalcapacity", room.capacity);
-			roomExecutor.execute(()->{try {
-				player.sendMessage(msg.toString());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}});			
-		
-	}
-	}
-	
+			roomExecutor.execute(() -> {
+				try {
+					player.sendMessage(msg.toString());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
 
-	
-	
+		}
+	}
+
 	public void clearAllTables() {
-		
 
 		ObjectNode msg = mapper.createObjectNode();
 		msg.put("event", "CLEAR TABLE");
-		for(Player player: noRoomPlayers.values()) {
-		roomExecutor.execute(()->{try {
-			player.sendMessage(msg.toString());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}});
+		for (Player player : noRoomPlayers.values()) {
+			roomExecutor.execute(() -> {
+				try {
+					player.sendMessage(msg.toString());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
 		}
-		
+
 	}
-	
-	public void sendPlayerReady(Player player , int roomid)  {
+
+	public void sendPlayerReady(Player player, int roomid) {
 		waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).readyAndCheck(player);
 	}
 
@@ -138,10 +139,9 @@ public class RoomManager {
 		waitingRoomsMap.get(gameStyle).put(room.getId(), room);
 		clearAllTables();
 
-
 	}
 
-	public void ConnectToExisting(Player player, GameStyle gameStyle, int id)  {
+	public void ConnectToExisting(Player player, GameStyle gameStyle, int id) {
 		if (waitingRoomsMap.get(gameStyle).containsKey(id)) {
 			Room room = waitingRoomsMap.get(gameStyle).get(id);
 			room.addPlayer(player);
@@ -149,7 +149,7 @@ public class RoomManager {
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "ROOM ASIGNED");
 			msg.put("roomid", room.getId());
-			msg.put("roomname",room.name);
+			msg.put("roomname", room.name);
 			player.sendMessage(msg.toString());
 		} else {
 			ObjectNode msg = mapper.createObjectNode();
@@ -158,38 +158,40 @@ public class RoomManager {
 		}
 		// }
 	}
-	
-	public void requestRoomStatus(Player player , int roomid) {
-		if (waitingRoomsMap.get(GameStyle.battleRoyale).contains(roomid)) {
-			Room current = waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid);
-			ObjectNode msg = mapper.createObjectNode();
-			msg.put("event", "ROOM STATUS");
-			msg.put("totalcapacity", current.capacity);
-			msg.put("playersinside", current.getPeopleInside());
-			player.sendMessage(msg.toString());
-			
-		}else if (fullRooms.containsKey(roomid)) {
-			ObjectNode msg = mapper.createObjectNode();
-			Room current = fullRooms.get(roomid);
-			msg.put("event", "ROOM STATUS");
-			msg.put("totalcapacity", current.capacity);
-			msg.put("playersinside", current.getPeopleInside());
-			player.sendMessage(msg.toString());
 
+	public void requestRoomStatus(Player player, int roomid) {
+		if (waitingRoomsMap.get(GameStyle.battleRoyale).contains(roomid)) {
+			synchronized (waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid)) {
+				Room current = waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid);
+				ObjectNode msg = mapper.createObjectNode();
+				msg.put("event", "ROOM STATUS");
+				msg.put("totalcapacity", current.capacity);
+				msg.put("playersinside", current.getPeopleInside());
+				player.sendMessage(msg.toString());
+			}
+
+		} else if (fullRooms.containsKey(roomid)) {
+			synchronized (fullRooms.get(roomid)) {
+				ObjectNode msg = mapper.createObjectNode();
+				Room current = fullRooms.get(roomid);
+				msg.put("event", "ROOM STATUS");
+				msg.put("totalcapacity", current.capacity);
+				msg.put("playersinside", current.getPeopleInside());
+				player.sendMessage(msg.toString());
+			}
 		}
-		
-		
+
 	}
 
-	
-	public void roomIsFull(int roomid , GameStyle style , Room room) {
-		
+	public void roomIsFull(int roomid, GameStyle style, Room room) {
+
 		waitingRoomsMap.get(style).remove(roomid);
 		fullRooms.put(roomid, room);
 		clearAllTables();
 	}
+
 	// Vamos a dejar esto por si nos hace falta para el matchmaking
-	public void ConnectNewPlayer(Player player, GameStyle gameStyle){
+	public void ConnectNewPlayer(Player player, GameStyle gameStyle) {
 		if (waitingRoomsMap.get(gameStyle).isEmpty()) {
 			Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
 			room.addPlayer(player);
@@ -239,7 +241,7 @@ public class RoomManager {
 		if (waitingRoomsMap.get(room.getGameStyle()).remove(room.getId()) == null)
 			fullRooms.remove(room.getId());
 		clearAllTables();
-			
+
 	}
 
 	// sobrecarga del método anterior usando la id en vez de la sala

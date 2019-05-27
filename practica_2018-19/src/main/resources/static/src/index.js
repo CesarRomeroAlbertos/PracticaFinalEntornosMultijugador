@@ -60,7 +60,14 @@ window.onload = function() {
 		case "ROOM ASIGNED":
 			game.global.room.name= msg.roomname
 			game.global.room.id = msg.roomid
-			game.global.myPlayer.isWaiting = true 
+			game.global.myPlayer.isWaiting = true
+
+			let requestroomstatus = {
+				event : "REQUEST ROOM STATUS",
+				roomid : game.global.room.id
+			}
+
+			game.global.socket.send(JSON.stringify(requestroomstatus))
 		
 			break
 		
