@@ -45,6 +45,17 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 			Player player = (Player) session.getAttributes().get(PLAYER_ATTRIBUTE);
 
 			switch (node.get("event").asText()) {
+			case "PLAYER WANTS RESULTS":
+				roomManager.getGame(player.GetRoomId()).getGhostInfo(player);
+
+				
+			break;
+			
+			
+			case "CLEAR RESULTS WARNING" :
+				roomManager.getGame(player.GetRoomId()).getGhostInfo(player);
+
+				break;
 			case "RESURECTION":
 				player.revive();
 				msg.put("event", "PLAYER RESURECTS");
@@ -136,13 +147,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				msg.put("event", "UPDATE HEALTH");
 				player.sendMessage(msg.toString());
 				break;
-			case "PLAYER DEAD":
-				player.setGhost();
-				msg.put("event", "PLAYER GHOST");
-				msg.put("id", player.getPlayerId());
-				roomManager.getGame(player.GetRoomId()).broadcast(msg.toString());
-
-				break;
+	
 			case "CHAT MESSAGE":
 				roomManager.getChatMessage(node);
 				break;

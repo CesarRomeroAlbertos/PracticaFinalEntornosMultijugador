@@ -18,7 +18,7 @@ public class Room {
 	private ConcurrentHashMap<Integer, Meteorite> meteoriteMap;
 	private Map<GameStyle, Integer> capacityValues = new HashMap<GameStyle, Integer>() {
 		{
-			put(GameStyle.battleRoyale, 2);
+			put(GameStyle.battleRoyale, 3);
 		}
 	};
 

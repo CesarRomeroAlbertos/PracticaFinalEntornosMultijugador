@@ -11,6 +11,7 @@ Spacewar.scoresState.prototype = {
 	},
 
 	create : function() {
+		function loadtablesurface(){
 		var gamediv = document.getElementById("gameDiv")
 		var scorediv = document.createElement("div");
 		scorediv.setAttribute("id","deletethis2")
@@ -31,7 +32,17 @@ Spacewar.scoresState.prototype = {
 
 		scorediv.appendChild(scoretablediv)
 		scoretablediv.appendChild(scoretable)
+		}
+		async function requestInfo(){
+			await(loadtablesurface())
 		
+			let scoremsg = {
+					event : "PLAYER WANTS RESULTS",
+					roomid : game.global.room.id
+			}
+			game.global.socket.send(JSON.stringify(scoremsg))
+		}
+		requestInfo()
 	
 	},
 

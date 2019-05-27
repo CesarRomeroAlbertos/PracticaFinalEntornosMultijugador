@@ -19,6 +19,7 @@ public class Player extends Spaceship {
 	private AtomicInteger ammo = new AtomicInteger(20);//hardcoded
 	private boolean isReady; 
 	private boolean isWaiting;
+	public boolean isInResults; 
 	
 	// Constructor de la clase Player que inicializa sus variables
 	public Player(int playerId, WebSocketSession session) {
@@ -27,6 +28,8 @@ public class Player extends Spaceship {
 		this.shipType = this.getRandomShipType();
 		this.isGhost = false;
 	}
+	
+	
 	public void decrementAmmo() {
 		this.ammo.decrementAndGet();
 	}
@@ -36,6 +39,7 @@ public class Player extends Spaceship {
 	public int getAmmo() {
 		return this.ammo.get();
 	}
+	
 	
 	public void setWaiting(boolean w) {
 		this.isWaiting = w;

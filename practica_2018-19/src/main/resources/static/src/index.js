@@ -59,6 +59,12 @@ window.onload = function() {
 
 			
 			break
+			
+		case "UPDATE SCORE TABLE":
+			updateScoreTable(msg.playername,msg.position)
+			
+		
+			break
 		
 		case "ROOM ASIGNED":
 			game.global.room.name= msg.roomname
@@ -209,17 +215,25 @@ window.onload = function() {
 		case 'UPDATE HEALTH':
 			game.global.myPlayer.health -=1
 			game.global.myPlayer.myHCounter.text =  game.global.myPlayer.health;
-			if (game.global.myPlayer.health <= 0 ){
 			
-				let msg = {
-						event : "PLAYER DEAD"		
-				}
-				game.global.socket.send(JSON.stringify(msg))
+			
+		break
+		
+		case "CLEAR RESULTS TABLE":
+		async function waitforclear(){
+			await(clearScoreTable())
+			
+			let wmsg = {
+				event : "CLEAR RESULTS WARNING"
 			}
+			game.global.socket.send(JSON.stringify(wmsg))
+		}
+		waitforclear()
 		break
 		case "PLAYER GHOST":
 			if(msg.id == game.global.myPlayer.id){
 			game.global.myPlayer.playerIsGhost = true
+			activateGhost()
 			}
 			else{
 				game.global.otherPlayers[msg.id].playerIsGhost = true

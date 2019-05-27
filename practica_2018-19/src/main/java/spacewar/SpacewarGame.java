@@ -4,13 +4,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.springframework.web.socket.TextMessage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -34,11 +33,40 @@ public class SpacewarGame {
 	private Map<String, Player> players = new ConcurrentHashMap<>();
 	private Map<Integer, Projectile> projectiles = new ConcurrentHashMap<>();
 	private AtomicInteger numPlayers = new AtomicInteger();
+	private ArrayBlockingQueue <Player> ghosts = new ArrayBlockingQueue<Player>(3);//Hardcoded
 
 	/*public SpacewarGame() {
 
 	}*/
 
+	public void addNewGhost(Player player) throws InterruptedException {
+	player.setGhost();
+	ghosts.put(player);
+	ObjectNode msg = mapper.createObjectNode();
+	msg.put("event", "PLAYER GHOST");
+	msg.put("id", player.getPlayerId());
+	player.sendMessage(msg.toString());
+	
+	for (Player dedplayer : ghosts) {
+		ObjectNode msg2 = mapper.createObjectNode();
+		msg2.put("event", "CLEAR RESULTS TABLE");
+		dedplayer.sendMessage(msg2.toString());
+
+	}
+	}
+	
+	public void getGhostInfo(Player askingplayer) {
+		int position = 1 ;
+		for(Player player : ghosts) {
+			ObjectNode msg = mapper.createObjectNode();
+			msg.put("event","UPDATE SCORE TABLE");
+			msg.put("playername", player.getName());
+			msg.put("position", position);
+			askingplayer.sendMessage(msg.toString());
+			position++;
+		}
+	}
+	
 	public void addPlayer(Player player)  {
 		players.put(player.getSession().getId(), player);
 
@@ -46,6 +74,7 @@ public class SpacewarGame {
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "START GAME");
 			player.sendMessage(msg.toString());
+			
 			//this.startGameLoop();
 		
 	}
@@ -124,6 +153,7 @@ public class SpacewarGame {
 		}
 		if(alivecount <= 1) {
 			System.out.println("El juego ha terminado");
+			this.stopGameLoop();
 		}
 	}
 
@@ -162,8 +192,17 @@ public class SpacewarGame {
 						// System.out.println("Player " + player.getPlayerId() + " was hit!!!");
 						projectile.setHit(true);
 						ObjectNode msg = mapper.createObjectNode();
+						player.hitPlayer();
 						msg.put("event", "UPDATE HEALTH");
 						player.sendMessage(msg.toString());
+						
+							if (player.getHealth() <= 0 ) {
+							addNewGhost(player);
+							msg.put("event", "PLAYER GHOST");
+							msg.put("id", player.getPlayerId());
+							this.broadcast(msg.toString());
+						}
+						
 					
 						break;
 					}

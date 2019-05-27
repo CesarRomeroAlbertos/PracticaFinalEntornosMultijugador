@@ -7,6 +7,15 @@ Spacewar.gameState = function(game) {
 }
 var quitbutton
 
+
+function activateGhost(){
+	console.log("que la pasa")
+	game.global.myPlayer.image.alpha = 0.25;
+	quitbutton.alpha = 1;
+	quitbutton.inputEnabled = true;
+}
+
+
 function reloadAmmo(){
 	setTimeout(() => {
 		  game.global.myPlayer.ammo = 20 //hardcoded
@@ -69,6 +78,9 @@ Spacewar.gameState.prototype = {
 	
 		//game.state.start('scoresState')
 
+		function goToScores(){
+		game.state.start("scoresState")
+		}
 		
 		async function backtoMenu(){
 			console.log("Backtomenu")
@@ -81,7 +93,7 @@ Spacewar.gameState.prototype = {
 
 
 		}
-		quitbutton = game.add.button(game.world.centerX-175 ,game.world.centerY, "quitbutton" , backtoMenu, this);
+		quitbutton = game.add.button(game.world.centerX-175 ,game.world.centerY, "quitbutton" , goToScores, this);
 		quitbutton.alpha= 0;
 		quitbutton.inputEnabled = false
 		this.bulletTime = 0
@@ -113,13 +125,7 @@ Spacewar.gameState.prototype = {
 	update : function() {
 		
 		
-		if (game.global.myPlayer.playerIsGhost){
-			console.log("que la pasa")
-			//this.spaceKey = null;
-			game.global.myPlayer.image.alpha = 0.25;
-			quitbutton.alpha = 1;
-			quitbutton.inputEnabled = true;
-		}
+		
 		let msg = new Object()
 		msg.event = 'UPDATE MOVEMENT'
 
