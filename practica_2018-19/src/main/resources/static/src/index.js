@@ -81,7 +81,9 @@ window.onload = function() {
 			break;
 		
 		case "UPDATE ROOM TABLE":
+			if (!game.global.myPlayer.isWaiting){
 			updateRoomTable(msg.roomcreator,msg.roomname,msg.roomid , msg.playersinside , msg.totalcapacity)
+			}
 			break
 		
 		case "ROOM STATUS":

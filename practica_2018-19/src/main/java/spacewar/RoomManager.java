@@ -103,6 +103,7 @@ public class RoomManager {
 	}
 	
 	public void updateAllTableOf(Player player) {
+		
 		for (Room room : waitingRoomsMap.get(GameStyle.battleRoyale).values()) {
 			
 			ObjectNode msg = mapper.createObjectNode();

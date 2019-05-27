@@ -111,6 +111,21 @@ public class SpacewarGame {
 			}
 		}
 	}
+	
+	private void checkGhosts() {
+		int alivecount = 0 ; 
+		for (Player player : players.values()) {
+			if (!player.getGhost()) {
+				alivecount++;
+			}
+			if(alivecount >= 2) {
+				break;
+			}
+		}
+		if(alivecount <= 1) {
+			System.out.println("El juego ha terminado");
+		}
+	}
 
 	private void tick() {
 		ObjectNode json = mapper.createObjectNode();
@@ -149,6 +164,7 @@ public class SpacewarGame {
 						ObjectNode msg = mapper.createObjectNode();
 						msg.put("event", "UPDATE HEALTH");
 						player.sendMessage(msg.toString());
+					
 						break;
 					}
 				}
@@ -181,6 +197,7 @@ public class SpacewarGame {
 			json.putPOJO("players", arrayNodePlayers);
 			json.putPOJO("projectiles", arrayNodeProjectiles);
 			this.broadcast(json.toString());
+			checkGhosts();
 		} catch (Throwable ex) {
 
 		}
