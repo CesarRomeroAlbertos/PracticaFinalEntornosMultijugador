@@ -62,7 +62,7 @@ Spacewar.gameState.prototype = {
 				game.global.myPlayer.shipType)
 		game.global.myPlayer.image.anchor.setTo(0.5, 0.5)
 		var style = { font: "bold 32px Arial", fill: "#ffe500", boundsAlignH: "center", boundsAlignV: "middle" };
-		game.global.myPlayer.name = game.add.text(game.global.myPlayer.image.x, game.global.myPlayer.image.y + 30, game.global.myPlayer.name ,style);
+		game.global.myPlayer.name = game.add.text(game.global.myPlayer.image.x, game.global.myPlayer.image.y -40, game.global.myPlayer.name ,style);
 		game.global.myPlayer.name.anchor.setTo(0.5);
 		game.global.myPlayer.name.fontSize = 20;
 	    game.global.myPlayer.myHCounter = game.add.text(250, 16, '', { fill: '#ffffff' });

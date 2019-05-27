@@ -17,7 +17,7 @@ window.onload = function() {
 		
 	}
 	var otherstyle = { font: "bold 32px Arial", fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle" }
-	
+	var style = { font: "bold 28px Arial", fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle" };
 	
 
 	
@@ -157,7 +157,8 @@ window.onload = function() {
 						if (typeof game.global.otherPlayers[player.id] == 'undefined' ) {
 							game.global.otherPlayers[player.id] = {
 									image : game.add.sprite(player.posX, player.posY, 'spacewar', player.shipType),
-									playerIsGhost : player.isGhost
+									playerIsGhost : player.isGhost,
+									name : game.add.text(player.posX, player.posY - 40, player.name ,otherstyle)
 							}
 							console.log("NAME IS " + player.name)
 							game.global.otherPlayers[player.id].image.anchor.setTo(0.5, 0.5)
@@ -167,6 +168,9 @@ window.onload = function() {
 							game.global.otherPlayers[player.id].image.x = player.posX
 							game.global.otherPlayers[player.id].image.y = player.posY
 							game.global.otherPlayers[player.id].image.angle = player.facingAngle
+							game.global.otherPlayers[player.id].name.x = player.posX-40;
+							game.global.otherPlayers[player.id].name.y = player.posY-40;
+							game.global.otherPlayers[player.id].name.fontSize = 20
 							
 							}
 							else{
