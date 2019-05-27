@@ -23,42 +23,46 @@ public class Chat {
 	private BlockingQueue<ObjectNode> messages;
 	private Map<Integer, Player> playerMap;
 	private ObjectMapper mapper;
-	private CyclicBarrier barrier;
+	// private CyclicBarrier barrier;
 	private Executor executor;
 
 	public Chat(Map<Integer, Player> playerMap) {
 		this.playerMap = playerMap;
 		messages = new LinkedBlockingQueue<ObjectNode>();
 		mapper = new ObjectMapper();
-		barrier = new CyclicBarrier(1, () -> deleteMessage());
+		// barrier = new CyclicBarrier(1, () -> deleteMessage());
 		executor = Executors.newCachedThreadPool();
 	}
 
 	public void receiveMessage(JsonNode msg) {
 		GregorianCalendar calendar = new GregorianCalendar();
-		String messageText = msg.get("player").asText()
-				+ " (" + calendar.get(Calendar.HOUR_OF_DAY)
-				+ ":" + calendar.get(Calendar.MINUTE) +"): "
-				+ msg.get("message").asText() + "\n";
+		String messageText = msg.get("player").asText() + " (" + calendar.get(Calendar.HOUR_OF_DAY) + ":"
+				+ calendar.get(Calendar.MINUTE) + "): " + msg.get("message").asText() + "\n";
 		broadcastMessage(messageText);
 	}
 
-	//función que manda mensajes a todos los jugadores
-	//utiliza hilos para mandarlo a todos y luego la cyclic barrier al llegar todos
-	//borra el mensaje de la pila
+	// función que manda mensajes a todos los jugadores
+	// utiliza hilos para mandarlo a todos y luego la cyclic barrier al llegar todos
+	// borra el mensaje de la pila
 	public void broadcastMessage(String messageText) {
 		ObjectNode message = mapper.createObjectNode();
 		message.put("event", "chatMessageReception");
 		message.put("messageText", messageText);
 		messages.add(message);
-		barrier.reset();
-		for (Player player : playerMap.values()) {
-			executor.execute(() -> sendMessage(player.getPlayerId()));
+		synchronized (playerMap) {
+			// barrier.reset();
+			if (playerMap.size() > 0) {
+				CyclicBarrier barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
+
+				for (Player player : playerMap.values()) {
+					executor.execute(() -> sendMessage(player.getPlayerId(), barrier));
+				}
+			}
 		}
 	}
 
-	//función que manda un mensaje a un jugador
-	private void sendMessage(int id) {
+	// función que manda un mensaje a un jugador
+	private void sendMessage(int id, CyclicBarrier barrier) {
 		try {
 			playerMap.get(id).sendMessage(messages.peek().toString());
 			barrier.await();
@@ -68,8 +72,9 @@ public class Chat {
 		}
 	}
 
-	//método que borra el primer mensaje de la pila
-	//lo llama la cyclic barrier cuando el mensaje se ha enviado a todos los jugadores
+	// método que borra el primer mensaje de la pila
+	// lo llama la cyclic barrier cuando el mensaje se ha enviado a todos los
+	// jugadores
 	private void deleteMessage() {
 		try {
 			messages.take();
@@ -79,27 +84,29 @@ public class Chat {
 		}
 	}
 
-	//método para añadir jugadores al chat
+	// método para añadir jugadores al chat
 	public void addPlayer(Player player) {
 		playerMap.put(player.getPlayerId(), player);
-		barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
+		// barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
 		broadcastMessage("Ha entrado " + player.getName() + " en la sala");
 	}
 
-	//método para quitar jugadores del chat
+	// método para quitar jugadores del chat
 	public void removePlayer(int id) {
 		String message = "Ha salido " + playerMap.get(id).getName() + " de la sala";
 		playerMap.remove(id);
-		barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
+		// barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
 		broadcastMessage(message);
 
 	}
 
-	//sobrecarga del método anterior
+	// sobrecarga del método anterior
 	public void removePlayer(Player player) {
 		String message = "Ha salido " + player.getName() + " de la sala";
-		playerMap.remove(player.getPlayerId());
-		barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
+		if (playerMap.containsKey(player.getPlayerId()))
+			playerMap.remove(player.getPlayerId());
+		// barrier.reset();
+		// barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
 		broadcastMessage(message);
 	}
 
