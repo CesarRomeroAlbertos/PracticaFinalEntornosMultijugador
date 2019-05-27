@@ -22,6 +22,7 @@ Spacewar.lobbyState.prototype = {
 	},
 
 	create : function() {
+		game.add.tileSprite(0, 0,1024, 600, "roomsbackground");
 		
 		let requestmsg = {
 				event : "REQUEST ALL EXISTING ROOMS"
@@ -35,7 +36,7 @@ Spacewar.lobbyState.prototype = {
 		div.setAttribute("id","deletethis")
 		div.style.width = "700px";
 		div.style.height = "300px";
-		div.style.background = "red";
+		div.style.background = "rgba(182, 54, 236, 0.68)"; 
 		div.style.color = "white";
 		div.style.position = "absolute";
 		div.style.zIndex = "1000";
@@ -64,14 +65,7 @@ Spacewar.lobbyState.prototype = {
 			game.global.socket.send(JSON.stringify(roommsg))
 		}
 		
-		function joinaroom(){
-			let message = {
-					event : 'JOIN ROOM',
-					id : game.global.myPlayer.id
-					
-				}
-				game.global.socket.send(JSON.stringify(message))
-		}
+		
 		
 		function makeroomprompt(){
 			 let rname = prompt("Name your room");

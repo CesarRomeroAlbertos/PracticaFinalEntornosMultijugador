@@ -52,14 +52,14 @@ function updateRoomTable(nombrecreador,nombresala,idsala ,gentedentro , capacida
 		 var rowbutton = document.createElement("button")
 		 rowbutton.innerHTML = "join"
 		 rowbutton.addEventListener ("click", function() {
-				 
+				 let myid = roomid.innerHTML
 			 let msg = {
 					 event : "JOIN EXISTING ROOM",
-					 roomid : roomid.innerHTML
+					 roomid : myid
 			 }
 			 
 			 game.global.socket.send(JSON.stringify(msg))
-			 startnext()
+			 
 				});
 	
 			 rowbuttonspace.appendChild(rowbutton)

@@ -2,6 +2,13 @@ Spacewar.menuState = function(game) {
 
 }
 
+
+function goToLobby(){
+	if (typeof game.global.myPlayer.id !== 'undefined' && typeof game.global.myPlayer.name !== "undefined") {
+		game.state.start('lobbyState')
+}
+}
+
 Spacewar.menuState.prototype = {
 
 	init : function() {
@@ -38,12 +45,12 @@ Spacewar.menuState.prototype = {
 		 }
 		 //game.global.myPlayer.name = person
 		}
-		var  menubutton = game.add.button(game.world.centerX-200 ,game.world.centerY, "namebutton" , showPrompt, this);
+		var  menubutton = game.add.button(game.world.centerX ,game.world.centerY, "namebutton" , showPrompt, this);
+		menubutton.anchor.setTo(0.5)
 	},
 
 	update : function() {
-		if (typeof game.global.myPlayer.id !== 'undefined' && typeof game.global.myPlayer.name !== "undefined") {
-			game.state.start('lobbyState')
+		
 		}
-	}
+	
 }

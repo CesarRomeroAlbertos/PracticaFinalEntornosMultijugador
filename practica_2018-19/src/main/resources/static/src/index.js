@@ -40,6 +40,9 @@ window.onload = function() {
 		var msg = JSON.parse(message.data)
 		//console.log(msg.event)
 		switch (msg.event) {
+		case "ROOM DENIED":
+			alert("Esta sala esta llena , no puedes conectarte")
+			break
 		
 		case "CLEAR TABLE":
 			tableisClear()
@@ -68,6 +71,8 @@ window.onload = function() {
 			}
 
 			game.global.socket.send(JSON.stringify(requestroomstatus))
+			
+			startnext()
 		
 			break
 		
@@ -77,7 +82,7 @@ window.onload = function() {
 		
 		case "ROOM STATUS":
 			game.global.myPlayer.playersWithMe.text = msg.playersinside + "/" + msg.totalcapacity 
-			//game.global.myPlayer.playersWithMeReady = game.add.text(250, 24, '', { fill: '#42f4c5' });
+			game.global.myPlayer.playersWithMeReady.text = msg.playersready + "/" + msg.totalcapacity
 			break
 		case "chatMessageReception":
 			console.log("tienes un mensaje")
@@ -88,6 +93,7 @@ window.onload = function() {
 		case "SET NAME" :
 			if(msg.id == game.global.myPlayer.id){
 			game.global.myPlayer.name = msg.name
+			goToLobby();
 			}
 			else{
 				game.global.otherPlayers[msg.id].name = msg.name

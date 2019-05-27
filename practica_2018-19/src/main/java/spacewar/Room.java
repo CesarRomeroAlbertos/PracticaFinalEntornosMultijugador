@@ -87,6 +87,20 @@ public class Room {
 
 	// aumenta el contador de personas en la sala y añade a la persona al mapa,
 	// pero si la sala ya está llena devuelve false
+	
+	public int getNReady() {
+		int nready = 0;
+		synchronized(playerMap) {
+			for (Player player : playerMap.values()) {
+				if(player.getReady()) {
+					nready++;
+				}
+			}
+			return nready;
+		}
+	}
+	
+	
 	public boolean addPlayer(Player player)   {
 synchronized(playerMap) {
 		if (peopleInside.get() < capacity) {
@@ -124,6 +138,7 @@ synchronized(playerMap) {
 
 		if (peopleInside.get() < capacity && state != State.Waiting) {
 			state = State.Waiting;
+			roomManager.roomIsWaiting(this);
 		}
 		if (peopleInside.get() == 0)
 			roomManager.deleteRoom(this);

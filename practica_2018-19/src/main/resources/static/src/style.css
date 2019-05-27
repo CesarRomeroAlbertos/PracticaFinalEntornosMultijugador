@@ -1,12 +1,25 @@
-
 .cDiv {
-	position : relative;
+	position: relative;
+	left: 1024px;
+
 	
 }
+
 .cTable {
-    background-color: #7bf0ff;
-     overflow:auto;
-     height : 275px;
-     width:70%;
-    
+	
+	background: rgba(182, 54, 236, 0.68); 
+	overflow: auto;
+	height:560px;
+	width: 40%;
+	color : white; 
+	
+	
+	
+}
+.gDiv {
+	position : absolute;
+}
+
+.creditsDiv {
+	color: white; 
 }
