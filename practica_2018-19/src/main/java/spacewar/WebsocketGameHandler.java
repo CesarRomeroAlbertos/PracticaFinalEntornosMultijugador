@@ -86,7 +86,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				
 				
 			case "SEND BACK TO LOBBY" : 
-				roomManager.removePlayer(player);
+				roomManager.removeForLobby(player);
 				player.setWaiting(false);
 				player.setReady(false);
 				player.setIsResults(false);

@@ -67,10 +67,12 @@ Spacewar.lobbyState.prototype = {
 	
 		var newroomname
 		
-		function makearoom(rname){
+		async function makearoom(rname){
+		  console.log(game.global.myPlayer)
+		 let myname = String(game.global.myPlayer.name)
 			let roommsg = {
 			event : "MAKE ROOM",
-			roomcreator : game.global.myPlayer.name,
+			roomcreator : myname,
 			roomname : rname 
 			}
 			game.global.socket.send(JSON.stringify(roommsg))

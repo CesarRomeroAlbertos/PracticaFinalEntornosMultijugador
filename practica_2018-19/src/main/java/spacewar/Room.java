@@ -135,6 +135,9 @@ public class Room {
 	// Reduce el contador de personas dentro de la sala y quita al jugador del mapa
 	// de jugadores
 	// Si no quedan jugadores en la sala la borra
+	
+	
+	
 	public void RemovePlayer(Player player) {
 		synchronized (playerMap) {
 			player.setWaiting(false);

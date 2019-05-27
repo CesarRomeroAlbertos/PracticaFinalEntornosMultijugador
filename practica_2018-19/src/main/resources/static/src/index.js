@@ -124,6 +124,7 @@ window.onload = function() {
 			paintNewestMessage(latestChatMessage)
 			break
 			
+		
 		case "SET NAME" :
 			if(msg.id == game.global.myPlayer.id){
 			game.global.myPlayer.name = msg.name
@@ -269,17 +270,7 @@ window.onload = function() {
 			}
 	
 		break;
-		case "PLAYER RESURECTS":
-			if(msg.id == game.global.myPlayer.id){
-			game.global.myPlayer.playerIsGhost = false
-			game.global.myPlayer.health = 1 // hardcoded
-			game.global.myPlayer.name = "undefined"
-			}
-			else{
-				game.global.otherPlayers[msg.id].playerIsGhost = false
-			}
-	
-		break;
+
 		case 'REMOVE PLAYER' :
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] REMOVE PLAYER message recieved')

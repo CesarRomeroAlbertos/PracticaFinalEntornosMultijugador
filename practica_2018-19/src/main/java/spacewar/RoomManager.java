@@ -315,6 +315,14 @@ public class RoomManager {
 
 	// método para borrar a un jugador, el cual busca la sala del mismo y la
 	// notifica
+	
+	public void removeForLobby(Player player) {
+		noRoomPlayers.put(player.getPlayerId(), player);
+		this.removePlayer(player);
+			
+		}
+	
+	
 	public void removePlayer(Player player) {
 		if (fullRooms.containsKey(player.GetRoomId()))
 			fullRooms.get(player.GetRoomId()).RemovePlayer(player);
