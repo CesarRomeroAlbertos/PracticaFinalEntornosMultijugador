@@ -69,6 +69,10 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				roomManager.sendPlayerReady(player , node.get("roomid").asInt());
 				break;
 				
+			case "PLAYER HAS CANCELED":
+				roomManager.sendPlayerCanceled(player , node.get("roomid").asInt());
+				break;
+				
 			case "REQUEST ALL EXISTING ROOMS":
 				roomManager.updateMyTable(player);
 				break;

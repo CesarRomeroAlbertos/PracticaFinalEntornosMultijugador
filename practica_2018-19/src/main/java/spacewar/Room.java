@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Room {
@@ -39,11 +40,10 @@ public class Room {
 	private RoomManager roomManager;
 	private Chat chat;
 	private SpacewarGame game;
+	private ObjectMapper mapper = new ObjectMapper();
 
-	public void initMeteorites() {
-		// Poner meteoritos en el mapa de meteoritos , habra que asignarles ids de forma
-		// concurente
-	}
+
+
 
 	// inicializa las variables y estructuras de la clase
 	// y asocia el room manager para poder controlar cuando se borra la sala
@@ -60,6 +60,18 @@ public class Room {
 
 	}
 
+	
+	public void playerCanceled(Player player) {
+		synchronized(playerMap) {
+			player.setReady(false);
+			this.RemovePlayer(player);
+			ObjectNode msg = mapper.createObjectNode();
+			msg.put("event", "CANCELED UPDATE");
+			player.sendMessage(msg.toString());
+			
+			
+		}
+	}
 	
 	
 	public void readyAndCheck(Player player)  {

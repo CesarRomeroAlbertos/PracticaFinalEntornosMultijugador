@@ -162,6 +162,14 @@ public class RoomManager {
 		waitingRoomsMap.get(GameStyle.battleRoyale).put(room.getId(), room);
 	}
 	
+	public void sendPlayerCanceled(Player player , int roomid) {
+		if (waitingRoomsMap.get(GameStyle.battleRoyale).containsKey(roomid)) {
+			waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).playerCanceled(player);
+			}else if(fullRooms.containsKey(roomid)) {
+			fullRooms.get(roomid).playerCanceled(player);
+			}
+	}
+	
 	public void sendPlayerReady(Player player , int roomid)  {
 		
 		if (waitingRoomsMap.get(GameStyle.battleRoyale).containsKey(roomid)) {

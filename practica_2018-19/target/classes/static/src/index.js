@@ -67,6 +67,10 @@ window.onload = function() {
 			startnext()
 		
 			break
+			
+		case "CANCELED UPDATE":
+			goToLobby()
+			break;
 		
 		case "UPDATE ROOM TABLE":
 			updateRoomTable(msg.roomcreator,msg.roomname,msg.roomid , msg.playersinside , msg.totalcapacity)

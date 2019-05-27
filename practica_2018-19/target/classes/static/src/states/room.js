@@ -35,6 +35,14 @@ Spacewar.roomState.prototype = {
 		var thediv = document.getElementById("deletethis")
 		  thediv.parentNode.removeChild(thediv);
 		
+		function cancelReady(){
+			let cancelmsg = {
+					event: "PLAYER HAS CANCELED",
+					roomid : game.global.room.id
+			}
+			game.global.socket.send(JSON.stringify(cancelmsg))
+
+		}
 		
 		function imReady () {
 			console.log("IM READY")
@@ -52,6 +60,9 @@ Spacewar.roomState.prototype = {
 		
 		var readybutton = game.add.button(game.world.centerX ,game.world.centerY, "readybutton" , imReady, this);
 		readybutton.anchor.setTo(0.5)
+		var cancelbutton = game.add.button(game.world.centerX ,game.world.centerY+75, "cancelbutton" , cancelReady, this);
+		cancelbutton.anchor.setTo(0.5)
+
 
 	},
 
