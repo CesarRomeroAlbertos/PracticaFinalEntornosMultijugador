@@ -136,6 +136,7 @@ public class Room {
 	// Si no quedan jugadores en la sala la borra
 	public void RemovePlayer(Player player) {
 		synchronized (playerMap) {
+			player.setWaiting(false);
 			peopleInside.decrementAndGet();
 			playerMap.remove(player.getPlayerId());
 			chat.removePlayer(player);

@@ -24,12 +24,10 @@ Spacewar.lobbyState.prototype = {
 	create : function() {
 		game.add.tileSprite(0, 0,1024, 600, "roomsbackground");
 		
-		let requestmsg = {
-				event : "REQUEST ALL EXISTING ROOMS"
-				
-		}
-		game.global.socket.send(JSON.stringify(requestmsg))
+	
 
+		
+	  function loadRoomTableSurface(){
 		
 		var gamediv = document.getElementById("gameDiv")
 		var div = document.createElement("div");
@@ -51,7 +49,17 @@ Spacewar.lobbyState.prototype = {
 
 		div.appendChild(roomtablediv)
 		roomtablediv.appendChild(roomtable)
+		}
 		
+	  async function requestRoomTableData(){
+		  await(loadRoomTableSurface())
+			let requestmsg = {
+					event : "REQUEST ALL EXISTING ROOMS"
+					
+			}
+			game.global.socket.send(JSON.stringify(requestmsg))
+	  }
+	  requestRoomTableData()
 	
 	
 		var newroomname

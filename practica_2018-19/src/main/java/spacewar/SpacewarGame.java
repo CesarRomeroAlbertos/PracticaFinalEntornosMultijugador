@@ -141,6 +141,10 @@ public class SpacewarGame {
 		}
 	}
 	
+	public void forceAllPlayersOut(){
+		
+	}
+	
 	private void checkGhosts() {
 		int alivecount = 0 ; 
 		for (Player player : players.values()) {
@@ -154,6 +158,7 @@ public class SpacewarGame {
 		if(alivecount <= 1) {
 			System.out.println("El juego ha terminado");
 			this.stopGameLoop();
+			forceAllPlayersOut();
 		}
 	}
 

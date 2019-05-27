@@ -4,6 +4,7 @@ var currentRoomRows = 0
 function clearTable(){
 	
 	var table = document.getElementById("roomtable")
+	if( document.getElementById("roomtable").rows.length > 0){
 	
 	for(var i = document.getElementById("roomtable").rows.length; i > 0;i--)
 {
@@ -11,6 +12,7 @@ document.getElementById("roomtable").deleteRow(i -1);
 }
 	
 	currentRoomRows = 0 
+	}
 }
 
 async function tableisClear(){

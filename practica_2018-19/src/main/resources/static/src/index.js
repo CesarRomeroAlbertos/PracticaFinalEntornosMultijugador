@@ -3,7 +3,7 @@ window.onload = function() {
 	game = new Phaser.Game(1024, 600, Phaser.AUTO, 'gameDiv')
 
 	// GLOBAL VARIABLES
-	//No meter nada aqui bajo ninguna circunstancia
+	// No meter nada aqui bajo ninguna circunstancia
 	game.global = {
 		FPS : 30,
 		DEBUG_MODE : false,
@@ -38,7 +38,7 @@ window.onload = function() {
 	
 	game.global.socket.onmessage = (message) => {
 		var msg = JSON.parse(message.data)
-		//console.log(msg.event)
+		// console.log(msg.event)
 		switch (msg.event) {
 		case "ROOM DENIED":
 			alert("Esta sala esta llena , no puedes conectarte")
@@ -84,7 +84,15 @@ window.onload = function() {
 			break
 			
 		case "CANCELED UPDATE":
-			goToLobby()
+			function cWait(){
+			game.global.myPlayer.isWaiting = false
+			}
+			async function gTL(){
+				await(cWait())
+				goToLobby()
+
+			}
+			gTL()
 			break;
 		
 		case "UPDATE ROOM TABLE":
@@ -137,7 +145,7 @@ window.onload = function() {
 			}
 			break
 		case 'GAME STATE UPDATE' :
-			//console.log("entra en game state update")
+			// console.log("entra en game state update")
 
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] GAME STATE UPDATE message recieved')
@@ -249,7 +257,7 @@ window.onload = function() {
 		case "PLAYER RESURECTS":
 			if(msg.id == game.global.myPlayer.id){
 			game.global.myPlayer.playerIsGhost = false
-			game.global.myPlayer.health = 1 //hardcoded
+			game.global.myPlayer.health = 1 // hardcoded
 			game.global.myPlayer.name = "undefined"
 			}
 			else{
