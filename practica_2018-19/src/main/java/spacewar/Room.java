@@ -138,6 +138,7 @@ synchronized(playerMap) {
 
 		if (peopleInside.get() < capacity && state != State.Waiting) {
 			state = State.Waiting;
+			roomManager.roomIsWaiting(this);
 		}
 		if (peopleInside.get() == 0)
 			roomManager.deleteRoom(this);

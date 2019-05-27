@@ -157,9 +157,18 @@ public class RoomManager {
 		}
 		
 	}
+	public void roomIsWaiting(Room room) {
+		fullRooms.remove(room.getId());
+		waitingRoomsMap.get(GameStyle.battleRoyale).put(room.getId(), room);
+	}
 	
 	public void sendPlayerReady(Player player , int roomid)  {
+		
+		if (waitingRoomsMap.get(GameStyle.battleRoyale).contains(roomid)) {
 		waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).readyAndCheck(player);
+		}else if(fullRooms.contains(roomid)) {
+		fullRooms.get(roomid).readyAndCheck(player);
+		}
 	}
 
 	public void createNewRoom(GameStyle gameStyle, String roomname, String roomcreator) {
