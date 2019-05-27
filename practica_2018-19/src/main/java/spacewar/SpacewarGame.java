@@ -56,14 +56,14 @@ public class SpacewarGame {
 	}
 	
 	public void getGhostInfo(Player askingplayer) {
-		int position = 1 ;
+		int position = ghosts.size() ;
 		for(Player player : ghosts) {
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event","UPDATE SCORE TABLE");
 			msg.put("playername", player.getName());
 			msg.put("position", position);
 			askingplayer.sendMessage(msg.toString());
-			position++;
+			position--;
 		}
 	}
 	
@@ -142,6 +142,23 @@ public class SpacewarGame {
 	}
 	
 	public void forceAllPlayersOut(){
+		for(Player selplayer : players.values()) {
+			ghosts.add(selplayer);
+			selplayer.setIsResults(true);
+			ObjectNode msg = mapper.createObjectNode();
+			msg.put("event", "FORCE SCORES");
+			selplayer.sendMessage(msg.toString());
+			
+			
+		}
+		for (Player selplayer2 : ghosts) {
+			if(selplayer2.getGhost()) {
+			selplayer2.setIsResults(true);
+			ObjectNode msg2 = mapper.createObjectNode();
+			msg2.put("event", "FORCE SCORES");
+			selplayer2.sendMessage(msg2.toString());
+			}
+		}
 		
 	}
 	

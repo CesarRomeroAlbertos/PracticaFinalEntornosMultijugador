@@ -56,6 +56,11 @@ window.onload = function() {
 			game.state.start('gameState')
 			break
 			
+		case "FORCE SCORES" :
+			game.global.myPlayer.isResults = true
+			game.state.start("scoresState")
+			break
+			
 		case "AMMO UPDATE":
 			console.log("ammo =" + msg.ammo)
 			game.global.myPlayer.ammo = msg.ammo
