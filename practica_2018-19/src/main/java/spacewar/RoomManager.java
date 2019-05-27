@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import spacewar.Room.GameStyle;
+import spacewar.Room.State;
 
 public class RoomManager {
 	private Executor roomExecutor;
@@ -61,14 +62,27 @@ public class RoomManager {
 	public void addNoRoomPlayer(Player player) {
 		noRoomPlayers.put(player.getPlayerId(), player);
 	}
-	
-	public void auxStartGame(int roomid , Player player)  {
-	 waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).addPlayer(player);
-	}
-	
+
 	
 	public void updateMyTable(Player player) {
 		for (Room room : waitingRoomsMap.get(GameStyle.battleRoyale).values()) {
+			
+			ObjectNode msg = mapper.createObjectNode();
+			msg.put("event", "UPDATE ROOM TABLE");
+			msg.put("roomname", room.name);
+			msg.put("roomcreator", room.creator);
+			msg.put("roomid", room.getId());
+			msg.put("playersinside", room.getPeopleInside());
+			msg.put("totalcapacity", room.capacity);
+			roomExecutor.execute(()->{try {
+				player.sendMessage(msg.toString());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}});			
+		
+	}
+	for (Room room :fullRooms.values()) {
 			
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "UPDATE ROOM TABLE");
@@ -90,6 +104,23 @@ public class RoomManager {
 	
 	public void updateAllTableOf(Player player) {
 		for (Room room : waitingRoomsMap.get(GameStyle.battleRoyale).values()) {
+			
+			ObjectNode msg = mapper.createObjectNode();
+			msg.put("event", "UPDATE ROOM TABLE");
+			msg.put("roomname", room.name);
+			msg.put("roomcreator", room.creator);
+			msg.put("roomid", room.getId());
+			msg.put("playersinside", room.getPeopleInside());
+			msg.put("totalcapacity", room.capacity);
+			roomExecutor.execute(()->{try {
+				player.sendMessage(msg.toString());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}});			
+		
+	}
+		for (Room room :fullRooms.values()) {
 			
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "UPDATE ROOM TABLE");
@@ -151,6 +182,7 @@ public class RoomManager {
 			msg.put("roomid", room.getId());
 			msg.put("roomname",room.name);
 			player.sendMessage(msg.toString());
+				
 		} else {
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "ROOM DENIED");
@@ -190,7 +222,6 @@ public class RoomManager {
 		
 		waitingRoomsMap.get(style).remove(roomid);
 		fullRooms.put(roomid, room);
-		clearAllTables();
 	}
 	// Vamos a dejar esto por si nos hace falta para el matchmaking
 	public void ConnectNewPlayer(Player player, GameStyle gameStyle){

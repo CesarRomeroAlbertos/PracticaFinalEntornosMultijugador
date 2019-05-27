@@ -40,6 +40,9 @@ window.onload = function() {
 		var msg = JSON.parse(message.data)
 		//console.log(msg.event)
 		switch (msg.event) {
+		case "ROOM DENIED":
+			alert("Esta sala esta llena , no puedes conectarte")
+			break
 		
 		case "CLEAR TABLE":
 			tableisClear()
@@ -61,6 +64,7 @@ window.onload = function() {
 			game.global.room.name= msg.roomname
 			game.global.room.id = msg.roomid
 			game.global.myPlayer.isWaiting = true 
+			startnext()
 		
 			break
 		

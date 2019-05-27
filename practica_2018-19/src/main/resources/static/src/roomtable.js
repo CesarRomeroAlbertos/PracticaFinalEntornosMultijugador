@@ -53,7 +53,7 @@ function updateRoomTable(nombrecreador,nombresala,idsala ,gentedentro , capacida
 			 }
 			 
 			 game.global.socket.send(JSON.stringify(msg))
-			 startnext()
+			 
 				});
 	
 			 rowbuttonspace.appendChild(rowbutton)

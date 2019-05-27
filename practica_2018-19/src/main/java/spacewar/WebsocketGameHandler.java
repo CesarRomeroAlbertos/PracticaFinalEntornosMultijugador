@@ -96,10 +96,7 @@ public class WebsocketGameHandler extends TextWebSocketHandler {
 				roomManager.addNoRoomPlayer(player);
 				player.sendMessage(msg.toString());
 				break;
-				
-			case "AUX START GAME":
-				roomManager.auxStartGame(node.get("roomid").asInt(), player);
-				break;
+		
 				
 			case "JOIN EXISTING ROOM":
 			    roomManager.ConnectToExisting(player, GameStyle.battleRoyale, node.get("roomid").asInt());

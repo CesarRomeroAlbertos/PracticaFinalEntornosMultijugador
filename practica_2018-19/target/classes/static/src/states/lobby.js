@@ -36,8 +36,7 @@ Spacewar.lobbyState.prototype = {
 		div.setAttribute("id","deletethis")
 		div.style.width = "700px";
 		div.style.height = "300px";
-		div.style.background = "mediumpurple";
-		div.style.opacity = 0.5;
+		div.style.background = "rgba(182, 54, 236, 0.68)"; 
 		div.style.color = "white";
 		div.style.position = "absolute";
 		div.style.zIndex = "1000";
