@@ -105,6 +105,7 @@ public class RoomManager {
 	public void updateAllTableOf(Player player) {
 		
 		for (Room room : waitingRoomsMap.get(GameStyle.battleRoyale).values()) {
+			if(!player.getWaiting()) {
 			
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "UPDATE ROOM TABLE");
@@ -119,6 +120,7 @@ public class RoomManager {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}});			
+			}
 		
 	}
 		for (Room room :fullRooms.values()) {
@@ -195,6 +197,7 @@ public class RoomManager {
 			Room room = waitingRoomsMap.get(gameStyle).get(id);
 			room.addPlayer(player);
 			noRoomPlayers.remove(player.getPlayerId());
+			player.setWaiting(true);
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "ROOM ASIGNED");
 			msg.put("roomid", room.getId());
