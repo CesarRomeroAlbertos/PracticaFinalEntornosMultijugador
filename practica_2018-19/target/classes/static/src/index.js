@@ -70,8 +70,10 @@ window.onload = function() {
 			break
 			
 		case "UPDATE SCORE TABLE":
+			if(document.getElementById("scoretable")){
 			if(game.global.myPlayer.isResults){
 			updateScoreTable(msg.playername,msg.position)
+			}
 			}
 		
 			break
@@ -95,6 +97,8 @@ window.onload = function() {
 		case "CANCELED UPDATE":
 			function cWait(){
 			game.global.myPlayer.isWaiting = false
+			game.global.myPlayer.isResults= false
+
 			}
 			async function gTL(){
 				await(cWait())

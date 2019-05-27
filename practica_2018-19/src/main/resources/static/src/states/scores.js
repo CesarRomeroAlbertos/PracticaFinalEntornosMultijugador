@@ -43,6 +43,28 @@ Spacewar.scoresState.prototype = {
 			game.global.socket.send(JSON.stringify(scoremsg))
 		}
 		requestInfo()
+		
+		
+		async function backtolobby(){
+			
+			await(document.getElementById("deletethis2"))
+
+			let btlmsg = {
+					event : "SEND BACK TO LOBBY"
+					
+			}
+			game.global.socket.send(JSON.stringify(btlmsg))
+			
+		}
+		function actuallyquit(){
+			console.log("we quit!")
+		}
+		
+		
+		var backtolobbybutton = game.add.button(game.world.centerX-75 ,game.world.centerY + 200, "backtolobbybutton" , backtolobby, this);
+		var actualquitbutton = game.add.button(game.world.centerX+75 ,game.world.centerY + 200, "actualquitbutton" , actuallyquit, this);
+		
+		
 	
 	},
 

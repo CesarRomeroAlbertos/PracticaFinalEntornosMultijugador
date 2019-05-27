@@ -6,7 +6,7 @@ var currentResultsRows = 0
 function clearScoreTable(){
 	
 	var stable = document.getElementById("scoretable")
-		if( document.getElementById("roomtable").rows.length > 0){
+		if( document.getElementById("scoretable").rows.length > 0){
 	
 	for(var j = document.getElementById("scoretable").rows.length; j > 0 ;  j--)
 {

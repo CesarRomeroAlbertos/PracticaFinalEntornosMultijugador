@@ -82,7 +82,8 @@ public class Room {
 
 			if (allready && state == State.Full) {
 				System.out.println("All players are ready");
-
+				this.state = State.Playing;
+				roomManager.clearAllTables();
 				startGame();
 			} else {
 				System.out.println("Not all players are ready");

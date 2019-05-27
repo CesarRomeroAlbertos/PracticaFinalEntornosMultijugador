@@ -84,17 +84,7 @@ Spacewar.gameState.prototype = {
 			game.global.socket.send(JSON.stringify(scmsg))
 		}
 		
-		async function backtoMenu(){
-			console.log("Backtomenu")
-			let msg = {
-				event : "PLAYER LEFT",
-				id:  game.global.myPlayer.id
-			}
-			await(game.global.socket.send(JSON.stringify(msg)))
-			game.state.start('menuState')
-
-
-		}
+	
 		quitbutton = game.add.button(game.world.centerX-175 ,game.world.centerY, "quitbutton" , goToScores, this);
 		quitbutton.alpha= 0;
 		quitbutton.inputEnabled = false

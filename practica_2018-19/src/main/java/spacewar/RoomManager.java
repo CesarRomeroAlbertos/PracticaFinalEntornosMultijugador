@@ -83,7 +83,7 @@ public class RoomManager {
 		
 	}
 	for (Room room :fullRooms.values()) {
-			
+			if(room.state != State.Playing) {
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "UPDATE ROOM TABLE");
 			msg.put("roomname", room.name);
@@ -97,6 +97,7 @@ public class RoomManager {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}});			
+			}
 		
 	}
 		
@@ -124,7 +125,7 @@ public class RoomManager {
 		
 	}
 		for (Room room :fullRooms.values()) {
-			
+			if (room.state != State.Playing) {
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "UPDATE ROOM TABLE");
 			msg.put("roomname", room.name);
@@ -138,6 +139,7 @@ public class RoomManager {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}});			
+			}
 		
 	}
 	}
