@@ -54,7 +54,8 @@ window.onload = function() {
 			break
 			
 		case "AMMO UPDATE":
-			game.global.myPlayer.ammo -= 1 
+			console.log("ammo =" + msg.ammo)
+			game.global.myPlayer.ammo = msg.ammo
 			game.global.myPlayer.myAmmoCounter.text =  game.global.myPlayer.ammo;
 
 			
@@ -145,6 +146,7 @@ window.onload = function() {
 						game.global.myPlayer.image.x = player.posX
 						game.global.myPlayer.image.y = player.posY
 						game.global.myPlayer.image.angle = player.facingAngle
+						
 					} else {
 						if (typeof game.global.otherPlayers[player.id] == 'undefined' ) {
 							game.global.otherPlayers[player.id] = {
