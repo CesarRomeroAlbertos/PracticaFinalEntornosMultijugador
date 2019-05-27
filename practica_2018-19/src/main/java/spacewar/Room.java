@@ -144,7 +144,7 @@ public class Room {
 			roomManager.clearAllTables();
 			game.removePlayer(player);
 
-			if (peopleInside.get() < capacity && state != State.Waiting) {
+			if (peopleInside.get() < capacity && state != State.Waiting && state != State.Playing)  {
 				state = State.Waiting;
 				roomManager.roomIsWaiting(this);
 			}

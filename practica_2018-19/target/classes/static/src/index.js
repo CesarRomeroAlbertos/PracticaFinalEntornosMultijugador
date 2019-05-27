@@ -255,7 +255,9 @@ window.onload = function() {
 			}
 			game.global.socket.send(JSON.stringify(wmsg))
 		}
+		if(game.global.myPlayer.isResults){
 		waitforclear()
+		}
 		break
 		case "PLAYER GHOST":
 			if(msg.id == game.global.myPlayer.id){

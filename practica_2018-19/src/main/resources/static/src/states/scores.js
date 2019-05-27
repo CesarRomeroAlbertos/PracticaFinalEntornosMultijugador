@@ -44,10 +44,14 @@ Spacewar.scoresState.prototype = {
 		}
 		requestInfo()
 		
-		
+		function deleteScoreTable(){
+			var a = document.getElementById("deletethis2")
+			a.parentNode.removeChild(a);
+		}
 		async function backtolobby(){
+			await(deleteScoreTable())
 			
-			await(document.getElementById("deletethis2"))
+
 
 			let btlmsg = {
 					event : "SEND BACK TO LOBBY"
