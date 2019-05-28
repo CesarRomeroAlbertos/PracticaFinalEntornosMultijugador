@@ -15,6 +15,7 @@ Spacewar.roomState.prototype = {
 	},
 
 	create : function() {
+		
 		game.add.tileSprite(0, 0,1024, 600, "readybackground");
 
 		function loadTextvariables(){
