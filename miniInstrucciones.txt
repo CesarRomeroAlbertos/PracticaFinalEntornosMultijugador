@@ -1,0 +1,2 @@
+1.Una vez se ha entrado a la página web hacer click en Enter your Name to Play para poner un nombre y poder jugar 
+2.No pulsar enter para enviar mensajes en el chat , hacer click en el botón
