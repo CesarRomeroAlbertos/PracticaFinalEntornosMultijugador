@@ -15,13 +15,13 @@ function activateGhost(){
 	quitbutton.inputEnabled = true;
 }
 
-
+/*
 function reloadAmmo(){
 	setTimeout(() => {
-		  game.global.myPlayer.ammo = 20 // hardcoded
+		  game.global.myPlayer.ammo = 5 // hardcoded
 		  myAmmo.text = game.global.myPlayer.ammo;
 		}, 5000);
-}
+}*/
 
 
 Spacewar.gameState.prototype = {
@@ -33,7 +33,7 @@ Spacewar.gameState.prototype = {
 	},
 
 	preload : function() {
-		//game.global.myPlayer.ammo = 20 // hardcoded
+		game.global.myPlayer.ammo = 5 // hardcoded
 
 		// We create a procedural starfield background
 		for (var i = 0; i < this.numStars; i++) {
