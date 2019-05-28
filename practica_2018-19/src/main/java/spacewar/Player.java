@@ -31,7 +31,6 @@ public class Player extends Spaceship {
 	private boolean executorStarted = false;
 	private ObjectMapper mapper = new ObjectMapper();
 	private boolean isResults;
-	
 
 	// Constructor de la clase Player que inicializa sus variables
 	public Player(int playerId, WebSocketSession session) {
@@ -41,23 +40,29 @@ public class Player extends Spaceship {
 		this.isGhost = false;
 		this.ammoRecharger = Executors.newScheduledThreadPool(1);
 	}
+
+	// esta función se llama cada vez que el jugador dispara, y si se no ha
+	// inicializado el executor que
+	// recarga las balas lo inicializa
 	public void decrementAmmo() {
 		this.ammo.decrementAndGet();
-		if(!executorStarted)
-		{
-			ammoRecharger.scheduleAtFixedRate(()->rechargeBullet(), rechargeTime, rechargeTime, TimeUnit.MILLISECONDS);
+		if (!executorStarted) {
+			ammoRecharger.scheduleAtFixedRate(() -> rechargeBullet(), rechargeTime, rechargeTime,
+					TimeUnit.MILLISECONDS);
 			executorStarted = true;
 		}
 	}
-	
+
 	public void setIsResults(boolean r) {
 		this.isResults = r;
 	}
-	
+
 	public boolean getIsResults() {
 		return this.isResults;
 	}
 
+	// Este método recarga una bala y se llama desde un scheduled executor service
+	// en base al tiempo de recarga
 	private void rechargeBullet() {
 		synchronized (ammo) {
 			if (ammo.get() < maxAmmo)
@@ -66,7 +71,7 @@ public class Player extends Spaceship {
 
 		ObjectNode msg = mapper.createObjectNode();
 		msg.put("event", "AMMO UPDATE");
-		msg.put("ammo",getAmmo());
+		msg.put("ammo", getAmmo());
 		sendMessage(msg.toString());
 	}
 
@@ -77,6 +82,7 @@ public class Player extends Spaceship {
 	public int getAmmo() {
 		return this.ammo.get();
 	}
+
 	public void setWaiting(boolean w) {
 		this.isWaiting = w;
 

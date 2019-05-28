@@ -15,21 +15,20 @@ public class Room {
 	public String creator;
 	private final int id;
 	private ConcurrentHashMap<Integer, Player> playerMap;
-	private ConcurrentHashMap<Integer, Meteorite> meteoriteMap;
-	
-	//Mapa con las capacidades de cada modo de juego
+
+	// Mapa con las capacidades de cada modo de juego
 	private Map<GameStyle, Integer> capacityValues = new HashMap<GameStyle, Integer>() {
 		{
 			put(GameStyle.battleRoyale, 5);
 		}
 	};
 
-	//Enumerador con todos los posibles estados del juego
+	// Enumerador con todos los posibles estados del juego
 	public enum State {
 		Waiting, Full, Playing
 	}
 
-	//Modos de juego
+	// Modos de juego
 	public enum GameStyle {
 		battleRoyale
 	}
@@ -60,6 +59,7 @@ public class Room {
 
 	}
 
+	// metodo que se usa cuando un jugador sale de la sala antes de la partida
 	public void playerCanceled(Player player) {
 		synchronized (playerMap) {
 			player.setReady(false);
@@ -71,8 +71,8 @@ public class Room {
 		}
 	}
 
-	//Este método se llama cuando un jugador en la sala indica que está listo
-	//y si todos están listos inicia el juego
+	// Este método se llama cuando un jugador en la sala indica que está listo
+	// y si todos están listos inicia el juego
 	public void readyAndCheck(Player player) {
 		synchronized (playerMap) {
 			player.setReady(true);
@@ -97,9 +97,8 @@ public class Room {
 		}
 	}
 
-	// aumenta el contador de personas en la sala y añade a la persona al mapa,
-	// pero si la sala ya está llena devuelve false
-
+	// devuelve el número de jugadores de la sala que están listos para empezar la
+	// partida
 	public int getNReady() {
 		int nready = 0;
 		synchronized (playerMap) {
@@ -112,6 +111,8 @@ public class Room {
 		}
 	}
 
+	// aumenta el contador de personas en la sala y añade a la persona al mapa,
+	// pero si la sala ya está llena devuelve false
 	public boolean addPlayer(Player player) {
 		synchronized (playerMap) {
 			if (peopleInside.get() < capacity) {
@@ -149,7 +150,7 @@ public class Room {
 			roomManager.clearAllTables();
 			game.removePlayer(player);
 
-			if (peopleInside.get() < capacity && state != State.Waiting && state != State.Playing)  {
+			if (peopleInside.get() < capacity && state != State.Waiting && state != State.Playing) {
 				state = State.Waiting;
 				roomManager.roomIsWaiting(this);
 			}
@@ -173,7 +174,7 @@ public class Room {
 	public int getId() {
 		return this.id;
 	}
-	
+
 	// Este método es el que unseals la partida
 	public void startGame() {
 		synchronized (playerMap) {
@@ -186,18 +187,6 @@ public class Room {
 			game.startGameLoop();
 		}
 	}
-
-	/*
-	 * public void endGame() { game=null; }
-	 */
-
-	// Este método se usa cuando se borra a un jugador
-	// lo elimina del mapa y notifica al juego para que borre al jugador
-	/*
-	 * public void removePlayer(Player player) { synchronized(playerMap) {
-	 * playerMap.remove(player.getPlayerId()); if (game != null) {
-	 * game.removePlayer(player); } } }
-	 */
 
 	// Este método devuelve el juego, se usa para las funciones externas que
 	// necesitan

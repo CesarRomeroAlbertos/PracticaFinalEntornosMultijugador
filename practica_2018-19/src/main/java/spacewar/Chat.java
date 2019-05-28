@@ -30,10 +30,10 @@ public class Chat {
 		this.playerMap = playerMap;
 		messages = new LinkedBlockingQueue<ObjectNode>();
 		mapper = new ObjectMapper();
-		// barrier = new CyclicBarrier(1, () -> deleteMessage());
 		executor = Executors.newCachedThreadPool();
 	}
 
+	// Método que genera el texto para el chat a partir del mensaje recibido
 	public void receiveMessage(JsonNode msg) {
 		GregorianCalendar calendar = new GregorianCalendar();
 		String messageText = msg.get("player").asText() + " (" + calendar.get(Calendar.HOUR_OF_DAY) + ":"
@@ -61,7 +61,9 @@ public class Chat {
 		}
 	}
 
-	// función que manda un mensaje a un jugador
+	// función que manda un mensaje a un jugador y luego espera a la barrera que
+	// borra el mensaje de la pila de mensajes cuando todos los jugadores han
+	// recibido su mensaje
 	private void sendMessage(int id, CyclicBarrier barrier) {
 		try {
 			playerMap.get(id).sendMessage(messages.peek().toString());
@@ -87,7 +89,6 @@ public class Chat {
 	// método para añadir jugadores al chat
 	public void addPlayer(Player player) {
 		playerMap.put(player.getPlayerId(), player);
-		// barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
 		broadcastMessage("Ha entrado " + player.getName() + " en la sala");
 	}
 
@@ -95,7 +96,6 @@ public class Chat {
 	public void removePlayer(int id) {
 		String message = "Ha salido " + playerMap.get(id).getName() + " de la sala";
 		playerMap.remove(id);
-		// barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
 		broadcastMessage(message);
 
 	}
@@ -105,8 +105,6 @@ public class Chat {
 		String message = "Ha salido " + player.getName() + " de la sala";
 		if (playerMap.containsKey(player.getPlayerId()))
 			playerMap.remove(player.getPlayerId());
-		// barrier.reset();
-		// barrier = new CyclicBarrier(playerMap.size(), () -> deleteMessage());
 		broadcastMessage(message);
 	}
 

@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,84 +17,61 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class SpacewarGame {
 
-	//public final static SpacewarGame INSTANCE = new SpacewarGame();
+	// public final static SpacewarGame INSTANCE = new SpacewarGame();
 
 	private final static int FPS = 30;
 	private final static long TICK_DELAY = 1000 / FPS;
 	public final static boolean DEBUG_MODE = true;
 	public final static boolean VERBOSE_MODE = true;
-	
-	
 
 	ObjectMapper mapper = new ObjectMapper();
 	private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-	// GLOBAL GAME ROOM
 	private Map<String, Player> players = new ConcurrentHashMap<>();
 	private Map<Integer, Projectile> projectiles = new ConcurrentHashMap<>();
 	private AtomicInteger numPlayers = new AtomicInteger();
-	private ArrayBlockingQueue <Player> ghosts = new ArrayBlockingQueue<Player>(3);//Hardcoded
-
-	/*public SpacewarGame() {
-
-	}*/
+	private LinkedBlockingQueue<Player> ghosts = new LinkedBlockingQueue<Player>();
 
 	public void addNewGhost(Player player) throws InterruptedException {
-	player.setGhost();
-	ghosts.put(player);
-	ObjectNode msg = mapper.createObjectNode();
-	msg.put("event", "PLAYER GHOST");
-	msg.put("id", player.getPlayerId());
-	player.sendMessage(msg.toString());
-	
-	for (Player dedplayer : ghosts) {
-		ObjectNode msg2 = mapper.createObjectNode();
-		msg2.put("event", "CLEAR RESULTS TABLE");
-		dedplayer.sendMessage(msg2.toString());
+		player.setGhost();
+		ghosts.put(player);
+		ObjectNode msg = mapper.createObjectNode();
+		msg.put("event", "PLAYER GHOST");
+		msg.put("id", player.getPlayerId());
+		player.sendMessage(msg.toString());
 
+		for (Player dedplayer : ghosts) {
+			ObjectNode msg2 = mapper.createObjectNode();
+			msg2.put("event", "CLEAR RESULTS TABLE");
+			dedplayer.sendMessage(msg2.toString());
+
+		}
 	}
-	}
-	
+
+	// Este método se usa para actualizar los datos de las puntuaciones cuando muere
+	// un jugador
 	public void getGhostInfo(Player askingplayer) {
-		int position = ghosts.size() ;
-		for(Player player : ghosts) {
+		int position = ghosts.size();
+		for (Player player : ghosts) {
 			ObjectNode msg = mapper.createObjectNode();
-			msg.put("event","UPDATE SCORE TABLE");
+			msg.put("event", "UPDATE SCORE TABLE");
 			msg.put("playername", player.getName());
 			msg.put("position", position);
 			askingplayer.sendMessage(msg.toString());
 			position--;
 		}
 	}
-	
-	public void addPlayer(Player player)  {
+
+	public void addPlayer(Player player) {
 		players.put(player.getSession().getId(), player);
 
-		
-			ObjectNode msg = mapper.createObjectNode();
-			msg.put("event", "START GAME");
-			player.sendMessage(msg.toString());
-			
-			//this.startGameLoop();
-		
+		ObjectNode msg = mapper.createObjectNode();
+		msg.put("event", "START GAME");
+		player.sendMessage(msg.toString());
 	}
 
 	public Collection<Player> getPlayers() {
 		return players.values();
-	}
-
-	public void getforNames() {
-		ArrayNode arrayNodePlayers = mapper.createArrayNode();
-		ObjectNode json = mapper.createObjectNode();
-		for (Player player : getPlayers()) {
-			ObjectNode jsonPlayer = mapper.createObjectNode();
-
-			jsonPlayer.put("name", player.getName());
-			arrayNodePlayers.addPOJO(jsonPlayer);
-		}
-		json.putPOJO("players", arrayNodePlayers);
-		json.put("event", "PAINT NAMES");
-		this.broadcast(json.toString());
 	}
 
 	public void removePlayer(Player player) {
@@ -140,39 +117,40 @@ public class SpacewarGame {
 			}
 		}
 	}
-	
-	public void forceAllPlayersOut(){
-		for(Player selplayer : players.values()) {
+
+	public void forceAllPlayersOut() {
+		for (Player selplayer : players.values()) {
 			ghosts.add(selplayer);
 			selplayer.setIsResults(true);
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "FORCE SCORES");
 			selplayer.sendMessage(msg.toString());
-			
-			
+
 		}
 		for (Player selplayer2 : ghosts) {
-			if(selplayer2.getGhost()) {
-			selplayer2.setIsResults(true);
-			ObjectNode msg2 = mapper.createObjectNode();
-			msg2.put("event", "FORCE SCORES");
-			selplayer2.sendMessage(msg2.toString());
+			if (selplayer2.getGhost()) {
+				selplayer2.setIsResults(true);
+				ObjectNode msg2 = mapper.createObjectNode();
+				msg2.put("event", "FORCE SCORES");
+				selplayer2.sendMessage(msg2.toString());
 			}
 		}
-		
+
 	}
-	
+
+	// Este método comprueba si ya han muerto todos los jugadores menos uno, en cuyo
+	// caso la partida termina porque ya hay un único ganador
 	private void checkGhosts() {
-		int alivecount = 0 ; 
+		int alivecount = 0;
 		for (Player player : players.values()) {
 			if (!player.getGhost()) {
 				alivecount++;
 			}
-			if(alivecount >= 2) {
+			if (alivecount >= 2) {
 				break;
 			}
 		}
-		if(alivecount <= 1) {
+		if (alivecount <= 1) {
 			System.out.println("El juego ha terminado");
 			this.stopGameLoop();
 			forceAllPlayersOut();
@@ -191,17 +169,17 @@ public class SpacewarGame {
 		try {
 			// Update players
 			for (Player player : getPlayers()) {
-				if(!player.getIsResults()) {
-				player.calculateMovement();
+				if (!player.getIsResults()) {
+					player.calculateMovement();
 
-				ObjectNode jsonPlayer = mapper.createObjectNode();
-				jsonPlayer.put("id", player.getPlayerId());
-				jsonPlayer.put("shipType", player.getShipType());
-				jsonPlayer.put("posX", player.getPosX());
-				jsonPlayer.put("posY", player.getPosY());
-				jsonPlayer.put("facingAngle", player.getFacingAngle());
-				jsonPlayer.put("name", player.getName());
-				arrayNodePlayers.addPOJO(jsonPlayer);
+					ObjectNode jsonPlayer = mapper.createObjectNode();
+					jsonPlayer.put("id", player.getPlayerId());
+					jsonPlayer.put("shipType", player.getShipType());
+					jsonPlayer.put("posX", player.getPosX());
+					jsonPlayer.put("posY", player.getPosY());
+					jsonPlayer.put("facingAngle", player.getFacingAngle());
+					jsonPlayer.put("name", player.getName());
+					arrayNodePlayers.addPOJO(jsonPlayer);
 				}
 			}
 
@@ -211,26 +189,25 @@ public class SpacewarGame {
 
 				// Handle collision
 				for (Player player : getPlayers()) {
-					if(!player.getIsResults()) {
-					if ((projectile.getOwner().getPlayerId() != player.getPlayerId()) && player.intersect(projectile)
-							&& !player.getGhost()) {
-						// System.out.println("Player " + player.getPlayerId() + " was hit!!!");
-						projectile.setHit(true);
-						ObjectNode msg = mapper.createObjectNode();
-						player.hitPlayer();
-						msg.put("event", "UPDATE HEALTH");
-						player.sendMessage(msg.toString());
-						
-							if (player.getHealth() <= 0 ) {
-							addNewGhost(player);
-							msg.put("event", "PLAYER GHOST");
-							msg.put("id", player.getPlayerId());
-							this.broadcast(msg.toString());
+					if (!player.getIsResults()) {
+						if ((projectile.getOwner().getPlayerId() != player.getPlayerId())
+								&& player.intersect(projectile) && !player.getGhost()) {
+							// System.out.println("Player " + player.getPlayerId() + " was hit!!!");
+							projectile.setHit(true);
+							ObjectNode msg = mapper.createObjectNode();
+							player.hitPlayer();
+							msg.put("event", "UPDATE HEALTH");
+							player.sendMessage(msg.toString());
+
+							if (player.getHealth() <= 0) {
+								addNewGhost(player);
+								msg.put("event", "PLAYER GHOST");
+								msg.put("id", player.getPlayerId());
+								this.broadcast(msg.toString());
+							}
+
+							break;
 						}
-						
-					
-						break;
-					}
 					}
 				}
 
@@ -263,13 +240,9 @@ public class SpacewarGame {
 			json.putPOJO("projectiles", arrayNodeProjectiles);
 			this.broadcast(json.toString());
 			checkGhosts();
-			
+
 		} catch (Throwable ex) {
 
 		}
-	}
-
-	public void handleCollision() {
-
 	}
 }

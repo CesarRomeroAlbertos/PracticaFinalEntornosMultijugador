@@ -54,135 +54,158 @@ public class RoomManager {
 		return null;
 	}
 
-	// Recibe un jugador, mira si hay salas disponibles y le asocia a la primera de
-	// la cola,
-	// que se presume que es la más antigua. Si no hay salas crea una.
 
+	//Añade un jugador al lobby, el cual de primeras no forma parte de ninguna sala
 	public void addNoRoomPlayer(Player player) {
 		noRoomPlayers.put(player.getPlayerId(), player);
 	}
 
 	
+	//Método que se usa para dar al jugador la información de las salas cuando entra al lobby
 	public void updateMyTable(Player player) {
 		for (Room room : waitingRoomsMap.get(GameStyle.battleRoyale).values()) {
-			
-			ObjectNode msg = mapper.createObjectNode();
-			msg.put("event", "UPDATE ROOM TABLE");
-			msg.put("roomname", room.name);
-			msg.put("roomcreator", room.creator);
-			msg.put("roomid", room.getId());
-			msg.put("playersinside", room.getPeopleInside());
-			msg.put("totalcapacity", room.capacity);
-			roomExecutor.execute(()->{try {
-				player.sendMessage(msg.toString());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}});			
-		
-	}
-	for (Room room :fullRooms.values()) {
-			if(room.state != State.Playing) {
-			ObjectNode msg = mapper.createObjectNode();
-			msg.put("event", "UPDATE ROOM TABLE");
-			msg.put("roomname", room.name);
-			msg.put("roomcreator", room.creator);
-			msg.put("roomid", room.getId());
-			msg.put("playersinside", room.getPeopleInside());
-			msg.put("totalcapacity", room.capacity);
-			roomExecutor.execute(()->{try {
-				player.sendMessage(msg.toString());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}});			
-			}
-		
-	}
-		
-	}
-	
-	public void updateAllTableOf(Player player) {
-		
-		for (Room room : waitingRoomsMap.get(GameStyle.battleRoyale).values()) {
-			if(!player.getWaiting()) {
-			
-			ObjectNode msg = mapper.createObjectNode();
-			msg.put("event", "UPDATE ROOM TABLE");
-			msg.put("roomname", room.name);
-			msg.put("roomcreator", room.creator);
-			msg.put("roomid", room.getId());
-			msg.put("playersinside", room.getPeopleInside());
-			msg.put("totalcapacity", room.capacity);
-			roomExecutor.execute(()->{try {
-				player.sendMessage(msg.toString());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}});			
-			}
-		
-	}
-		for (Room room :fullRooms.values()) {
-			if (room.state != State.Playing) {
-			ObjectNode msg = mapper.createObjectNode();
-			msg.put("event", "UPDATE ROOM TABLE");
-			msg.put("roomname", room.name);
-			msg.put("roomcreator", room.creator);
-			msg.put("roomid", room.getId());
-			msg.put("playersinside", room.getPeopleInside());
-			msg.put("totalcapacity", room.capacity);
-			roomExecutor.execute(()->{try {
-				player.sendMessage(msg.toString());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}});			
-			}
-		
-	}
-	}
-	
 
-	
-	
+			ObjectNode msg = mapper.createObjectNode();
+			msg.put("event", "UPDATE ROOM TABLE");
+			msg.put("roomname", room.name);
+			msg.put("roomcreator", room.creator);
+			msg.put("roomid", room.getId());
+			msg.put("playersinside", room.getPeopleInside());
+			msg.put("totalcapacity", room.capacity);
+			roomExecutor.execute(() -> {
+				try {
+					player.sendMessage(msg.toString());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
+
+		}
+		for (Room room : fullRooms.values()) {
+			if (room.state != State.Playing) {
+				ObjectNode msg = mapper.createObjectNode();
+				msg.put("event", "UPDATE ROOM TABLE");
+				msg.put("roomname", room.name);
+				msg.put("roomcreator", room.creator);
+				msg.put("roomid", room.getId());
+				msg.put("playersinside", room.getPeopleInside());
+				msg.put("totalcapacity", room.capacity);
+				roomExecutor.execute(() -> {
+					try {
+						player.sendMessage(msg.toString());
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				});
+			}
+
+		}
+
+	}
+
+	//método que se usa para actualizar las tablas de salas de todos los jugadores del lobby,
+	//generalmente cuando hay cambios en dichas tablas
+	public void updateAllTableOf(Player player) {
+
+		for (Room room : waitingRoomsMap.get(GameStyle.battleRoyale).values()) {
+			if (!player.getWaiting()) {
+
+				ObjectNode msg = mapper.createObjectNode();
+				msg.put("event", "UPDATE ROOM TABLE");
+				msg.put("roomname", room.name);
+				msg.put("roomcreator", room.creator);
+				msg.put("roomid", room.getId());
+				msg.put("playersinside", room.getPeopleInside());
+				msg.put("totalcapacity", room.capacity);
+				roomExecutor.execute(() -> {
+					try {
+						player.sendMessage(msg.toString());
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				});
+			}
+
+		}
+		for (Room room : fullRooms.values()) {
+			if (room.state != State.Playing) {
+				ObjectNode msg = mapper.createObjectNode();
+				msg.put("event", "UPDATE ROOM TABLE");
+				msg.put("roomname", room.name);
+				msg.put("roomcreator", room.creator);
+				msg.put("roomid", room.getId());
+				msg.put("playersinside", room.getPeopleInside());
+				msg.put("totalcapacity", room.capacity);
+				roomExecutor.execute(() -> {
+					try {
+						player.sendMessage(msg.toString());
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				});
+			}
+
+		}
+	}
+
+	//Método que se usa para vaciar las tablas de salas de los jugadores
 	public void clearAllTables() {
-		
 
 		ObjectNode msg = mapper.createObjectNode();
 		msg.put("event", "CLEAR TABLE");
-		for(Player player: noRoomPlayers.values()) {
-		roomExecutor.execute(()->{try {
-			player.sendMessage(msg.toString());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}});
+		for (Player player : noRoomPlayers.values()) {
+			roomExecutor.execute(() -> {
+				try {
+					player.sendMessage(msg.toString());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
 		}
-		
+
 	}
+	
+	//método que saca de las salas activas del lobby una sala, siendo que dicha sala
+	//esté llena
+	public void roomIsFull(int roomid, GameStyle style, Room room) {
+
+		waitingRoomsMap.get(style).remove(roomid);
+		fullRooms.put(roomid, room);
+	}
+
+	//método que devuelve a las salas activas del lobby una sala
 	public void roomIsWaiting(Room room) {
 		fullRooms.remove(room.getId());
 		waitingRoomsMap.get(GameStyle.battleRoyale).put(room.getId(), room);
 	}
-	
-	public void sendPlayerCanceled(Player player , int roomid) {
+
+	//método que avisa a la sala de que un jugador se ha salido de la misma
+	//antes de empezar la partida
+	public void sendPlayerCanceled(Player player, int roomid) {
 		if (waitingRoomsMap.get(GameStyle.battleRoyale).containsKey(roomid)) {
 			waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).playerCanceled(player);
-			}else if(fullRooms.containsKey(roomid)) {
+		} else if (fullRooms.containsKey(roomid)) {
 			fullRooms.get(roomid).playerCanceled(player);
-			}
-	}
-	
-	public void sendPlayerReady(Player player , int roomid)  {
-		
-		if (waitingRoomsMap.get(GameStyle.battleRoyale).containsKey(roomid)) {
-		waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).readyAndCheck(player);
-		}else if(fullRooms.containsKey(roomid)) {
-		fullRooms.get(roomid).readyAndCheck(player);
 		}
 	}
 
+	//método que indica a la sala que un jugador está listo para empezar la partida
+	public void sendPlayerReady(Player player, int roomid) {
+
+		if (waitingRoomsMap.get(GameStyle.battleRoyale).containsKey(roomid)) {
+			waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid).readyAndCheck(player);
+		} else if (fullRooms.containsKey(roomid)) {
+			fullRooms.get(roomid).readyAndCheck(player);
+		}
+	}
+
+	//método que crea una nueva sala, usado cuando el jugador crea la sala él mismo,
+	//no a través del matchmaking
 	public void createNewRoom(GameStyle gameStyle, String roomname, String roomcreator) {
 		Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
 		room.name = roomname;
@@ -190,10 +213,10 @@ public class RoomManager {
 		waitingRoomsMap.get(gameStyle).put(room.getId(), room);
 		clearAllTables();
 
-
 	}
 
-	public void ConnectToExisting(Player player, GameStyle gameStyle, int id)  {
+	//método que se usa cuando un jugador quiere unirse a una sala concreta ya creada
+	public void ConnectToExisting(Player player, GameStyle gameStyle, int id) {
 		if (waitingRoomsMap.get(gameStyle).containsKey(id)) {
 			Room room = waitingRoomsMap.get(gameStyle).get(id);
 			room.addPlayer(player);
@@ -202,9 +225,9 @@ public class RoomManager {
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "ROOM ASIGNED");
 			msg.put("roomid", room.getId());
-			msg.put("roomname",room.name);
+			msg.put("roomname", room.name);
 			player.sendMessage(msg.toString());
-				
+
 		} else {
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "ROOM DENIED");
@@ -212,8 +235,9 @@ public class RoomManager {
 		}
 		// }
 	}
-	
-	public void requestRoomStatus(Player player , int roomid) {
+
+	/*
+	public void requestRoomStatus(Player player, int roomid) {
 		if (waitingRoomsMap.get(GameStyle.battleRoyale).contains(roomid)) {
 			Room current = waitingRoomsMap.get(GameStyle.battleRoyale).get(roomid);
 			ObjectNode msg = mapper.createObjectNode();
@@ -221,10 +245,10 @@ public class RoomManager {
 			msg.put("totalcapacity", current.capacity);
 			msg.put("playersinside", current.getPeopleInside());
 			msg.put("playersready", current.getNReady());
-			
+
 			player.sendMessage(msg.toString());
-			
-		}else if (fullRooms.containsKey(roomid)) {
+
+		} else if (fullRooms.containsKey(roomid)) {
 			ObjectNode msg = mapper.createObjectNode();
 			Room current = fullRooms.get(roomid);
 			msg.put("event", "ROOM STATUS");
@@ -235,34 +259,29 @@ public class RoomManager {
 			player.sendMessage(msg.toString());
 
 		}
-		
-		
-	}
 
-	
-	public void roomIsFull(int roomid , GameStyle style , Room room) {
-		
-		waitingRoomsMap.get(style).remove(roomid);
-		fullRooms.put(roomid, room);
-	}
-	
-	// Este método no está en uso en la versión final pero sería un sistema de matchmaking que te mete
-	public void ConnectNewPlayer(Player player, GameStyle gameStyle){
+	}*/
+
+
+	// Este método se usa cuando el jugador elige el matchmaking automático en cuyo
+	// caso
+	// primero si no hay salas crea una y le mete en esta, si hay alguna le intenta
+	// meter en esa
+	// y si dicha sala está llena crea una nueva y le mete
+	public void ConnectNewPlayer(Player player, GameStyle gameStyle) {
 		if (waitingRoomsMap.get(gameStyle).isEmpty()) {
 			Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
 			room.addPlayer(player);
 			room.name = "auto - " + player.getName();
 			room.state = State.Waiting;
-			
+
 			waitingRoomsMap.get(gameStyle).put(room.getId(), room);
-			
+
 			ObjectNode msg = mapper.createObjectNode();
 			msg.put("event", "ROOM ASIGNED");
 			msg.put("roomid", room.getId());
-			msg.put("roomname",room.name);
+			msg.put("roomname", room.name);
 			player.sendMessage(msg.toString());
-			
-			//clearAllTables();
 		} else {
 			Room tempRoom = waitingRoomsMap.get(gameStyle).elements().nextElement();
 			if (!tempRoom.addPlayer(player)) {
@@ -275,24 +294,23 @@ public class RoomManager {
 					room.addPlayer(player);
 					room.name = "auto - " + player.getName();
 					room.state = State.Waiting;
-					
+
 					waitingRoomsMap.get(gameStyle).put(room.getId(), room);
-					
+
 					ObjectNode msg = mapper.createObjectNode();
 					msg.put("event", "ROOM ASIGNED");
 					msg.put("roomid", room.getId());
-					msg.put("roomname",room.name);
+					msg.put("roomname", room.name);
 					player.sendMessage(msg.toString());
 				} else {
 					System.out.println("Error al añadir al jugador a una sala, intentando de nuevo.");
 					ConnectNewPlayer(player, gameStyle);
 				}
-			}else
-			{
+			} else {
 				ObjectNode msg = mapper.createObjectNode();
 				msg.put("event", "ROOM ASIGNED");
 				msg.put("roomid", tempRoom.getId());
-				msg.put("roomname",tempRoom.name);
+				msg.put("roomname", tempRoom.name);
 				player.sendMessage(msg.toString());
 			}
 		}
@@ -307,7 +325,7 @@ public class RoomManager {
 		if (waitingRoomsMap.get(room.getGameStyle()).remove(room.getId()) == null)
 			fullRooms.remove(room.getId());
 		clearAllTables();
-			
+
 	}
 
 	// sobrecarga del método anterior usando la id en vez de la sala
@@ -323,16 +341,15 @@ public class RoomManager {
 		clearAllTables();
 	}
 
-	// método para borrar a un jugador, el cual busca la sala del mismo y la
-	// notifica
-	
+	// este método sirve para borrar a los jugadores que no están en una sala
 	public void removeForLobby(Player player) {
 		noRoomPlayers.put(player.getPlayerId(), player);
 		this.removePlayer(player);
-			
-		}
-	
-	
+
+	}
+
+	// método para borrar a un jugador, el cual busca la sala del mismo y la
+	// notifica
 	public void removePlayer(Player player) {
 		if (fullRooms.containsKey(player.GetRoomId()))
 			fullRooms.get(player.GetRoomId()).RemovePlayer(player);
@@ -357,6 +374,8 @@ public class RoomManager {
 		}
 	}
 
+	// este método sirve para propagar game cuando se quiere llamar desde fuera,
+	// escogiendo a que sala se busca acceder
 	public SpacewarGame getGame(int id) {
 		if (fullRooms.containsKey(id)) {
 			return fullRooms.get(id).getGame();
@@ -370,6 +389,10 @@ public class RoomManager {
 	}
 
 	/// METODOS PARA TESTEO///
+
+	// ESTOS MÉTODOS PUEDEN NO FUNCIONAR EN LA VERSIÓN ACTUAL,
+	// AL IGUAL QUE LOS TESTS, QUE SE HAN USADO DURANTE EL DESARROLLO PERO
+	// PUEDEN NO FUNCIONAR BIEN EN LA VERSIÓN FINAL DE ESTE
 
 	// Este método existe para testear y comprueba si un jugador existe
 	public boolean checkPlayer(Player player) {
@@ -389,6 +412,7 @@ public class RoomManager {
 		return check;
 	}
 
+	// Este método comprueba si existe una habitación
 	public boolean checkRoom(int id) {
 		boolean check = false;
 		if (fullRooms.containsKey(id))
