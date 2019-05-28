@@ -100,12 +100,12 @@ Spacewar.gameState.prototype = {
 		this.aKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
 		this.dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
 		this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-		this.eKey = game.input.keyboard.addKey(Phaser.Keyboard.E);
+	
 
 		// Stop the following keys from propagating up to the browser
 		game.input.keyboard.addKeyCapture([ Phaser.Keyboard.W,
 				Phaser.Keyboard.S, Phaser.Keyboard.A, Phaser.Keyboard.D,
-				Phaser.Keyboard.SPACEBAR , Phaser.Keyboard.E]);
+				Phaser.Keyboard.SPACEBAR]);
 
 		game.camera.follow(game.global.myPlayer.image);
 	},
