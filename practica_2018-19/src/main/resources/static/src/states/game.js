@@ -33,7 +33,7 @@ Spacewar.gameState.prototype = {
 	},
 
 	preload : function() {
-		game.global.myPlayer.ammo = 20 // hardcoded
+		//game.global.myPlayer.ammo = 20 // hardcoded
 
 		// We create a procedural starfield background
 		for (var i = 0; i < this.numStars; i++) {
