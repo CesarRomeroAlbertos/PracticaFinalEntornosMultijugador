@@ -34,12 +34,12 @@ Spacewar.lobbyState.prototype = {
 		
 	
 
-		
+		//Una funcion para cargar un elemento html desde javascript , en este caso la tabla de las salas disponibles
 	  function loadRoomTableSurface(){
 		
 		var gamediv = document.getElementById("gameDiv")
 		var div = document.createElement("div");
-		div.setAttribute("id","deletethis")
+		div.setAttribute("id","deletethis")//El id es importante para borrarla luego 
 		div.style.width = "700px";
 		div.style.height = "300px";
 		div.style.background = "rgba(182, 54, 236, 0.68)"; 
@@ -58,9 +58,9 @@ Spacewar.lobbyState.prototype = {
 		div.appendChild(roomtablediv)
 		roomtablediv.appendChild(roomtable)
 		}
-		
+		//Funcion asincrona ,  nos sirve para pedir los datos de las salas nada mas entrar 
 	  async function requestRoomTableData(){
-		  await(loadRoomTableSurface())
+		  await(loadRoomTableSurface())//La funcion esperara a que la tabla este pintada 
 			let requestmsg = {
 					event : "REQUEST ALL EXISTING ROOMS"
 					
@@ -71,7 +71,7 @@ Spacewar.lobbyState.prototype = {
 	
 	
 		var newroomname
-		
+		//una funcion para crear una sala nueva desde un prompt 
 		async function makearoom(rname){
 		  console.log(game.global.myPlayer)
 		 let myname = String(game.global.myPlayer.name)
@@ -91,7 +91,7 @@ Spacewar.lobbyState.prototype = {
 				 makearoom(rname)
 			 }
 		}
-		
+		//Una funcion para pedir al servidor que nos haga matchmaking
 		function matchMakingAuto()
 		{
 			let roommsg = {
@@ -99,7 +99,7 @@ Spacewar.lobbyState.prototype = {
 					}
 					game.global.socket.send(JSON.stringify(roommsg))
 		}
-
+		
 		var makeroombutton = game.add.button(game.world.centerX-75 ,game.world.centerY + 200, "makeroombutton" , makeroomprompt, this);
 		var matchmakemebutton = game.add.button(game.world.centerX+75 , game.world.centerY+200,"matchmakemebutton",matchMakingAuto,this);
 	

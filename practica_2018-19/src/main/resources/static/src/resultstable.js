@@ -1,8 +1,6 @@
 
-
-
 var currentResultsRows = 0 
-
+//Funcion para limpiar la tabla cuando hay una actualizacion
 function clearScoreTable(){
 	
 	var stable = document.getElementById("scoretable")
@@ -16,7 +14,7 @@ document.getElementById("scoretable").deleteRow(j -1);
 	
 	currentResultsRows = 0 
 }
-
+//Funcion para escribir una fila de la tabla cuando el cliente envia un mensaje de actualizacion
 
  function updateScoreTable(nombrejugador , posicion){
 	

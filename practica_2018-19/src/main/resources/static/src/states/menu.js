@@ -2,7 +2,7 @@ Spacewar.menuState = function(game) {
 
 }
 
-
+//Tenemos una funcion para ir a lobby , esta se le llamara desde indexjs cuando el server nos de permiso
 function goToLobby(){
 	if (typeof game.global.myPlayer.id !== 'undefined' && typeof game.global.myPlayer.name !== "undefined") {
 		game.state.start('lobbyState')
@@ -35,6 +35,8 @@ Spacewar.menuState.prototype = {
 		
 		game.add.tileSprite(0, 0,1024, 600, "menubackground");
 		function showPrompt(){
+			
+		//Ponemos una funcion para enviarle un mensaje al servidor de que nos ponga nuestro nombre 
 		 let person = prompt("Please enter your name");
 		 if (person != null) {
 			 let message = {
@@ -43,7 +45,6 @@ Spacewar.menuState.prototype = {
 			 }
 			 game.global.socket.send(JSON.stringify(message))
 		 }
-		 //game.global.myPlayer.name = person
 		}
 		var  menubutton = game.add.button(game.world.centerX ,game.world.centerY, "namebutton" , showPrompt, this);
 		menubutton.anchor.setTo(0.5)

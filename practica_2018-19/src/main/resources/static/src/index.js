@@ -3,7 +3,6 @@ window.onload = function() {
 	game = new Phaser.Game(1024, 600, Phaser.AUTO, 'gameDiv')
 
 	// GLOBAL VARIABLES
-	// No meter nada aqui bajo ninguna circunstancia
 	game.global = {
 		FPS : 30,
 		DEBUG_MODE : false,
@@ -40,27 +39,30 @@ window.onload = function() {
 		var msg = JSON.parse(message.data)
 		// console.log(msg.event)
 		switch (msg.event) {
+		
+		//Case para cuando la sala a la que quiere unirse el jugador esta llena
 		case "ROOM DENIED":
 			alert("Esta sala esta llena , no puedes conectarte")
 			break
-		
+		//Case para limpiar la tabla de salas antes de escribir en ella
 		case "CLEAR TABLE":
 			tableisClear()
 			break
-		
+		//Case que sirve para recibir permiso del servidor para ver las puntuaciones
 		case "SCORE PERMISSION":
 			game.global.myPlayer.isResults = true
 			game.state.start("scoresState")
 			break
+		
 		case "START GAME" :
 			game.state.start('gameState')
 			break
-			
+		//Case para ir a la pantalla de puntuaciones de forma obligatoria al terminar el juego	
 		case "FORCE SCORES" :
 			game.global.myPlayer.isResults = true
 			game.state.start("scoresState")
 			break
-			
+		//Case para recibir el aviso del servidor de que ha cambiado nuestra municion en cualquier sentido	
 		case "AMMO UPDATE":
 			console.log("ammo =" + msg.ammo)
 			game.global.myPlayer.ammo = msg.ammo
@@ -68,7 +70,7 @@ window.onload = function() {
 
 			
 			break
-			
+		//Case para recibir un mensaje de actualizacion de resultados y llamar a la funcion de insercion de fila de esta
 		case "UPDATE SCORE TABLE":
 			if(document.getElementById("scoretable")){
 			if(game.global.myPlayer.isResults){
@@ -77,12 +79,13 @@ window.onload = function() {
 			}
 		
 			break
-		
+		//Case para gestionar cuando el servidor nos asigne una sala y pasar al estado de espera
 		case "ROOM ASIGNED":
 			game.global.room.name= msg.roomname
 			game.global.room.id = msg.roomid
 			game.global.myPlayer.isWaiting = true
 
+			
 			let requestroomstatus = {
 				event : "REQUEST ROOM STATUS",
 				roomid : game.global.room.id
@@ -93,7 +96,7 @@ window.onload = function() {
 			startnext()
 		
 			break
-			
+		//Case para cuando el servidor ha cancelado nuestra participacion en la partida de una sala para volver a lobby	
 		case "CANCELED UPDATE":
 			function cWait(){
 			game.global.myPlayer.isWaiting = false
@@ -107,24 +110,20 @@ window.onload = function() {
 			}
 			gTL()
 			break;
-		
+		//Case para llamar a la funcion de insercion de fila de la tabla de salas cuando el servidor manda una actualizacion
 		case "UPDATE ROOM TABLE":
 			if (!game.global.myPlayer.isWaiting){
 			updateRoomTable(msg.roomcreator,msg.roomname,msg.roomid , msg.playersinside , msg.totalcapacity)
 			}
 			break
-		
-		case "ROOM STATUS":
-			game.global.myPlayer.playersWithMe.text = msg.playersinside + "/" + msg.totalcapacity 
-			game.global.myPlayer.playersWithMeReady.text = msg.playersready + "/" + msg.totalcapacity
-			break
+		//Case para gestionar cuando el servidor nos manda un mensaje de chat  , el mensaje se inserta en la tabla de chat
 		case "chatMessageReception":
 			console.log("tienes un mensaje")
 			let latestChatMessage = msg.messageText
 			paintNewestMessage(latestChatMessage)
 			break
 			
-		
+		//Case para cuando el servidor nos manda nuestro nombre de jugador 
 		case "SET NAME" :
 			if(msg.id == game.global.myPlayer.id){
 			game.global.myPlayer.name = msg.name
@@ -134,6 +133,7 @@ window.onload = function() {
 				game.global.otherPlayers[msg.id].name = msg.name
 			}
 			break
+		
 		case 'JOIN':
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] JOIN message recieved')
@@ -149,17 +149,9 @@ window.onload = function() {
 				console.log('[DEBUG] ID assigned to player: ' + game.global.myPlayer.id)
 			}
 			break
-		case 'NEW ROOM' :
-			if (game.global.DEBUG_MODE) {
-				console.log('[DEBUG] NEW ROOM message recieved')
-				console.dir(msg)
-			}
-			game.global.myPlayer.room = {
-					name : msg.room
-			}
-			break
+
+		//Modificada para que no se actualicen los jugadores fantasmas 
 		case 'GAME STATE UPDATE' :
-			// console.log("entra en game state update")
 
 			if (game.global.DEBUG_MODE) {
 				console.log('[DEBUG] GAME STATE UPDATE message recieved')
@@ -228,25 +220,14 @@ window.onload = function() {
 			}
 			break
 			
-			
-		case "PAINT NAMES" :
-			for (var player of msg.players) {
-				if(game.global.otherPlayers.length != 0 &&player.id != game.global.myPlayer.id && game.global.otherPlayers[player.id].image !== "undefined"){
-					game.global.otherPlayres[palyer.id].name =  game.add.text(game.global.myPlayer.image.x, game.global.myPlayer.image.y + 30, game.global.myPlayer.name ,otherstyle);
-					game.global.otherPlayres[palyer.id].name.anchor.setTo(0.5);
-					game.global.otherPlayres[palyer.id].name.fontSize = 20;
-					game.global.otherPlayres[palyer.id].image.addChild(game.global.otherPlayres[palyer.id].name);
-				}
-			}
-			break
-			
+			//Case para cuando el servidor le indica al jugador que ha perdido vida al jugador
 		case 'UPDATE HEALTH':
 			game.global.myPlayer.health -=1
 			game.global.myPlayer.myHCounter.text =  game.global.myPlayer.health;
 			
 			
 		break
-		
+		//Case para cuando el servidor le avisa al cliente de que borre la tabla pues tiene una actualizacion para el
 		case "CLEAR RESULTS TABLE":
 		async function waitforclear(){
 			await(clearScoreTable())
@@ -260,11 +241,12 @@ window.onload = function() {
 		waitforclear()
 		}
 		break
-		
+		//Case para pasar al menu cuanddo el jugador decide marcharse del todo tras perder y volver al menu en lugar de a lobby
 		case "END OF GAME":
 			game.state.start("menuState")
 			break
-		
+		//Case para cuando un jugador muere y ha de transformarse en fantasma , si el jugador especificado en el  mensaje no es el cliente , este lo elimina
+		//Si es el cliente , este se pone en estado fantasma 
 		case "PLAYER GHOST":
 			if(msg.id == game.global.myPlayer.id){
 			game.global.myPlayer.playerIsGhost = true

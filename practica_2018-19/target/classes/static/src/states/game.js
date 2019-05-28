@@ -7,21 +7,14 @@ Spacewar.gameState = function(game) {
 }
 var quitbutton
 
-
+//Funcion para transformar al jugador a modo fantasma , activa el boton para que se salga si lo desea
 function activateGhost(){
-	console.log("que la pasa")
 	game.global.myPlayer.image.alpha = 0.25;
 	quitbutton.alpha = 1;
 	quitbutton.inputEnabled = true;
 }
 
-/*
-function reloadAmmo(){
-	setTimeout(() => {
-		  game.global.myPlayer.ammo = 5 // hardcoded
-		  myAmmo.text = game.global.myPlayer.ammo;
-		}, 5000);
-}*/
+
 
 
 Spacewar.gameState.prototype = {

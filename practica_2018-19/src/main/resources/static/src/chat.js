@@ -1,10 +1,8 @@
-var maxRows = 25
 var currentRows = 0
 var table
-
+//funcion para enviar un mensaje por el chat 
 function sendChatMsg(){
 	var input = document.getElementById("msgField").value
-	console.log("you just said " + input)
 	let name  = game.global.myPlayer.name
 	let cmessage = {
 		room : game.global.room.id ,
@@ -17,12 +15,8 @@ function sendChatMsg(){
 
 }
 
-var count = 0 
-function sendChatMsgPRUEBA(){
-	paintNewestMessage(count)
-	count++
-}
 
+//Funcion para escribir un mensaje que llega desde el servidor 
 function paintNewestMessage(latestChatMessage){
 	if (!table){
 		 table = document.getElementById("chatTable")
