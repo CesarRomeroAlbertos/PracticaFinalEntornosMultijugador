@@ -11,6 +11,10 @@ function startnext(){
 Spacewar.lobbyState.prototype = {
 
 	init : function() {
+		
+		
+		
+		
 		if (game.global.DEBUG_MODE) {
 			console.log("[DEBUG] Entering **LOBBY** state");
 			
@@ -22,6 +26,7 @@ Spacewar.lobbyState.prototype = {
 	},
 
 	create : function() {
+		
 		
 		
 		
@@ -86,9 +91,10 @@ Spacewar.lobbyState.prototype = {
 				 makearoom(rname)
 			 }
 		}
+		function funcionParaCesar(){}//Si no le pongo nada peta 
 		
-		var makeroombutton = game.add.button(game.world.centerX ,game.world.centerY + 200, "makeroombutton" , makeroomprompt, this);
-		
+		var makeroombutton = game.add.button(game.world.centerX-75 ,game.world.centerY + 200, "makeroombutton" , makeroomprompt, this);
+		var matchmakemebutton = game.add.button(game.world.centerX+75 , game.world.centerY+200,"matchmakemebutton",funcionParaCesar,this);
 	
 		
 	},

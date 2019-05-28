@@ -65,9 +65,12 @@ Spacewar.gameState.prototype = {
 		game.global.myPlayer.name = game.add.text(game.global.myPlayer.image.x, game.global.myPlayer.image.y -40, game.global.myPlayer.name ,style);
 		game.global.myPlayer.name.anchor.setTo(0.5);
 		game.global.myPlayer.name.fontSize = 20;
-	    game.global.myPlayer.myHCounter = game.add.text(250, 16, '', { fill: '#ffffff' });
+		var theart = game.add.sprite( 100,16,"tinyheart","tinyheart")
+		var tbullet = game.add.sprite( 100,50,"tinybullet","tinybullet")
+
+	    game.global.myPlayer.myHCounter = game.add.text(150, 16, '', { fill: '#ff0c29' });
 	    game.global.myPlayer.myHCounter.text =  game.global.myPlayer.health;
-	   game.global.myPlayer.myAmmoCounter = game.add.text(265, 16, '', { fill: '#37ff0a' });
+	   game.global.myPlayer.myAmmoCounter = game.add.text(150, 50, '', { fill: '#ffdd02' });
 	    game.global.myPlayer.myAmmoCounter.text = game.global.myPlayer.ammo;
 	    
 	},
