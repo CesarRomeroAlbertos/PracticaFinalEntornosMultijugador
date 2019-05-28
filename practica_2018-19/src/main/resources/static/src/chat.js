@@ -32,7 +32,7 @@ function paintNewestMessage(latestChatMessage){
 		 var Name = newestRow.insertCell(0);
 		 var Message = newestRow.insertCell(1);
 		 
-		 Name.innerHTML = "Nombre de la persona :"
+		 Name.innerHTML = ""
 		Message.innerHTML = latestChatMessage
 		currentRows++
 		

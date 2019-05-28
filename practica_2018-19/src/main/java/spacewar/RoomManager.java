@@ -246,19 +246,15 @@ public class RoomManager {
 		waitingRoomsMap.get(style).remove(roomid);
 		fullRooms.put(roomid, room);
 	}
-	// Vamos a dejar esto por si nos hace falta para el matchmaking
+	
+	// Este método no está en uso en la versión final pero sería un sistema de matchmaking que te mete
 	public void ConnectNewPlayer(Player player, GameStyle gameStyle){
 		if (waitingRoomsMap.get(gameStyle).isEmpty()) {
 			Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
 			room.addPlayer(player);
-			roomExecutor.execute(() -> {
-				try {
-					room.PreMatchLobbyThread();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			});
+			
+			room.state = State.Waiting;
+			
 			waitingRoomsMap.get(gameStyle).put(room.getId(), room);
 			clearAllTables();
 		} else {
@@ -271,14 +267,9 @@ public class RoomManager {
 					Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
 					clearAllTables();
 					room.addPlayer(player);
-					roomExecutor.execute(() -> {
-						try {
-							room.PreMatchLobbyThread();
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					});
+					
+					room.state = State.Waiting;
+					
 					waitingRoomsMap.get(gameStyle).put(room.getId(), room);
 				} else {
 					System.out.println("Error al añadir al jugador a una sala, intentando de nuevo.");

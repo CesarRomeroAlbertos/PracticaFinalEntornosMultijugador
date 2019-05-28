@@ -16,23 +16,26 @@ public class Room {
 	private final int id;
 	private ConcurrentHashMap<Integer, Player> playerMap;
 	private ConcurrentHashMap<Integer, Meteorite> meteoriteMap;
+	
+	//Mapa con las capacidades de cada modo de juego
 	private Map<GameStyle, Integer> capacityValues = new HashMap<GameStyle, Integer>() {
 		{
 			put(GameStyle.battleRoyale, 10);
 		}
 	};
 
+	//Enumerador con todos los posibles estados del juego
 	public enum State {
 		Waiting, Full, Playing
 	}
 
+	//Modos de juego
 	public enum GameStyle {
 		battleRoyale
 	}
 
 	public State state;
 	private final GameStyle gameStyle;
-	private ReentrantLock entrylock = new ReentrantLock();
 
 	private AtomicInteger peopleInside;
 	public final int capacity;
@@ -68,6 +71,8 @@ public class Room {
 		}
 	}
 
+	//Este método se llama cuando un jugador en la sala indica que está listo
+	//y si todos están listos inicia el juego
 	public void readyAndCheck(Player player) {
 		synchronized (playerMap) {
 			player.setReady(true);
@@ -135,9 +140,6 @@ public class Room {
 	// Reduce el contador de personas dentro de la sala y quita al jugador del mapa
 	// de jugadores
 	// Si no quedan jugadores en la sala la borra
-	
-	
-	
 	public void RemovePlayer(Player player) {
 		synchronized (playerMap) {
 			player.setWaiting(false);
@@ -156,7 +158,7 @@ public class Room {
 		}
 	}
 
-	// No sé si se usará o no este método. En caso de que no, se borrará.
+	// Devuelve el número de jugadores en la sala
 	public int getPeopleInside() {
 		synchronized (playerMap) {
 			return peopleInside.get();
@@ -171,16 +173,7 @@ public class Room {
 	public int getId() {
 		return this.id;
 	}
-
-	// Este es el hilo que se ejecuta durante la espera para iniciar las partidas
-	public void PreMatchLobbyThread() {
-		do {
-			// TEMPORAL
-			this.state = State.Playing;
-		} while (this.state != State.Playing);
-		// startGame();
-	}
-
+	
 	// Este método es el que unseals la partida
 	public void startGame() {
 		synchronized (playerMap) {
