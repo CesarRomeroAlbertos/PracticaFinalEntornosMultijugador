@@ -5,19 +5,27 @@ Spacewar.scoresState = function(game) {
 Spacewar.scoresState.prototype = {
 
 
-
+		
 	preload : function() {
-	
+		
 	},
 
 	create : function() {
+let sprite = game.add.sprite(game.world.centerX-130,game.world.centerY-300, 'scoresbanner', 'scoresbanner');
+		var newNumStars = 20 ;
+		for (var i = 0; i < newNumStars; i++) {
+			let sprite = game.add.sprite(game.world.randomX,
+					game.world.randomY, 'spacewar', 'staralpha.png');
+			let random = game.rnd.realInRange(0, 0.6);
+			sprite.scale.setTo(random, random)
+		}
 		function loadtablesurface(){
 		var gamediv = document.getElementById("gameDiv")
 		var scorediv = document.createElement("div");
 		scorediv.setAttribute("id","deletethis2")
 		scorediv.style.width = "700px";
 		scorediv.style.height = "300px";
-		scorediv.style.background = "yellow";
+		scorediv.style.background = "rgba(182, 54, 236, 0.68)";
 		scorediv.style.color = "white";
 		scorediv.style.position = "absolute";
 		scorediv.style.zIndex = "1000";
@@ -69,7 +77,7 @@ Spacewar.scoresState.prototype = {
 		}
 		
 		
-		var backtolobbybutton = game.add.button(game.world.centerX-75 ,game.world.centerY + 200, "backtolobbybutton" , backtolobby, this);
+		var backtolobbybutton = game.add.button(game.world.centerX-75 ,game.world.centerY + 200, "backbutton" , backtolobby, this);
 		var actualquitbutton = game.add.button(game.world.centerX+75 ,game.world.centerY + 200, "actualquitbutton" , actuallyquit, this);
 		
 		

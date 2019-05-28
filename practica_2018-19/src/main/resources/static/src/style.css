@@ -4,6 +4,9 @@
 
 	
 }
+.ciC{
+	
+}
 
 .cTable {
 	
@@ -14,6 +17,13 @@
 	color : white; 
 	
 	
+
+}
+
+.bgC {
+	background-size: cover; 
+	background-repeatno-repeat;
+		overflow-x :hidden;
 	
 }
 .gDiv {
