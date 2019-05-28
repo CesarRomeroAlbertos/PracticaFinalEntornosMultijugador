@@ -20,7 +20,7 @@ public class Room {
 	//Mapa con las capacidades de cada modo de juego
 	private Map<GameStyle, Integer> capacityValues = new HashMap<GameStyle, Integer>() {
 		{
-			put(GameStyle.battleRoyale, 10);
+			put(GameStyle.battleRoyale, 3);
 		}
 	};
 

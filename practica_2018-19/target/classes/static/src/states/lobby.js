@@ -87,9 +87,17 @@ Spacewar.lobbyState.prototype = {
 			 }
 		}
 		
-		var makeroombutton = game.add.button(game.world.centerX ,game.world.centerY + 200, "makeroombutton" , makeroomprompt, this);
+		function matchMakingAuto()
+		{
+			let roommsg = {
+					event : "JOIN ROOM"
+					}
+					game.global.socket.send(JSON.stringify(roommsg))
+		}
 		
-	
+		var makeroombutton = game.add.button(game.world.centerX-100 ,game.world.centerY + 200, "makeroombutton" , makeroomprompt, this);
+		
+		//var autoMatchMaking = game.add.button(game.world.centerX+100 ,game.world.centerY + 200, "makeroombutton" , matchMakingAuto, this);
 		
 	},
 

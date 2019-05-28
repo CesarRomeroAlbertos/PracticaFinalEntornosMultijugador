@@ -15,7 +15,6 @@ import spacewar.Room.State;
 
 public class RoomManager {
 	private Executor roomExecutor;
-	private final int roomCapacity = 6;
 
 	private Map<GameStyle, ConcurrentHashMap<Integer, Room>> waitingRoomsMap;
 	private ConcurrentHashMap<Integer, Room> fullRooms;
@@ -252,29 +251,49 @@ public class RoomManager {
 		if (waitingRoomsMap.get(gameStyle).isEmpty()) {
 			Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
 			room.addPlayer(player);
-			
+			room.name = "auto - " + player.getName();
 			room.state = State.Waiting;
 			
 			waitingRoomsMap.get(gameStyle).put(room.getId(), room);
-			clearAllTables();
+			
+			ObjectNode msg = mapper.createObjectNode();
+			msg.put("event", "ROOM ASIGNED");
+			msg.put("roomid", room.getId());
+			msg.put("roomname",room.name);
+			player.sendMessage(msg.toString());
+			
+			//clearAllTables();
 		} else {
 			Room tempRoom = waitingRoomsMap.get(gameStyle).elements().nextElement();
 			if (!tempRoom.addPlayer(player)) {
 
-				if (tempRoom.getPeopleInside() == roomCapacity) {
+				if (tempRoom.getPeopleInside() == tempRoom.capacity) {
 					fullRooms.put(tempRoom.getId(), tempRoom);
 					waitingRoomsMap.get(gameStyle).remove(tempRoom);
 					Room room = new Room(roomIdCounter.incrementAndGet(), this, gameStyle);
 					clearAllTables();
 					room.addPlayer(player);
-					
+					room.name = "auto - " + player.getName();
 					room.state = State.Waiting;
 					
 					waitingRoomsMap.get(gameStyle).put(room.getId(), room);
+					
+					ObjectNode msg = mapper.createObjectNode();
+					msg.put("event", "ROOM ASIGNED");
+					msg.put("roomid", room.getId());
+					msg.put("roomname",room.name);
+					player.sendMessage(msg.toString());
 				} else {
 					System.out.println("Error al añadir al jugador a una sala, intentando de nuevo.");
 					ConnectNewPlayer(player, gameStyle);
 				}
+			}else
+			{
+				ObjectNode msg = mapper.createObjectNode();
+				msg.put("event", "ROOM ASIGNED");
+				msg.put("roomid", tempRoom.getId());
+				msg.put("roomname",tempRoom.name);
+				player.sendMessage(msg.toString());
 			}
 		}
 		// }
