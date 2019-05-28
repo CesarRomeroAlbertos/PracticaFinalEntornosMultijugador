@@ -20,14 +20,14 @@ public class Player extends Spaceship {
 	private final String shipType;
 	private String name = null;
 	private int roomId;
-	private AtomicInteger health = new AtomicInteger(1);// hardcoded
+	private AtomicInteger health = new AtomicInteger(5);// hardcoded
 	private boolean isGhost;
-	private int maxAmmo = 20;
+	private int maxAmmo = 5;
 	private AtomicInteger ammo = new AtomicInteger(maxAmmo);// hardcoded
 	private boolean isReady;
 	private boolean isWaiting;
 	private ScheduledExecutorService ammoRecharger;
-	private final static int rechargeTime = 3000;
+	private final static int rechargeTime = 1000;
 	private boolean executorStarted = false;
 	private ObjectMapper mapper = new ObjectMapper();
 	private boolean isResults;
