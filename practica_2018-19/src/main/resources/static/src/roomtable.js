@@ -1,5 +1,6 @@
 
 var currentRoomRows = 0 
+//Funcion para limpiar la tabla cuando hay una actualizacion
 
 function clearTable(){
 	
@@ -17,7 +18,7 @@ document.getElementById("roomtable").deleteRow(i -1);
 	}
 		}
 }
-
+//Funcion que sirve para esperar el limpiado de la tabla antes de avisar al servidor de que esta limpia y que puede enviar informacion
 async function tableisClear(){
 	await(clearTable())
 	
@@ -27,6 +28,7 @@ async function tableisClear(){
 	game.global.socket.send(JSON.stringify(msg))
 
 }
+//Funcion para escribir una fila de la tabla cuando el cliente envia un mensaje de actualizacion
 
 function updateRoomTable(nombrecreador,nombresala,idsala ,gentedentro , capacidad){
 	
